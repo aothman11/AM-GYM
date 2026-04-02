@@ -1,0 +1,13 @@
+{
+  "name": "am-gym",
+  "version": "1.0.0",
+  "description": "AM-Gym — Train Smart. Eat Right. Free fitness app with exercise guides and global nutrition data.",
+  "private": true,
+  "scripts": {
+    "start": "npx serve .",
+    "dev": "npx serve ."
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+<meta name="theme-color" content="#0a0a0a"/>
+<title>AM-Gym — Train Smart. Eat Right.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --white: #ffffff;
+  --black: #0a0a0a;
+  --gray-50: #f8f8f7;
+  --gray-100: #f0f0ee;
+  --gray-200: #e4e4e0;
+  --gray-300: #c8c8c4;
+  --gray-400: #9c9c98;
+  --gray-500: #6e6e6a;
+  --gray-600: #4e4e4a;
+  --gray-700: #363632;
+  --gray-800: #222220;
+  --gray-900: #111110;
+  --accent: #e8ff47;
+  --accent-dark: #c8e000;
+  --green: #16a34a;
+  --green-light: #f0fdf4;
+  --blue: #2563eb;
+  --orange: #d97706;
+  --r-sm: 8px;
+  --r-md: 12px;
+  --r-lg: 18px;
+  --r-xl: 24px;
+  --r-2xl: 32px;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 20px rgba(0,0,0,.10);
+  --shadow-lg: 0 12px 48px rgba(0,0,0,.14);
+  --font: 'DM Sans', -apple-system, sans-serif;
+  --font-mono: 'DM Mono', monospace;
+  --nav-h: 60px;
+  --tab-h: 58px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html { scroll-behavior: smooth; font-size: 16px; }
+body {
+  background: var(--gray-50);
+  color: var(--black);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+button, input, select { font-family: inherit; }
+img { max-width: 100%; height: auto; }
+a { color: inherit; text-decoration: none; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(.95) translateY(10px); }
+  to   { opacity: 1; transform: scale(1) translateY(0); }
+}
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
+
+.anim-fade-up  { animation: fadeUp .5s cubic-bezier(.16,1,.3,1) both; }
+.anim-fade-in  { animation: fadeIn .3s ease both; }
+.anim-scale-in { animation: scaleIn .4s cubic-bezier(.16,1,.3,1) both; }
+.delay-1 { animation-delay: .06s; }
+.delay-2 { animation-delay: .12s; }
+.delay-3 { animation-delay: .18s; }
+.delay-4 { animation-delay: .24s; }
+.delay-5 { animation-delay: .30s; }
+.delay-6 { animation-delay: .36s; }
+
+/* ── NAV ── */
+.nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+  height: var(--nav-h);
+  background: rgba(10,10,10,.92);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 20px;
+}
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; user-select: none;
+}
+.logo-mark {
+  width: 34px; height: 34px;
+  background: var(--accent);
+  border-radius: 9px;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.logo-svg { width: 20px; height: 15px; }
+.logo-wordmark {
+  font-size: 17px; font-weight: 800;
+  letter-spacing: -.4px; color: var(--white); line-height: 1;
+}
+.logo-wordmark span { color: rgba(255,255,255,.4); font-weight: 400; }
+.nav-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(255,255,255,.07);
+  border: 1px solid rgba(255,255,255,.1);
+  border-radius: 100px;
+  padding: 5px 12px;
+  font-size: 12px; font-weight: 600;
+  color: rgba(255,255,255,.6);
+  letter-spacing: .02em;
+}
+.nav-dot { width: 6px; height: 6px; background: var(--accent); border-radius: 50%; }
+
+/* ── TAB BAR ── */
+.tab-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 200;
+  height: var(--tab-h);
+  background: rgba(10,10,10,.96);
+  backdrop-filter: blur(24px) saturate(180%);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border-top: 1px solid rgba(255,255,255,.06);
+  display: flex; align-items: center;
+  padding: 0 8px;
+  padding-bottom: env(safe-area-inset-bottom, 0);
+}
+.tab-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 4px; padding: 8px 0; cursor: pointer;
+  border: none; background: none; color: rgba(255,255,255,.3);
+  transition: color .2s; font-size: 10px; font-weight: 700;
+  letter-spacing: .06em; text-transform: uppercase;
+}
+.tab-item.active { color: var(--accent); }
+.tab-icon {
+  width: 22px; height: 22px;
+  display: flex; align-items: center; justify-content: center;
+  transition: transform .2s cubic-bezier(.34,1.56,.64,1);
+}
+.tab-item.active .tab-icon { transform: scale(1.12); }
+
+/* ── MAIN ── */
+.main {
+  padding-top: var(--nav-h);
+  padding-bottom: calc(var(--tab-h) + env(safe-area-inset-bottom, 0px) + 8px);
+  min-height: 100vh;
+}
+.page { display: none; }
+.page.active { display: block; }
+
+/* ── SHARED ── */
+.container { max-width: 800px; margin: 0 auto; padding: 0 20px; }
+
+.section-title {
+  font-size: 28px; font-weight: 800; letter-spacing: -.6px;
+  color: var(--black); line-height: 1.15;
+}
+.section-sub { font-size: 15px; color: var(--gray-500); margin-top: 5px; line-height: 1.5; }
+
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px; border-radius: 100px;
+  font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+}
+.badge-dark { background: var(--black); color: var(--white); }
+.badge-gray { background: var(--gray-100); color: var(--gray-600); }
+.badge-green { background: var(--green-light); color: var(--green); }
+.badge-accent { background: var(--accent); color: var(--black); }
+
+.chip {
+  display: inline-flex; align-items: center;
+  padding: 7px 16px; border-radius: 100px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer; transition: all .18s;
+  border: 1.5px solid var(--gray-200);
+  background: var(--white); color: var(--gray-600);
+  white-space: nowrap;
+}
+.chip:hover { border-color: var(--gray-400); color: var(--black); }
+.chip.active { background: var(--black); color: var(--white); border-color: var(--black); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+  padding: 12px 24px; border-radius: 100px;
+  font-size: 14px; font-weight: 700; cursor: pointer; border: none;
+  transition: all .18s; line-height: 1;
+}
+.btn-primary { background: var(--accent); color: var(--black); }
+.btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: var(--shadow-md); }
+.btn-secondary { background: rgba(255,255,255,.1); color: var(--white); border: 1px solid rgba(255,255,255,.15); }
+.btn-secondary:hover { background: rgba(255,255,255,.16); }
+
+/* ══════════════════════════════════════════
+   HOME PAGE
+══════════════════════════════════════════ */
+.hero {
+  background: var(--black);
+  padding: 52px 20px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 80% 60% at 60% 80%, rgba(232,255,71,.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-inner { max-width: 800px; margin: 0 auto; position: relative; }
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(232,255,71,.12); border: 1px solid rgba(232,255,71,.25);
+  border-radius: 100px; padding: 5px 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--accent); margin-bottom: 20px;
+}
+.hero-headline {
+  font-size: clamp(36px, 8vw, 60px); font-weight: 800;
+  letter-spacing: -2px; line-height: 1.03;
+  color: var(--white); margin-bottom: 16px;
+}
+.hero-headline .accent { color: var(--accent); }
+.hero-sub {
+  font-size: 17px; color: rgba(255,255,255,.5);
+  line-height: 1.7; max-width: 440px; margin-bottom: 32px;
+}
+.hero-ctas { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* stat strip */
+.stat-strip {
+  background: var(--black);
+  border-top: 1px solid rgba(255,255,255,.06);
+  padding: 20px;
+}
+.stat-inner {
+  max-width: 800px; margin: 0 auto;
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 1px; background: rgba(255,255,255,.06);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.stat-item {
+  background: var(--black);
+  padding: 18px 16px; text-align: center;
+}
+.stat-num { font-size: 28px; font-weight: 800; color: var(--accent); letter-spacing: -1px; line-height: 1; }
+.stat-label { font-size: 11px; color: rgba(255,255,255,.35); font-weight: 600; letter-spacing: .06em; text-transform: uppercase; margin-top: 4px; }
+
+/* quick grid */
+.quick-section { padding: 28px 20px 0; max-width: 800px; margin: 0 auto; }
+.quick-label { font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--gray-400); margin-bottom: 14px; }
+.quick-grid {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: 10px; margin-bottom: 28px;
+}
+.quick-card {
+  background: var(--white);
+  border: 1px solid var(--gray-200);
+  border-radius: var(--r-xl);
+  padding: 22px 20px;
+  cursor: pointer; transition: all .2s;
+}
+.quick-card:hover { box-shadow: var(--shadow-md); transform: translateY(-2px); border-color: var(--gray-300); }
+.quick-card-icon { font-size: 30px; margin-bottom: 14px; line-height: 1; }
+.quick-card-title { font-size: 15px; font-weight: 700; margin-bottom: 3px; color: var(--black); }
+.quick-card-sub { font-size: 12px; color: var(--gray-500); line-height: 1.4; }
+.quick-card-arrow { margin-top: 16px; font-size: 18px; color: var(--gray-300); }
+
+/* feature list */
+.feature-section { max-width: 800px; margin: 0 auto; padding: 0 20px 36px; }
+.feature-heading { font-size: 14px; font-weight: 700; letter-spacing: -.2px; color: var(--black); margin-bottom: 16px; }
+.feature-list { list-style: none; }
+.feature-item {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 14px 0; border-bottom: 1px solid var(--gray-100);
+}
+.feature-item:last-child { border-bottom: none; }
+.feature-ic {
+  width: 38px; height: 38px; background: var(--gray-100);
+  border-radius: var(--r-sm); display: flex; align-items: center; justify-content: center;
+  font-size: 18px; flex-shrink: 0;
+}
+.feature-text strong { display: block; font-size: 14px; font-weight: 700; margin-bottom: 2px; }
+.feature-text span { font-size: 13px; color: var(--gray-500); }
+
+/* ══════════════════════════════════════════
+   TRAINING PAGE
+══════════════════════════════════════════ */
+.page-header {
+  background: var(--black);
+  padding: 28px 20px 20px;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.page-header .section-title { color: var(--white); }
+.page-header .section-sub { color: rgba(255,255,255,.4); }
+
+.filter-scroll {
+  display: flex; gap: 8px;
+  padding: 16px 20px;
+  overflow-x: auto; scrollbar-width: none;
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  max-width: 100%;
+  position: sticky; top: var(--nav-h); z-index: 50;
+}
+.filter-scroll::-webkit-scrollbar { display: none; }
+
+.exercise-list { max-width: 800px; margin: 0 auto; padding: 0 20px 16px; }
+.exercise-item {
+  display: flex; align-items: center; gap: 16px;
+  padding: 16px 0; border-bottom: 1px solid var(--gray-100);
+  cursor: pointer; transition: opacity .15s;
+}
+.exercise-item:last-child { border-bottom: none; }
+.exercise-item:hover { opacity: .72; }
+.ex-thumb {
+  width: 54px; height: 54px; border-radius: var(--r-md);
+  background: var(--gray-100); display: flex; align-items: center; justify-content: center;
+  font-size: 26px; flex-shrink: 0;
+}
+.ex-info { flex: 1; min-width: 0; }
+.ex-name { font-size: 15px; font-weight: 700; margin-bottom: 3px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.ex-meta { font-size: 12px; color: var(--gray-500); display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+.ex-meta-sep { width: 3px; height: 3px; background: var(--gray-300); border-radius: 50%; display: inline-block; }
+.ex-arrow { color: var(--gray-300); font-size: 20px; flex-shrink: 0; }
+.diff-pill {
+  display: inline-flex; align-items: center;
+  padding: 2px 8px; border-radius: 100px;
+  font-size: 10px; font-weight: 700; letter-spacing: .04em;
+}
+.diff-beginner { background: var(--green-light); color: var(--green); }
+.diff-intermediate { background: #fef3c7; color: #92400e; }
+.diff-advanced { background: #fee2e2; color: #991b1b; }
+
+/* ── MODAL ── */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 300;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(12px);
+  display: flex; align-items: flex-end; justify-content: center;
+  padding: 0;
+  opacity: 0; pointer-events: none;
+  transition: opacity .25s;
+}
+.modal-overlay.open { opacity: 1; pointer-events: all; }
+.modal {
+  background: var(--white);
+  border-radius: var(--r-2xl) var(--r-2xl) 0 0;
+  width: 100%; max-width: 800px;
+  max-height: 94vh;
+  overflow-y: auto;
+  transform: translateY(50px);
+  transition: transform .35s cubic-bezier(.16,1,.3,1);
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);
+}
+.modal-overlay.open .modal { transform: translateY(0); }
+.modal-handle {
+  width: 36px; height: 4px; background: var(--gray-200);
+  border-radius: 2px; margin: 14px auto 0;
+}
+.modal-close {
+  position: absolute; top: 18px; right: 20px;
+  width: 30px; height: 30px;
+  background: var(--gray-100); border: none; border-radius: 50%;
+  cursor: pointer; font-size: 16px;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--gray-600); transition: background .15s; z-index: 10;
+}
+.modal-close:hover { background: var(--gray-200); }
+.modal-inner { padding: 20px 24px 0; position: relative; }
+
+/* youtube embed */
+.video-wrap {
+  width: 100%; aspect-ratio: 16/9;
+  background: var(--black);
+  border-radius: var(--r-lg);
+  overflow: hidden; margin-bottom: 24px;
+  position: relative;
+}
+.video-wrap iframe { width: 100%; height: 100%; border: none; display: block; }
+
+/* youtube search state */
+.yt-loading {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 10px; background: var(--gray-900);
+  color: rgba(255,255,255,.5); font-size: 13px;
+}
+.yt-spinner {
+  width: 28px; height: 28px;
+  border: 3px solid rgba(255,255,255,.1);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin .8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.steps-list { list-style: none; }
+.step-item {
+  display: flex; gap: 14px; align-items: flex-start;
+  padding: 13px 0; border-bottom: 1px solid var(--gray-100);
+}
+.step-item:last-child { border-bottom: none; }
+.step-num {
+  width: 26px; height: 26px; background: var(--black);
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 12px; font-weight: 800; flex-shrink: 0; color: var(--white);
+}
+.step-text { font-size: 14px; line-height: 1.65; color: var(--gray-700); padding-top: 3px; }
+.tips-box {
+  background: var(--gray-50); border: 1px solid var(--gray-200);
+  border-radius: var(--r-md); padding: 16px; margin-top: 20px;
+}
+.tips-box-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--gray-400); margin-bottom: 10px; }
+.tip-row { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 9px; font-size: 13px; color: var(--gray-600); line-height: 1.5; }
+.tip-row:last-child { margin-bottom: 0; }
+.tip-dot { width: 18px; height: 18px; background: var(--accent); border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 800; color: var(--black); margin-top: 1px; }
+
+/* ══════════════════════════════════════════
+   NUTRITION PAGE
+══════════════════════════════════════════ */
+.cuisine-tabs {
+  background: var(--white);
+  border-bottom: 1px solid var(--gray-200);
+  padding: 0 20px;
+  display: flex; gap: 0;
+  overflow-x: auto; scrollbar-width: none;
+  position: sticky; top: var(--nav-h); z-index: 50;
+}
+.cuisine-tabs::-webkit-scrollbar { display: none; }
+.cuisine-tab {
+  padding: 14px 16px; border: none; background: none;
+  font-size: 13px; font-weight: 600; color: var(--gray-400);
+  cursor: pointer; white-space: nowrap;
+  border-bottom: 2.5px solid transparent;
+  transition: all .18s;
+  display: flex; align-items: center; gap: 6px;
+}
+.cuisine-tab.active { color: var(--black); border-bottom-color: var(--black); }
+.cuisine-tab:hover { color: var(--black); }
+
+.meal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 14px; max-width: 800px; margin: 0 auto;
+  padding: 20px 20px 32px;
+}
+.meal-card {
+  border: 1px solid var(--gray-200); border-radius: var(--r-xl);
+  overflow: hidden; background: var(--white);
+  cursor: pointer; transition: all .2s;
+}
+.meal-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-3px); border-color: var(--gray-300); }
+.meal-card-header {
+  padding: 20px 20px 16px;
+  display: flex; align-items: center; gap: 14px;
+  border-bottom: 1px solid var(--gray-100);
+}
+.meal-emoji { font-size: 36px; line-height: 1; }
+.meal-header-info { flex: 1; min-width: 0; }
+.meal-name { font-size: 16px; font-weight: 800; letter-spacing: -.2px; color: var(--black); }
+.meal-cuisine { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--gray-400); margin-top: 2px; }
+.meal-cals { text-align: right; flex-shrink: 0; }
+.meal-cal-num { font-size: 22px; font-weight: 800; color: var(--black); line-height: 1; }
+.meal-cal-label { font-size: 10px; color: var(--gray-400); letter-spacing: .04em; text-transform: uppercase; }
+.meal-macros {
+  display: grid; grid-template-columns: 1fr 1fr 1fr;
+  padding: 14px 20px; border-bottom: 1px solid var(--gray-100);
+}
+.macro-col { text-align: center; }
+.macro-val { font-size: 17px; font-weight: 800; line-height: 1; }
+.macro-label { font-size: 10px; color: var(--gray-400); margin-top: 3px; text-transform: uppercase; letter-spacing: .05em; }
+.macro-p .macro-val { color: var(--blue); }
+.macro-c .macro-val { color: var(--orange); }
+.macro-f .macro-val { color: var(--green); }
+.meal-footer { padding: 13px 20px; }
+.swap-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 11px; font-weight: 700;
+  color: var(--green); background: var(--green-light);
+  border-radius: 100px; padding: 4px 12px;
+}
+
+/* meal modal detail */
+.macro-bar-row { margin-bottom: 14px; }
+.macro-bar-label { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 6px; }
+.macro-bar-label span:first-child { font-weight: 700; }
+.macro-bar-label span:last-child { color: var(--gray-500); font-family: var(--font-mono); font-size: 12px; }
+.macro-bar-track { height: 8px; background: var(--gray-100); border-radius: 4px; overflow: hidden; }
+.macro-bar-fill { height: 100%; border-radius: 4px; transition: width .7s cubic-bezier(.16,1,.3,1); }
+.healthy-version {
+  background: var(--green-light); border: 1px solid #bbf7d0;
+  border-radius: var(--r-lg); padding: 20px; margin-bottom: 20px;
+}
+.hv-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; color: var(--green); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+.hv-item { display: flex; gap: 8px; font-size: 14px; color: var(--gray-700); margin-bottom: 8px; line-height: 1.5; }
+.hv-item:last-child { margin-bottom: 0; }
+
+/* ── RESPONSIVE ── */
+@media (min-width: 640px) {
+  .quick-grid { grid-template-columns: repeat(4, 1fr); }
+}
+@media (max-width: 480px) {
+  .hero-headline { letter-spacing: -1.2px; }
+  .meal-grid { grid-template-columns: 1fr; }
+  .modal-inner { padding: 16px 18px 0; }
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 0; }
+</style>
+</head>
+<body>
+
+<!-- ── NAV ── -->
+<nav class="nav">
+  <div class="nav-logo" onclick="showPage('home')">
+    <div class="logo-mark">
+      <svg class="logo-svg" viewBox="0 0 44 32" fill="none">
+        <path d="M0 30L8 2H14L22 22L30 2H36L44 30H38L32.5 10L24 30H20L11.5 10L6 30H0Z" fill="#0a0a0a"/>
+      </svg>
+    </div>
+    <div class="logo-wordmark">AM<span>-Gym</span></div>
+  </div>
+  <div class="nav-badge">
+    <span class="nav-dot"></span>
+    Free Forever
+  </div>
+</nav>
+
+<!-- ── MAIN ── -->
+<main class="main">
+
+  <!-- ══ HOME ══ -->
+  <div class="page active" id="page-home">
+    <div class="hero">
+      <div class="hero-inner">
+        <div class="hero-eyebrow anim-fade-up">
+          ⚡ No login · No tracking · Pure fitness
+        </div>
+        <h1 class="hero-headline anim-fade-up delay-1">
+          Train smart.<br><span class="accent">Eat right.</span>
+        </h1>
+        <p class="hero-sub anim-fade-up delay-2">
+          Your free fitness companion — expert exercise guides with real YouTube videos and global nutrition data in one clean app.
+        </p>
+        <div class="hero-ctas anim-fade-up delay-3">
+          <button class="btn btn-primary" onclick="showPage('training')">
+            <span>💪</span> Start Training
+          </button>
+          <button class="btn btn-secondary" onclick="showPage('nutrition')">
+            <span>🥗</span> Browse Meals
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-strip">
+      <div class="stat-inner">
+        <div class="stat-item">
+          <div class="stat-num">20+</div>
+          <div class="stat-label">Exercises</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">40+</div>
+          <div class="stat-label">Meals</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-num">100%</div>
+          <div class="stat-label">Free</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-section">
+      <div class="quick-label">Explore</div>
+      <div class="quick-grid">
+        <div class="quick-card anim-fade-up delay-1" onclick="showPage('training')">
+          <div class="quick-card-icon">🏋️</div>
+          <div class="quick-card-title">Training</div>
+          <div class="quick-card-sub">20+ exercises with YouTube guides</div>
+          <div class="quick-card-arrow">→</div>
+        </div>
+        <div class="quick-card anim-fade-up delay-2" onclick="showPage('nutrition')">
+          <div class="quick-card-icon">🌍</div>
+          <div class="quick-card-title">Nutrition</div>
+          <div class="quick-card-sub">World cuisines with macros</div>
+          <div class="quick-card-arrow">→</div>
+        </div>
+        <div class="quick-card anim-fade-up delay-3" onclick="setFilter('all'); showPage('training')">
+          <div class="quick-card-icon">📋</div>
+          <div class="quick-card-title">Programs</div>
+          <div class="quick-card-sub">Structured workout plans</div>
+          <div class="quick-card-arrow">→</div>
+        </div>
+        <div class="quick-card anim-fade-up delay-4" onclick="showPage('nutrition')">
+          <div class="quick-card-icon">📊</div>
+          <div class="quick-card-title">Macros</div>
+          <div class="quick-card-sub">Protein, carbs & fats</div>
+          <div class="quick-card-arrow">→</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="feature-section">
+      <div class="feature-heading">Why AM-Gym?</div>
+      <ul class="feature-list">
+        <li class="feature-item anim-fade-up delay-1">
+          <div class="feature-ic">▶️</div>
+          <div class="feature-text">
+            <strong>Real YouTube Videos</strong>
+            <span>Every exercise links to a professional YouTube demonstration — no blurry GIFs</span>
+          </div>
+        </li>
+        <li class="feature-item anim-fade-up delay-2">
+          <div class="feature-ic">🌍</div>
+          <div class="feature-text">
+            <strong>Global Meal Library</strong>
+            <span>Saudi, Mediterranean, Asian, American & more — with macros and healthy swaps</span>
+          </div>
+        </li>
+        <li class="feature-item anim-fade-up delay-3">
+          <div class="feature-ic">🔒</div>
+          <div class="feature-text">
+            <strong>Zero Data Collection</strong>
+            <span>No account, no cookies, no tracking — ever. Your fitness data is yours.</span>
+          </div>
+        </li>
+        <li class="feature-item anim-fade-up delay-4">
+          <div class="feature-ic">📱</div>
+          <div class="feature-text">
+            <strong>Works Everywhere</strong>
+            <span>Fully responsive — use it on phone, tablet, or desktop, online or offline</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ══ TRAINING ══ -->
+  <div class="page" id="page-training">
+    <div class="page-header">
+      <div class="container">
+        <div class="section-title anim-fade-up">Exercise Library</div>
+        <div class="section-sub anim-fade-up delay-1">Tap any exercise to watch the YouTube guide</div>
+      </div>
+    </div>
+    <div class="filter-scroll" id="filterBar">
+      <button class="chip active" onclick="setFilter('all', this)">All</button>
+      <button class="chip" onclick="setFilter('chest', this)">Chest</button>
+      <button class="chip" onclick="setFilter('back', this)">Back</button>
+      <button class="chip" onclick="setFilter('shoulders', this)">Shoulders</button>
+      <button class="chip" onclick="setFilter('legs', this)">Legs</button>
+      <button class="chip" onclick="setFilter('arms', this)">Arms</button>
+      <button class="chip" onclick="setFilter('core', this)">Core</button>
+    </div>
+    <div class="exercise-list" id="exerciseList"></div>
+  </div>
+
+  <!-- ══ NUTRITION ══ -->
+  <div class="page" id="page-nutrition">
+    <div class="page-header">
+      <div class="container">
+        <div class="section-title anim-fade-up">Global Nutrition Guide</div>
+        <div class="section-sub anim-fade-up delay-1">Macros & healthy swaps for meals worldwide</div>
+      </div>
+    </div>
+    <div class="cuisine-tabs" id="cuisineTabs">
+      <button class="cuisine-tab active" onclick="setCuisine('all', this)">🌍 All</button>
+      <button class="cuisine-tab" onclick="setCuisine('saudi', this)">🇸🇦 Saudi</button>
+      <button class="cuisine-tab" onclick="setCuisine('mediterranean', this)">🫒 Mediterranean</button>
+      <button class="cuisine-tab" onclick="setCuisine('asian', this)">🥢 Asian</button>
+      <button class="cuisine-tab" onclick="setCuisine('american', this)">🍔 American</button>
+      <button class="cuisine-tab" onclick="setCuisine('mexican', this)">🌮 Mexican</button>
+    </div>
+    <div class="meal-grid" id="mealGrid"></div>
+  </div>
+
+</main>
+
+<!-- ── TAB BAR ── -->
+<nav class="tab-bar">
+  <button class="tab-item active" onclick="showPage('home')" id="tab-home">
+    <div class="tab-icon">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M3 9.5L10 3l7 6.5V17a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M7 18v-5h6v5" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    Home
+  </button>
+  <button class="tab-item" onclick="showPage('training')" id="tab-training">
+    <div class="tab-icon">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <rect x="2" y="9" width="16" height="2" rx="1" stroke="currentColor" stroke-width="1.5"/>
+        <rect x="1" y="7" width="3" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+        <rect x="16" y="7" width="3" height="6" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+        <circle cx="6" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/>
+        <circle cx="14" cy="10" r="1.5" stroke="currentColor" stroke-width="1.3"/>
+      </svg>
+    </div>
+    Training
+  </button>
+  <button class="tab-item" onclick="showPage('nutrition')" id="tab-nutrition">
+    <div class="tab-icon">
+      <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+        <path d="M5 3c0 3 2 5 5 5s5-2 5-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        <path d="M3 8h14M4 8l1 9h10l1-9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+    Nutrition
+  </button>
+</nav>
+
+<!-- ── EXERCISE MODAL ── -->
+<div class="modal-overlay" id="exerciseModal" onclick="handleModalClick(event,'exerciseModal',closeExerciseModal)">
+  <div class="modal" id="modalContent">
+    <div class="modal-handle"></div>
+    <div class="modal-inner" id="modalInner">
+      <button class="modal-close" onclick="closeExerciseModal()">✕</button>
+    </div>
+  </div>
+</div>
+
+<!-- ── MEAL MODAL ── -->
+<div class="modal-overlay" id="mealModal" onclick="handleModalClick(event,'mealModal',closeMealModalBtn)">
+  <div class="modal" id="mealModalContent">
+    <div class="modal-handle"></div>
+    <div class="modal-inner" id="mealModalInner">
+      <button class="modal-close" onclick="closeMealModalBtn()">✕</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ════════════════════════════════════════
+   EXERCISES DATA
+════════════════════════════════════════ */
+const exercises = [
+  {
+    id:'squat', group:'legs', emoji:'🦵',
+    name:'Barbell Back Squat', muscle:'Quadriceps, Glutes, Hamstrings', diff:'Intermediate',
+    steps:[
+      'Stand with barbell on upper traps, feet shoulder-width apart.',
+      'Take a deep breath and brace your core tightly.',
+      'Push knees out and descend until thighs are parallel to floor.',
+      'Drive through your heels to return to standing.',
+    ],
+    tips:['Keep chest tall throughout the movement','Never let knees cave inward','Depth: thighs at least parallel to ground'],
+    youtubeId:'ultWZbUMPL8'
+  },
+  {
+    id:'bench', group:'chest', emoji:'🏋️',
+    name:'Barbell Bench Press', muscle:'Pectorals, Triceps, Front Delts', diff:'Intermediate',
+    steps:[
+      'Lie flat on bench. Grip bar slightly wider than shoulder-width.',
+      'Unrack and lower bar to mid-chest with control.',
+      'Press explosively back to start, locking arms at top.',
+      'Maintain shoulder blades retracted throughout.',
+    ],
+    tips:['Plant feet firmly on the floor','Keep wrists straight, not bent back','Lower with a 2–3 second tempo'],
+    youtubeId:'vcBig73ojpE'
+  },
+  {
+    id:'deadlift', group:'back', emoji:'🏗',
+    name:'Conventional Deadlift', muscle:'Erector Spinae, Glutes, Hamstrings, Traps', diff:'Advanced',
+    steps:[
+      'Stand with feet hip-width, bar over mid-foot.',
+      'Hinge at hips to grip bar just outside your legs.',
+      'Take a big breath, brace, and drive feet through the floor.',
+      'Lock out hips and knees at top, then lower with control.',
+    ],
+    tips:['Bar must stay close to your body throughout','Never round your lower back','Big air in belly — brace like a punch is coming'],
+    youtubeId:'op9kVnSso6Q'
+  },
+  {
+    id:'ohp', group:'shoulders', emoji:'☝️',
+    name:'Overhead Press (OHP)', muscle:'Anterior Delts, Lateral Delts, Triceps', diff:'Intermediate',
+    steps:[
+      'Grip bar at shoulder width, elbows slightly in front.',
+      'Brace your core and squeeze glutes tight.',
+      'Press bar overhead in a straight vertical path.',
+      'Lock out fully at top, then lower with control.',
+    ],
+    tips:['Push your head through at the top','Do not hyperextend your lower back','Use a false grip for wrist comfort'],
+    youtubeId:'2yjwXTZQDDI'
+  },
+  {
+    id:'pullup', group:'back', emoji:'🤸',
+    name:'Pull-ups', muscle:'Latissimus Dorsi, Biceps, Rear Delts', diff:'Intermediate',
+    steps:[
+      'Hang from bar with overhand grip, arms fully extended.',
+      'Retract shoulder blades, then pull elbows to your sides.',
+      'Chin clears bar at top — control the descent.',
+      'Full dead hang between reps for best lat activation.',
+    ],
+    tips:['Avoid kipping or swinging','Pull your elbows down, not your hands up','Slow negative (3–4 sec) builds strength fast'],
+    youtubeId:'eGo4IYlbE5g'
+  },
+  {
+    id:'curl', group:'arms', emoji:'💪',
+    name:'Barbell Curl', muscle:'Biceps Brachii, Brachialis', diff:'Beginner',
+    steps:[
+      'Stand holding barbell with supinated grip, shoulder-width.',
+      'Keep elbows pinned to your sides — do not swing.',
+      'Curl bar to shoulder height, squeeze biceps at top.',
+      'Lower slowly to full extension.',
+    ],
+    tips:['Elbows stay fixed — no forward movement','Full extension at bottom for full ROM','Slow tempo on the way down (2–3 sec)'],
+    youtubeId:'ykJmrZ5v0Oo'
+  },
+  {
+    id:'plank', group:'core', emoji:'⬜',
+    name:'Plank Hold', muscle:'Rectus Abdominis, Obliques, Transverse Abdominis', diff:'Beginner',
+    steps:[
+      'Place forearms flat, elbows directly below shoulders.',
+      'Raise body into a straight line from head to heels.',
+      'Engage abs, glutes, and quads simultaneously.',
+      'Hold without sagging or piking — breathe steadily.',
+    ],
+    tips:['Do not hold your breath','Squeeze every muscle — make it feel hard','Hips should be completely level, no rotation'],
+    youtubeId:'pSHjTRCQxIw'
+  },
+  {
+    id:'rdl', group:'legs', emoji:'🔄',
+    name:'Romanian Deadlift', muscle:'Hamstrings, Glutes, Erector Spinae', diff:'Intermediate',
+    steps:[
+      'Hold barbell at hip height, feet hip-width apart.',
+      'Hinge at hips, pushing them back while lowering bar down legs.',
+      'Feel a deep hamstring stretch at the bottom.',
+      'Drive hips forward to return to start.',
+    ],
+    tips:['Keep bar close to your legs the whole time','Micro-bend in knees — not a stiff-leg deadlift','Do not round your back'],
+    youtubeId:'JCXUYuzwNrM'
+  },
+  {
+    id:'lunge', group:'legs', emoji:'🚶',
+    name:'Walking Lunges', muscle:'Quadriceps, Glutes, Hip Flexors', diff:'Beginner',
+    steps:[
+      'Stand tall, step forward with one leg.',
+      'Lower rear knee toward the floor — don\'t touch.',
+      'Push front foot into floor, step forward with back leg.',
+      'Continue alternating legs forward.',
+    ],
+    tips:['Keep torso upright — don\'t lean forward','Front knee stays above ankle','Longer steps = more glute, shorter = more quad'],
+    youtubeId:'L8fvypPrzzs'
+  },
+  {
+    id:'lateral', group:'shoulders', emoji:'↔️',
+    name:'Dumbbell Lateral Raise', muscle:'Lateral Deltoids', diff:'Beginner',
+    steps:[
+      'Hold dumbbells at sides, slight forward lean.',
+      'Raise arms out to the sides to shoulder height.',
+      'Lead with elbows, not wrists.',
+      'Lower slowly — resist gravity on the way down.',
+    ],
+    tips:['Slight internal rotation (pinky slightly up)','Do not shrug shoulders at top','Light weight, high reps (15–20) for best result'],
+    youtubeId:'3VcKaXpzqRo'
+  },
+  {
+    id:'incline', group:'chest', emoji:'📐',
+    name:'Incline Dumbbell Press', muscle:'Upper Pectorals, Triceps, Front Delts', diff:'Beginner',
+    steps:[
+      'Set bench to 30–45° incline. Hold dumbbells at chest height.',
+      'Press dumbbells up and slightly inward until arms are extended.',
+      'Lower slowly to starting position with control.',
+      'Keep shoulder blades pinched together throughout.',
+    ],
+    tips:['Don\'t go too steep — 30–45° is ideal for upper chest','Full stretch at the bottom on each rep','Avoid letting elbows flare too wide'],
+    youtubeId:'8iPEnn-ltC8'
+  },
+  {
+    id:'tricep', group:'arms', emoji:'🔱',
+    name:'Tricep Pushdown', muscle:'Triceps Brachii', diff:'Beginner',
+    steps:[
+      'Stand at cable machine, grip bar overhand at shoulder height.',
+      'Keep elbows fixed at your sides throughout.',
+      'Push bar down until arms are fully extended.',
+      'Squeeze triceps at bottom, then return with control.',
+    ],
+    tips:['Elbows must not move forward','Lean slightly forward for better range','Full lockout at bottom for peak contraction'],
+    youtubeId:'2-LAMcpzODU'
+  },
+  {
+    id:'legpress', group:'legs', emoji:'🦿',
+    name:'Leg Press', muscle:'Quadriceps, Glutes, Hamstrings', diff:'Beginner',
+    steps:[
+      'Sit in machine with back flat against pad.',
+      'Place feet shoulder-width on platform.',
+      'Lower weight until knees are at 90°, then press back up.',
+      'Do not lock knees fully at the top.',
+    ],
+    tips:['Never let lower back lift off the pad','Foot placement changes emphasis: high = glutes, low = quads','Control the descent — don\'t let the weight crash'],
+    youtubeId:'IZxyjW7MPJQ'
+  },
+  {
+    id:'cablerow', group:'back', emoji:'🚣',
+    name:'Seated Cable Row', muscle:'Middle Trapezius, Rhomboids, Lats, Biceps', diff:'Beginner',
+    steps:[
+      'Sit upright on cable row machine, slight knee bend.',
+      'Grip handle with both hands, arms extended.',
+      'Pull handle to your lower sternum, squeezing shoulder blades.',
+      'Return with control — full arm extension each rep.',
+    ],
+    tips:['Don\'t round forward to get more range — keep back straight','Drive elbows back, not just pulling with arms','Pause 1 second at full contraction'],
+    youtubeId:'GZbfZ033f74'
+  },
+];
+
+/* ════════════════════════════════════════
+   MEALS DATA — GLOBAL
+════════════════════════════════════════ */
+const meals = [
+  /* ── SAUDI ── */
+  {
+    id:'kabsa', cuisine:'saudi', emoji:'🍚',
+    name:'Kabsa', cuisineLabel:'Saudi',
+    desc:'Saudi national dish — spiced rice with chicken',
+    cals:680, protein:38, carbs:72, fat:22,
+    healthySwaps:[
+      'Use brown basmati rice instead of white',
+      'Remove chicken skin — saves ~80 kcal',
+      'Reduce rice portion to 150g (from 220g)',
+      'Use olive oil spray instead of ghee',
+    ],
+    healthyVersion:'Grilled chicken breast (no skin) on brown basmati rice with traditional spices. Same flavour — 35% fewer calories.',
+    healthyMacros:{ cals:445, protein:42, carbs:48, fat:9 }
+  },
+  {
+    id:'jareesh', cuisine:'saudi', emoji:'🥣',
+    name:'Jareesh', cuisineLabel:'Saudi',
+    desc:'Cracked wheat porridge with meat — comfort staple',
+    cals:520, protein:22, carbs:68, fat:18,
+    healthySwaps:[
+      'Reduce ghee to 1 tsp (from 2 tbsp)',
+      'Use lean lamb shoulder instead of fatty cuts',
+      'Add a side salad for fiber and satiety',
+      'Serve with yogurt instead of extra ghee',
+    ],
+    healthyVersion:'Jareesh with lean lamb, minimal ghee, and a large cucumber-tomato salad on the side.',
+    healthyMacros:{ cals:380, protein:26, carbs:52, fat:8 }
+  },
+  {
+    id:'saleeg', cuisine:'saudi', emoji:'🍶',
+    name:'Saleeg', cuisineLabel:'Saudi',
+    desc:'White rice in milk & broth — Hejazi classic',
+    cals:590, protein:28, carbs:66, fat:24,
+    healthySwaps:[
+      'Use skimmed milk instead of full-fat',
+      'Replace half the white rice with cauliflower rice',
+      'Use grilled chicken breast instead of boiled',
+      'Serve with a green salad, skip extra bread',
+    ],
+    healthyVersion:'Saleeg with skimmed milk, half cauliflower rice, grilled chicken — creamy and satisfying at nearly half the calories.',
+    healthyMacros:{ cals:340, protein:34, carbs:32, fat:9 }
+  },
+  {
+    id:'mandi', cuisine:'saudi', emoji:'🍖',
+    name:'Mandi', cuisineLabel:'Saudi',
+    desc:'Slow-cooked smoked lamb over fragrant rice',
+    cals:780, protein:44, carbs:65, fat:34,
+    healthySwaps:[
+      'Choose leaner cuts — trim visible fat',
+      'Reduce rice to a 150g portion',
+      'Pair with fattoush salad — skip extra bread',
+      'Use light spice rub — skip the butter baste',
+    ],
+    healthyVersion:'Lean leg of lamb, smaller rice portion, large fattoush salad. The smoke flavour is kept — the excess fat is not.',
+    healthyMacros:{ cals:520, protein:48, carbs:42, fat:16 }
+  },
+  {
+    id:'mutabbaq', cuisine:'saudi', emoji:'🥙',
+    name:'Mutabbaq', cuisineLabel:'Saudi',
+    desc:'Crispy stuffed pancake with meat and egg',
+    cals:420, protein:18, carbs:38, fat:22,
+    healthySwaps:[
+      'Bake instead of deep-fry — saves ~120 kcal',
+      'Use whole wheat flour for the pastry',
+      'Lean minced beef (5% fat) in the filling',
+      'Pair with a large tomato salad instead of chips',
+    ],
+    healthyVersion:'Baked mutabbaq with whole wheat pastry and lean beef filling — crispy, satisfying, and 40% lighter.',
+    healthyMacros:{ cals:260, protein:20, carbs:30, fat:7 }
+  },
+  {
+    id:'shawarma', cuisine:'saudi', emoji:'🌯',
+    name:'Chicken Shawarma', cuisineLabel:'Saudi',
+    desc:'Marinated rotisserie chicken in flatbread',
+    cals:550, protein:34, carbs:48, fat:20,
+    healthySwaps:[
+      'Request extra salad and skip the garlic sauce',
+      'Use whole wheat flatbread or wrap',
+      'Remove half the bread and eat as a bowl',
+      'Ask for light drizzle of tahini instead of mayo',
+    ],
+    healthyVersion:'Half-wrap shawarma bowl: chicken, tabbouleh, pickles, and light tahini — high protein, lower carb.',
+    healthyMacros:{ cals:370, protein:38, carbs:24, fat:12 }
+  },
+
+  /* ── MEDITERRANEAN ── */
+  {
+    id:'greek-salad', cuisine:'mediterranean', emoji:'🥗',
+    name:'Greek Salad', cuisineLabel:'Mediterranean',
+    desc:'Tomatoes, cucumber, olives, feta, olive oil',
+    cals:280, protein:9, carbs:14, fat:22,
+    healthySwaps:[
+      'Reduce feta to 30g for fewer calories',
+      'Use light olive oil drizzle (1 tsp)',
+      'Add grilled chicken for a complete meal',
+      'Skip the pita bread on the side',
+    ],
+    healthyVersion:'Greek salad with 30g feta, light olive oil, and 150g grilled chicken breast on top. A complete macro-balanced meal.',
+    healthyMacros:{ cals:390, protein:44, carbs:14, fat:18 }
+  },
+  {
+    id:'hummus', cuisine:'mediterranean', emoji:'🫘',
+    name:'Hummus & Pita', cuisineLabel:'Mediterranean',
+    desc:'Chickpea dip with olive oil and warm pita',
+    cals:360, protein:13, carbs:52, fat:12,
+    healthySwaps:[
+      'Use veggie sticks instead of pita (carrots, cucumber)',
+      'Make at home to control oil amount',
+      'Add extra lemon for flavour without calories',
+      'Portion: 4 tbsp hummus is plenty',
+    ],
+    healthyVersion:'Hummus (4 tbsp) with raw veggies instead of pita — same satisfying dip, half the carbs.',
+    healthyMacros:{ cals:190, protein:10, carbs:18, fat:9 }
+  },
+  {
+    id:'grilled-fish', cuisine:'mediterranean', emoji:'🐟',
+    name:'Grilled Sea Bass', cuisineLabel:'Mediterranean',
+    desc:'Whole sea bass with lemon, herbs and vegetables',
+    cals:320, protein:42, carbs:8, fat:14,
+    healthySwaps:[
+      'Already a very healthy choice — minimal changes needed',
+      'Use olive oil sparingly (1 tbsp max)',
+      'Pair with roasted veggies instead of potatoes',
+      'Skip any creamy sauces on the side',
+    ],
+    healthyVersion:'This is already excellent. Pair with a large side salad and 1 tsp olive oil for a near-perfect macro profile.',
+    healthyMacros:{ cals:290, protein:44, carbs:6, fat:10 }
+  },
+  {
+    id:'falafel', cuisine:'mediterranean', emoji:'🧆',
+    name:'Falafel Wrap', cuisineLabel:'Mediterranean',
+    desc:'Crispy chickpea fritters in flatbread with tahini',
+    cals:490, protein:16, carbs:58, fat:22,
+    healthySwaps:[
+      'Bake or air-fry falafel instead of deep frying',
+      'Load up on tabbouleh and pickles',
+      'Use half a wrap, eat the rest as a bowl',
+      'Light tahini drizzle (1 tsp)',
+    ],
+    healthyVersion:'Baked falafel bowl over salad with light tahini — plant-based protein, much less oil.',
+    healthyMacros:{ cals:310, protein:18, carbs:38, fat:10 }
+  },
+  {
+    id:'pasta', cuisine:'mediterranean', emoji:'🍝',
+    name:'Spaghetti Bolognese', cuisineLabel:'Mediterranean',
+    desc:'Slow-simmered meat sauce over pasta',
+    cals:620, protein:32, carbs:72, fat:18,
+    healthySwaps:[
+      'Use whole wheat or legume pasta',
+      'Lean minced beef (5%) or turkey mince',
+      'Reduce portion to 80g dry pasta',
+      'Load with mushrooms and bell peppers for bulk',
+    ],
+    healthyVersion:'Whole wheat pasta with turkey bolognese and extra vegetables — high protein, high fibre, same comfort.',
+    healthyMacros:{ cals:440, protein:38, carbs:52, fat:9 }
+  },
+
+  /* ── ASIAN ── */
+  {
+    id:'chicken-rice', cuisine:'asian', emoji:'🍱',
+    name:'Hainanese Chicken Rice', cuisineLabel:'Asian',
+    desc:'Poached chicken on fragrant ginger rice with chilli',
+    cals:580, protein:36, carbs:62, fat:16,
+    healthySwaps:[
+      'Remove chicken skin — saves 60–80 kcal',
+      'Ask for rice on the side, take half',
+      'Extra chilli sauce (zero cal flavour)',
+      'Add a side of steamed bok choy',
+    ],
+    healthyVersion:'Skinless chicken on half portion of rice with extra bok choy and chilli. Classic flavours, leaner macros.',
+    healthyMacros:{ cals:390, protein:40, carbs:36, fat:8 }
+  },
+  {
+    id:'sushi', cuisine:'asian', emoji:'🍣',
+    name:'Salmon Sushi (8 pcs)', cuisineLabel:'Asian',
+    desc:'Fresh salmon nigiri and maki rolls',
+    cals:380, protein:24, carbs:48, fat:9,
+    healthySwaps:[
+      'Choose sashimi over rolls to cut carbs',
+      'Skip the tempura rolls — go for plain maki',
+      'Limit soy sauce (high sodium)',
+      'Edamame as a starter instead of gyoza',
+    ],
+    healthyVersion:'8 pieces salmon sashimi with edamame starter — nearly double the protein, half the carbs, same satisfaction.',
+    healthyMacros:{ cals:280, protein:38, carbs:12, fat:9 }
+  },
+  {
+    id:'pad-thai', cuisine:'asian', emoji:'🍜',
+    name:'Pad Thai', cuisineLabel:'Asian',
+    desc:'Stir-fried rice noodles with egg, peanuts and lime',
+    cals:650, protein:26, carbs:78, fat:24,
+    healthySwaps:[
+      'Request less oil when ordering',
+      'Add extra tofu or chicken for protein',
+      'Ask for less peanuts (calorie-dense)',
+      'Use only half the tamarind sauce',
+    ],
+    healthyVersion:'Pad Thai with extra chicken, less oil, and reduced peanuts. More protein, less calorie-dense.',
+    healthyMacros:{ cals:480, protein:36, carbs:58, fat:12 }
+  },
+  {
+    id:'stir-fry', cuisine:'asian', emoji:'🥦',
+    name:'Chicken Stir-Fry', cuisineLabel:'Asian',
+    desc:'Chicken breast with broccoli, peppers and soy sauce',
+    cals:340, protein:38, carbs:22, fat:10,
+    healthySwaps:[
+      'Already a lean meal — great choice',
+      'Serve over cauliflower rice to cut carbs further',
+      'Use low-sodium soy sauce or coconut aminos',
+      'Add cashews for healthy fats',
+    ],
+    healthyVersion:'This is already a healthy choice. Great post-workout meal with a high protein-to-calorie ratio.',
+    healthyMacros:{ cals:300, protein:40, carbs:12, fat:10 }
+  },
+  {
+    id:'ramen', cuisine:'asian', emoji:'🍜',
+    name:'Tonkotsu Ramen', cuisineLabel:'Asian',
+    desc:'Rich pork bone broth with noodles, egg and chashu',
+    cals:720, protein:36, carbs:68, fat:30,
+    healthySwaps:[
+      'Ask for less oil in the broth',
+      'Half portion of noodles, extra eggs',
+      'Skip the chashu or take one slice',
+      'Load on bean sprouts and bamboo shoots',
+    ],
+    healthyVersion:'Ramen with half noodles, extra egg, bean sprouts, and lean pork — still deeply satisfying, significantly lighter.',
+    healthyMacros:{ cals:490, protein:42, carbs:40, fat:16 }
+  },
+
+  /* ── AMERICAN ── */
+  {
+    id:'burger', cuisine:'american', emoji:'🍔',
+    name:'Classic Beef Burger', cuisineLabel:'American',
+    desc:'Beef patty in a brioche bun with all the toppings',
+    cals:740, protein:36, carbs:58, fat:38,
+    healthySwaps:[
+      'Use a lettuce wrap instead of the bun',
+      'Lean beef patty (90/10) or turkey patty',
+      'Skip the cheese or use a light slice',
+      'Mustard instead of mayo',
+    ],
+    healthyVersion:'Turkey patty in lettuce wrap with mustard, tomato, and onion. All the satisfaction, half the calories.',
+    healthyMacros:{ cals:420, protein:40, carbs:18, fat:18 }
+  },
+  {
+    id:'grilled-chicken', cuisine:'american', emoji:'🍗',
+    name:'Grilled Chicken Plate', cuisineLabel:'American',
+    desc:'Herb-grilled chicken breast with sweet potato & veg',
+    cals:480, protein:46, carbs:38, fat:14,
+    healthySwaps:[
+      'Already an excellent, clean meal',
+      'Use olive oil cooking spray to reduce fat',
+      'Season aggressively with spices for flavour',
+      'Pair with steamed broccoli over creamed sides',
+    ],
+    healthyVersion:'This is the healthy version. A benchmark high-protein meal. Add a side salad for extra fibre.',
+    healthyMacros:{ cals:440, protein:48, carbs:34, fat:12 }
+  },
+  {
+    id:'mac-cheese', cuisine:'american', emoji:'🧀',
+    name:'Mac & Cheese', cuisineLabel:'American',
+    desc:'Creamy baked macaroni with cheddar cheese sauce',
+    cals:680, protein:22, carbs:74, fat:34,
+    healthySwaps:[
+      'Use whole wheat macaroni',
+      'Mix in cauliflower to reduce carbs',
+      'Use reduced-fat cheese and skimmed milk',
+      'Add grilled chicken for protein',
+    ],
+    healthyVersion:'Cauliflower-boosted mac with reduced-fat cheese and added chicken breast. Comfort food, improved macros.',
+    healthyMacros:{ cals:420, protein:36, carbs:44, fat:14 }
+  },
+  {
+    id:'caesar', cuisine:'american', emoji:'🥬',
+    name:'Caesar Salad', cuisineLabel:'American',
+    desc:'Romaine, parmesan, croutons and Caesar dressing',
+    cals:420, protein:14, carbs:28, fat:28,
+    healthySwaps:[
+      'Light dressing on the side (don\'t toss)',
+      'Skip or halve the croutons',
+      'Add grilled chicken or shrimp for protein',
+      'Ask for extra romaine instead of croutons',
+    ],
+    healthyVersion:'Caesar with grilled chicken, light dressing on the side, no croutons. A proper protein-rich meal.',
+    healthyMacros:{ cals:340, protein:38, carbs:10, fat:16 }
+  },
+  {
+    id:'bbq-ribs', cuisine:'american', emoji:'🥩',
+    name:'BBQ Pork Ribs', cuisineLabel:'American',
+    desc:'Slow-smoked ribs with BBQ glaze and coleslaw',
+    cals:860, protein:52, carbs:48, fat:46,
+    healthySwaps:[
+      'Remove visible fat from each rib',
+      'Light BBQ sauce on the side (not glazed)',
+      'Swap coleslaw for vinegar slaw (no mayo)',
+      'Skip the cornbread and extra sides',
+    ],
+    healthyVersion:'Ribs with trimmed fat, light sauce on the side, and vinegar slaw — still a treat, but 35% lighter.',
+    healthyMacros:{ cals:560, protein:56, carbs:24, fat:26 }
+  },
+
+  /* ── MEXICAN ── */
+  {
+    id:'tacos', cuisine:'mexican', emoji:'🌮',
+    name:'Chicken Tacos (3)', cuisineLabel:'Mexican',
+    desc:'Grilled chicken in corn tortillas with salsa and lime',
+    cals:480, protein:32, carbs:46, fat:16,
+    healthySwaps:[
+      'Use corn tortillas (not flour — fewer calories)',
+      'Load with salsa, pico de gallo, and lime',
+      'Skip sour cream or use Greek yogurt instead',
+      'Add extra avocado (healthy fats)',
+    ],
+    healthyVersion:'3 corn tortilla tacos with grilled chicken, salsa, shredded cabbage, and Greek yogurt. Clean and flavour-packed.',
+    healthyMacros:{ cals:380, protein:36, carbs:36, fat:10 }
+  },
+  {
+    id:'burrito', cuisine:'mexican', emoji:'🌯',
+    name:'Beef Burrito', cuisineLabel:'Mexican',
+    desc:'Flour tortilla with rice, beans, cheese and beef',
+    cals:780, protein:34, carbs:82, fat:30,
+    healthySwaps:[
+      'Get a bowl (no tortilla) — saves 300 kcal',
+      'Lean grilled chicken instead of beef',
+      'Skip the cheese and sour cream',
+      'Double the fajita veggies, half the rice',
+    ],
+    healthyVersion:'Burrito bowl: chicken, black beans, double veggies, salsa, no cheese — half the calories, same bold flavours.',
+    healthyMacros:{ cals:420, protein:42, carbs:46, fat:10 }
+  },
+  {
+    id:'guacamole', cuisine:'mexican', emoji:'🥑',
+    name:'Guacamole & Chips', cuisineLabel:'Mexican',
+    desc:'Fresh avocado dip with crispy tortilla chips',
+    cals:380, protein:5, carbs:38, fat:24,
+    healthySwaps:[
+      'Use veggie sticks instead of chips',
+      'Portion control: 3–4 tbsp guacamole',
+      'Add extra lime and jalapeño for flavour',
+      'Pair with salsa for extra volume',
+    ],
+    healthyVersion:'4 tbsp guacamole with carrot sticks, cucumber and jicama — heart-healthy fats, dramatically fewer calories.',
+    healthyMacros:{ cals:160, protein:4, carbs:12, fat:12 }
+  },
+  {
+    id:'enchiladas', cuisine:'mexican', emoji:'🫔',
+    name:'Chicken Enchiladas', cuisineLabel:'Mexican',
+    desc:'Rolled tortillas with chicken, red sauce and cheese',
+    cals:640, protein:36, carbs:56, fat:28,
+    healthySwaps:[
+      'Use corn tortillas instead of flour',
+      'Reduce cheese to a light sprinkle',
+      'Use Greek yogurt instead of sour cream',
+      'Load with black beans and sautéed spinach',
+    ],
+    healthyVersion:'2 corn enchiladas with lean chicken, light cheese, black beans and spinach — satisfying and well-balanced.',
+    healthyMacros:{ cals:440, protein:40, carbs:40, fat:14 }
+  },
+];
+
+/* ════════════════════════════════════════
+   STATE
+════════════════════════════════════════ */
+let activeFilter = 'all';
+let activeCuisine = 'all';
+
+/* ════════════════════════════════════════
+   NAVIGATION
+════════════════════════════════════════ */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  const page = document.getElementById('page-' + id);
+  const tab  = document.getElementById('tab-' + id);
+  if (page) page.classList.add('active');
+  if (tab)  tab.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'instant' });
+  if (id === 'training')  renderExercises();
+  if (id === 'nutrition') renderMeals();
+}
+
+/* ════════════════════════════════════════
+   EXERCISES
+════════════════════════════════════════ */
+function setFilter(group, el) {
+  activeFilter = group;
+  if (el) {
+    document.querySelectorAll('#filterBar .chip').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+  }
+  renderExercises();
+}
+
+function diffClass(d) {
+  return d === 'Beginner' ? 'diff-beginner' : d === 'Advanced' ? 'diff-advanced' : 'diff-intermediate';
+}
+
+function renderExercises() {
+  const list = document.getElementById('exerciseList');
+  if (!list) return;
+  const filtered = activeFilter === 'all' ? exercises : exercises.filter(e => e.group === activeFilter);
+  list.innerHTML = filtered.map(ex => `
+    <div class="exercise-item anim-fade-in" onclick="openExercise('${ex.id}')">
+      <div class="ex-thumb">${ex.emoji}</div>
+      <div class="ex-info">
+        <div class="ex-name">${ex.name}</div>
+        <div class="ex-meta">
+          <span>${ex.muscle.split(',')[0].trim()}</span>
+          <span class="ex-meta-sep"></span>
+          <span class="diff-pill ${diffClass(ex.diff)}">${ex.diff}</span>
+        </div>
+      </div>
+      <div class="ex-arrow">›</div>
+    </div>
+  `).join('');
+}
+
+function openExercise(id) {
+  const ex = exercises.find(e => e.id === id);
+  if (!ex) return;
+  const inner = document.getElementById('modalInner');
+  inner.innerHTML = `
+    <button class="modal-close" onclick="closeExerciseModal()">✕</button>
+    <h2 style="font-size:22px;font-weight:800;letter-spacing:-.4px;margin-bottom:8px;padding-right:36px;">${ex.name}</h2>
+    <div style="display:flex;gap:7px;margin-bottom:20px;flex-wrap:wrap;">
+      ${ex.muscle.split(',').map(m => `<span class="badge badge-gray">${m.trim()}</span>`).join('')}
+      <span class="badge ${ex.diff === 'Beginner' ? 'badge-green' : 'badge-dark'}">${ex.diff}</span>
+    </div>
+    <div class="video-wrap">
+      <div class="yt-loading" id="ytLoading-${ex.id}">
+        <div class="yt-spinner"></div>
+        <span>Loading video…</span>
+      </div>
+      <iframe
+        src="https://www.youtube.com/embed/${ex.youtubeId}?rel=0&modestbranding=1&color=white"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen
+        loading="lazy"
+        title="${ex.name}"
+        style="position:absolute;inset:0;"
+        onload="document.getElementById('ytLoading-${ex.id}')?.remove()"
+      ></iframe>
+    </div>
+    <h3 style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);margin-bottom:14px;">Steps</h3>
+    <ol class="steps-list">
+      ${ex.steps.map((s,i) => `
+        <li class="step-item">
+          <div class="step-num">${i+1}</div>
+          <div class="step-text">${s}</div>
+        </li>`).join('')}
+    </ol>
+    <div class="tips-box" style="margin-top:20px;margin-bottom:8px;">
+      <div class="tips-box-title">Form Tips</div>
+      ${ex.tips.map(tip => `
+        <div class="tip-row">
+          <div class="tip-dot">!</div>
+          <span>${tip}</span>
+        </div>`).join('')}
+    </div>
+  `;
+  // Fix iframe position
+  const vw = inner.querySelector('.video-wrap');
+  if (vw) vw.style.position = 'relative';
+  document.getElementById('exerciseModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeExerciseModal() {
+  document.getElementById('exerciseModal').classList.remove('open');
+  document.body.style.overflow = '';
+  // Stop video
+  const iframe = document.querySelector('#modalInner iframe');
+  if (iframe) iframe.src = iframe.src;
+}
+
+/* ════════════════════════════════════════
+   MEALS
+════════════════════════════════════════ */
+function setCuisine(cuisine, el) {
+  activeCuisine = cuisine;
+  if (el) {
+    document.querySelectorAll('#cuisineTabs .cuisine-tab').forEach(t => t.classList.remove('active'));
+    el.classList.add('active');
+  }
+  renderMeals();
+}
+
+function renderMeals() {
+  const grid = document.getElementById('mealGrid');
+  if (!grid) return;
+  const filtered = activeCuisine === 'all' ? meals : meals.filter(m => m.cuisine === activeCuisine);
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--gray-400);font-size:15px;">No meals found</div>';
+    return;
+  }
+  grid.innerHTML = filtered.map(m => `
+    <div class="meal-card anim-fade-up" onclick="openMeal('${m.id}')">
+      <div class="meal-card-header">
+        <div class="meal-emoji">${m.emoji}</div>
+        <div class="meal-header-info">
+          <div class="meal-name">${m.name}</div>
+          <div class="meal-cuisine">${m.cuisineLabel}</div>
+        </div>
+        <div class="meal-cals">
+          <div class="meal-cal-num">${m.cals}</div>
+          <div class="meal-cal-label">kcal</div>
+        </div>
+      </div>
+      <div class="meal-macros">
+        <div class="macro-col macro-p">
+          <div class="macro-val">${m.protein}g</div>
+          <div class="macro-label">Protein</div>
+        </div>
+        <div class="macro-col macro-c">
+          <div class="macro-val">${m.carbs}g</div>
+          <div class="macro-label">Carbs</div>
+        </div>
+        <div class="macro-col macro-f">
+          <div class="macro-val">${m.fat}g</div>
+          <div class="macro-label">Fat</div>
+        </div>
+      </div>
+      <div class="meal-footer">
+        <span class="swap-badge">✦ Smart Swaps</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+function openMeal(id) {
+  const m = meals.find(x => x.id === id);
+  if (!m) return;
+  const hm = m.healthyMacros;
+  const pPct = Math.min(Math.round(m.protein * 4 / m.cals * 100), 100);
+  const cPct = Math.min(Math.round(m.carbs * 4 / m.cals * 100), 100);
+  const fPct = Math.min(Math.round(m.fat * 9 / m.cals * 100), 100);
+
+  const inner = document.getElementById('mealModalInner');
+  inner.innerHTML = `
+    <button class="modal-close" onclick="closeMealModalBtn()">✕</button>
+    <div style="display:flex;align-items:center;gap:16px;margin-bottom:24px;padding-right:36px;">
+      <div style="font-size:50px;line-height:1;flex-shrink:0;">${m.emoji}</div>
+      <div>
+        <h2 style="font-size:23px;font-weight:800;letter-spacing:-.4px;line-height:1.1;">${m.name}</h2>
+        <span class="badge badge-gray" style="margin-top:6px;">${m.cuisineLabel}</span>
+        <p style="font-size:13px;color:var(--gray-500);margin-top:7px;line-height:1.5;">${m.desc}</p>
+      </div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);margin-bottom:14px;">Original Meal</div>
+    <div class="macro-bar-row">
+      <div class="macro-bar-label"><span>Protein</span><span>${m.protein}g · ${pPct}%</span></div>
+      <div class="macro-bar-track"><div class="macro-bar-fill" style="width:${pPct}%;background:var(--blue);"></div></div>
+    </div>
+    <div class="macro-bar-row">
+      <div class="macro-bar-label"><span>Carbs</span><span>${m.carbs}g · ${cPct}%</span></div>
+      <div class="macro-bar-track"><div class="macro-bar-fill" style="width:${cPct}%;background:var(--orange);"></div></div>
+    </div>
+    <div class="macro-bar-row">
+      <div class="macro-bar-label"><span>Fat</span><span>${m.fat}g · ${fPct}%</span></div>
+      <div class="macro-bar-track"><div class="macro-bar-fill" style="width:${fPct}%;background:var(--green);"></div></div>
+    </div>
+    <div style="text-align:center;margin:6px 0 22px;font-size:28px;font-weight:800;letter-spacing:-1px;">
+      ${m.cals}
+      <span style="font-size:13px;color:var(--gray-400);font-weight:400;letter-spacing:0;">kcal / serving</span>
+    </div>
+
+    <div class="healthy-version">
+      <div class="hv-title">✦ Healthy Version</div>
+      <p style="font-size:14px;color:var(--gray-700);margin-bottom:16px;line-height:1.7;">${m.healthyVersion}</p>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;">
+        <div style="text-align:center;background:white;border-radius:10px;padding:10px;">
+          <div style="font-size:17px;font-weight:800;color:var(--black);line-height:1;">${hm.cals}</div>
+          <div style="font-size:10px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;">kcal</div>
+        </div>
+        <div style="text-align:center;background:white;border-radius:10px;padding:10px;">
+          <div style="font-size:17px;font-weight:800;color:var(--blue);line-height:1;">${hm.protein}g</div>
+          <div style="font-size:10px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;">Protein</div>
+        </div>
+        <div style="text-align:center;background:white;border-radius:10px;padding:10px;">
+          <div style="font-size:17px;font-weight:800;color:var(--orange);line-height:1;">${hm.carbs}g</div>
+          <div style="font-size:10px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;">Carbs</div>
+        </div>
+        <div style="text-align:center;background:white;border-radius:10px;padding:10px;">
+          <div style="font-size:17px;font-weight:800;color:var(--green);line-height:1;">${hm.fat}g</div>
+          <div style="font-size:10px;color:var(--gray-400);text-transform:uppercase;letter-spacing:.05em;margin-top:3px;">Fat</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--gray-400);margin-bottom:12px;">Smart Swaps</div>
+    ${m.healthySwaps.map(s => `
+      <div class="hv-item">
+        <span style="color:var(--green);font-weight:800;flex-shrink:0;font-size:16px;line-height:1.4;">✓</span>
+        <span>${s}</span>
+      </div>`).join('')}
+    <div style="height:16px;"></div>
+  `;
+  document.getElementById('mealModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeMealModalBtn() {
+  document.getElementById('mealModal').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── Shared modal click-outside handler ── */
+function handleModalClick(e, overlayId, closeFn) {
+  if (e.target === document.getElementById(overlayId)) closeFn();
+}
+
+/* ════════════════════════════════════════
+   INIT
+════════════════════════════════════════ */
+renderExercises();
+renderMeals();
+</script>
+</body>
+</html>

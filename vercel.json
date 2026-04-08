@@ -2,11 +2,19 @@
   "version": 2,
   "builds": [
     {
+      "src": "api/exercise.js",
+      "use": "@vercel/node"
+    },
+    {
       "src": "amgym_v3.html",
       "use": "@vercel/static"
     }
   ],
   "routes": [
+    {
+      "src": "/api/exercise",
+      "dest": "/api/exercise.js"
+    },
     {
       "src": "/(.*)",
       "dest": "/amgym_v3.html"

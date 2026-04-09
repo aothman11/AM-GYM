@@ -1049,6 +1049,7 @@ window.addEventListener('DOMContentLoaded', () => {
   updateTimerDisplay();
   updateStats();
   renderChallenge();
+  loadMWExerciseList();
   if(wiz.split) { showPlan(); }
 });
 
@@ -1485,38 +1486,78 @@ function buildExVideo(name) {
   return tmp.innerHTML;
 }
 
+/* ─── MuscleWiki full exercise list (loaded once on startup) ─── */
+var MW_ALL_EXERCISES = [];
+var MW_LOADED = false;
+
+function loadMWExerciseList() {
+  if(MW_LOADED) return;
+  MW_LOADED = true;
+  fetch('/api/mwvideo?action=list')
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      if(data && data.exercises) {
+        MW_ALL_EXERCISES = data.exercises;
+        console.log('MuscleWiki: loaded', MW_ALL_EXERCISES.length, 'exercises');
+      }
+    })
+    .catch(function(e){ console.warn('MW list load failed:', e); });
+}
+
+function findMWExercise(name) {
+  var n = name.toLowerCase().replace(/[^a-z0-9 ]/g,' ').trim();
+  var words = n.split(' ').filter(function(w){ return w.length > 2; });
+  var best = null, bestScore = 0;
+  for(var i=0; i<MW_ALL_EXERCISES.length; i++) {
+    var ex = MW_ALL_EXERCISES[i];
+    var exN = (ex.name||'').toLowerCase();
+    if(exN === n) return ex;
+    var score = 0;
+    for(var j=0; j<words.length; j++) {
+      if(exN.indexOf(words[j]) !== -1) score++;
+    }
+    if(score > bestScore){ bestScore = score; best = ex; }
+  }
+  return bestScore > 0 ? best : null;
+}
+
 function loadExVideo(name) {
+  // Kick off list loading if not done
+  loadMWExerciseList();
+
   var cacheKey = name + '-' + gender;
   if(MW_CACHE[cacheKey]) { renderVideo(MW_CACHE[cacheKey], name); return; }
 
   // Show spinner
   var wrap = document.getElementById('exVideoWrap');
   if(wrap) {
-    wrap.style.minHeight = '220px';
-    wrap.style.display = 'flex';
-    wrap.style.alignItems = 'center';
-    wrap.style.justifyContent = 'center';
-    wrap.innerHTML = '<div style="text-align:center">'
-      + '<div style="width:36px;height:36px;border:3px solid #22ff44;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 10px"></div>'
-      + '<div style="font-size:11px;color:#444">' + (lang==='ar'?'جاري التحميل...':'Loading...') + '</div>'
-      + '</div>';
+    wrap.style.cssText = 'border-radius:14px;overflow:hidden;background:#0a0a0a;min-height:220px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:10px';
+    wrap.innerHTML = '<div style="width:36px;height:36px;border:3px solid #22ff44;border-top-color:transparent;border-radius:50%;animation:spin 1s linear infinite"></div>'
+      + '<div style="font-size:11px;color:#444">' + (lang==='ar'?'جاري التحميل...':'Loading...') + '</div>';
   }
 
-  // Pass exercise name + gender — proxy does smart search
-  var proxyUrl = '/api/mwvideo?name=' + encodeURIComponent(name) + '&gender=' + gender;
+  // Try to find by ID first (faster), fallback to name search
+  var ex = findMWExercise(name);
+  var proxyUrl;
+
+  if(ex && ex.id !== undefined) {
+    proxyUrl = '/api/mwvideo?action=video&id=' + ex.id + '&gender=' + gender;
+  } else {
+    proxyUrl = '/api/mwvideo?name=' + encodeURIComponent(name) + '&gender=' + gender;
+  }
 
   fetch(proxyUrl)
-    .then(function(r) {
+    .then(function(r){
       if(!r.ok) throw new Error('HTTP ' + r.status);
       return r.blob();
     })
-    .then(function(blob) {
+    .then(function(blob){
       var url = URL.createObjectURL(blob);
       MW_CACHE[cacheKey] = url;
       renderVideo(url, name);
     })
-    .catch(function(err) {
-      console.warn('Video load failed:', name, err.message);
+    .catch(function(err){
+      console.warn('Video failed:', name, err.message);
       showVideoFallback(name);
     });
 }

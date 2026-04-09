@@ -3,47 +3,87 @@ const MW_HOST = 'musclewiki-api.p.rapidapi.com';
 const HEADERS = {
   'x-rapidapi-key':  API_KEY,
   'x-rapidapi-host': MW_HOST,
-  'Content-Type':    'application/json'
 };
 
-// Cache exercise lookups in memory (resets on cold start)
-const exerciseCache = {};
+// In-memory cache (lives for duration of Vercel function instance)
+let exerciseListCache = null;
+const videoUrlCache = {};
 
-// Step 1: search exercises by name → get video filenames
-async function findExerciseVideos(name, gender) {
-  const cacheKey = `${gender}:${name.toLowerCase()}`;
-  if (exerciseCache[cacheKey]) return exerciseCache[cacheKey];
+async function getAllExercises() {
+  if (exerciseListCache) return exerciseListCache;
+  
+  const all = [];
+  let offset = 0;
+  const limit = 100;
+  
+  while (true) {
+    const url = `https://${MW_HOST}/exercises?limit=${limit}&offset=${offset}`;
+    const r = await fetch(url, { headers: HEADERS });
+    if (!r.ok) break;
+    
+    const data = await r.json();
+    const results = data.results || (Array.isArray(data) ? data : []);
+    if (!results.length) break;
+    
+    all.push(...results);
+    if (results.length < limit) break;
+    offset += limit;
+    if (offset > 2000) break; // safety cap
+  }
+  
+  exerciseListCache = all;
+  return all;
+}
 
-  const searchUrl = `https://${MW_HOST}/exercises?name=${encodeURIComponent(name)}&limit=5`;
-  const r = await fetch(searchUrl, { headers: HEADERS });
-  if (!r.ok) return null;
-
-  const data = await r.json();
-  const results = data.results || data || [];
-
-  // Find best matching exercise
-  const nameLower = name.toLowerCase();
+function findBestMatch(exercises, name, gender) {
+  const n = name.toLowerCase().replace(/[^a-z0-9 ]/g, ' ').trim();
+  const words = n.split(' ').filter(w => w.length > 2);
+  
   let best = null;
-  for (const ex of results) {
-    if (!best) { best = ex; continue; }
+  let bestScore = 0;
+  
+  for (const ex of exercises) {
     const exName = (ex.name || '').toLowerCase();
-    if (exName.includes(nameLower) || nameLower.includes(exName)) {
+    
+    // Exact match
+    if (exName === n) return ex;
+    
+    // Score by word overlap
+    let score = 0;
+    for (const w of words) {
+      if (exName.includes(w)) score++;
+    }
+    
+    if (score > bestScore) {
+      bestScore = score;
       best = ex;
-      break;
     }
   }
+  
+  return bestScore > 0 ? best : null;
+}
 
-  if (!best) return null;
-
-  // Get videos for this exercise
-  const exId = best.id;
-  const vidUrl = `https://${MW_HOST}/exercises/${exId}/videos`;
-  const vr = await fetch(vidUrl, { headers: HEADERS });
-  if (!vr.ok) return null;
-
-  const videos = await vr.json();
-  exerciseCache[cacheKey] = { exercise: best, videos };
-  return exerciseCache[cacheKey];
+async function getVideoForExercise(exId, gender) {
+  const cacheKey = `${exId}-${gender}`;
+  if (videoUrlCache[cacheKey]) return videoUrlCache[cacheKey];
+  
+  const url = `https://${MW_HOST}/exercises/${exId}`;
+  const r = await fetch(url, { headers: HEADERS });
+  if (!r.ok) return null;
+  
+  const data = await r.json();
+  const videos = data.videos || [];
+  
+  // Find best video: prefer gender + side
+  const preferred = 
+    videos.find(v => v.includes(gender) && v.includes('side')) ||
+    videos.find(v => v.includes(gender) && v.includes('front')) ||
+    videos.find(v => v.includes(gender)) ||
+    videos.find(v => v.includes('side')) ||
+    videos[0];
+  
+  videoUrlCache[cacheKey] = preferred || null;
+  return preferred;
 }
 
 export default async function handler(req, res) {
@@ -51,56 +91,60 @@ export default async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   if (req.method === 'OPTIONS') return res.status(200).end();
 
-  const { name, gender = 'male' } = req.query;
-
-  // Legacy slug support
-  const { slug } = req.query;
-
-  if (!name && !slug) {
-    return res.status(400).json({ error: 'Missing name or slug parameter' });
-  }
+  const { action, name, gender = 'male', id } = req.query;
 
   try {
-    let videoStreamUrl = null;
+    // ACTION: list — return all exercises
+    if (action === 'list') {
+      const exercises = await getAllExercises();
+      return res.status(200).json({
+        total: exercises.length,
+        exercises: exercises.map(ex => ({
+          id:       ex.id,
+          name:     ex.name,
+          category: ex.category,
+          muscles:  ex.muscles || [],
+          videos:   ex.videos  || [],
+        }))
+      });
+    }
 
+    // ACTION: video by exercise ID
+    if (action === 'video' && id) {
+      const filename = await getVideoForExercise(id, gender);
+      if (!filename) return res.status(404).json({ error: 'No video for this exercise' });
+      
+      const videoUrl = `https://${MW_HOST}/stream/videos/branded/${filename}`;
+      const vr = await fetch(videoUrl, { headers: HEADERS });
+      if (!vr.ok) return res.status(404).json({ error: 'Stream failed' });
+      
+      res.setHeader('Content-Type', 'video/mp4');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      const buf = await vr.arrayBuffer();
+      return res.status(200).send(Buffer.from(buf));
+    }
+
+    // ACTION: search by name (default)
     if (name) {
-      // Smart search by exercise name
-      const result = await findExerciseVideos(name, gender);
-
-      if (result && result.videos) {
-        const vids = result.videos;
-        // Prefer side angle, same gender
-        const preferred = vids.find(v =>
-          v.includes(gender) && v.includes('side')
-        ) || vids.find(v =>
-          v.includes(gender)
-        ) || vids.find(v =>
-          v.includes('side')
-        ) || vids[0];
-
-        if (preferred) {
-          videoStreamUrl = `https://${MW_HOST}/stream/videos/branded/${preferred}`;
-        }
-      }
-    } else if (slug) {
-      videoStreamUrl = `https://${MW_HOST}/stream/videos/branded/${slug}`;
+      const exercises = await getAllExercises();
+      const match = findBestMatch(exercises, name, gender);
+      
+      if (!match) return res.status(404).json({ error: 'Exercise not found', name });
+      
+      const filename = await getVideoForExercise(match.id, gender);
+      if (!filename) return res.status(404).json({ error: 'No video found', exercise: match.name });
+      
+      const videoUrl = `https://${MW_HOST}/stream/videos/branded/${filename}`;
+      const vr = await fetch(videoUrl, { headers: HEADERS });
+      if (!vr.ok) return res.status(404).json({ error: 'Stream failed', filename });
+      
+      res.setHeader('Content-Type', 'video/mp4');
+      res.setHeader('Cache-Control', 'public, max-age=86400');
+      const buf = await vr.arrayBuffer();
+      return res.status(200).send(Buffer.from(buf));
     }
 
-    if (!videoStreamUrl) {
-      return res.status(404).json({ error: 'No video found', name, gender });
-    }
-
-    // Stream the video
-    const vr = await fetch(videoStreamUrl, { headers: HEADERS });
-    if (!vr.ok) {
-      return res.status(vr.status).json({ error: 'Video stream failed', url: videoStreamUrl });
-    }
-
-    res.setHeader('Content-Type', 'video/mp4');
-    res.setHeader('Cache-Control', 'public, max-age=86400');
-
-    const buf = await vr.arrayBuffer();
-    return res.status(200).send(Buffer.from(buf));
+    return res.status(400).json({ error: 'Provide name, id, or action=list' });
 
   } catch (err) {
     return res.status(500).json({ error: err.message });

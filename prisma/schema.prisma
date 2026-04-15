@@ -1,0 +1,72 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String    @id @default(cuid())
+  email       String    @unique
+  password    String
+  name        String?
+  weight      Float?
+  height      Float?
+  age         Int?
+  goal        String?
+  gender      String    @default("male")
+  calTarget   Int       @default(2000)
+  lang        String    @default("en")
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  workoutPlan WorkoutPlan?
+  foodLogs    FoodLog[]
+  challenges  ChallengeProgress[]
+  stats       UserStats?
+}
+
+model WorkoutPlan {
+  id        String   @id @default(cuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  split     String
+  level     String
+  goal      String
+  equip     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model FoodLog {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  date      String
+  items     Json
+  createdAt DateTime @default(now())
+
+  @@unique([userId, date])
+}
+
+model ChallengeProgress {
+  id       String @id @default(cuid())
+  userId   String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  weekKey  String
+  progress Int    @default(0)
+
+  @@unique([userId, weekKey])
+}
+
+model UserStats {
+  id           String    @id @default(cuid())
+  userId       String    @unique
+  user         User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  streak       Int       @default(0)
+  weekWorkouts Int       @default(0)
+  totalDone    Int       @default(0)
+  lastWorkout  DateTime?
+}

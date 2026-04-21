@@ -1,0 +1,233 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: #0a0a0a;
+  --bg2: #111111;
+  --bg3: #1a1a1a;
+  --bg4: #222222;
+  --green: #22ff44;
+  --green2: #16cc36;
+  --green-dim: rgba(34,255,68,0.12);
+  --green-glow: 0 0 20px rgba(34,255,68,0.3);
+  --white: #ffffff;
+  --gray1: #f0f0f0;
+  --gray2: #aaaaaa;
+  --gray3: #555555;
+  --gray4: #333333;
+  --red: #ff4444;
+  --orange: #ffaa22;
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+  --font: 'Inter', -apple-system, sans-serif;
+  --font-ar: 'Noto Sans Arabic', sans-serif;
+  --font-display: 'Bebas Neue', sans-serif;
+  --tab-h: 60px;
+}
+
+*,*::before,*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.6;
+  min-height: 100vh;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  padding-bottom: calc(var(--tab-h) + 16px);
+}
+
+[dir="rtl"] body, [dir="rtl"] * {
+  font-family: var(--font-ar);
+}
+
+[dir="rtl"] .exercise-name,
+[dir="rtl"] .prog-ex-name,
+[dir="rtl"] .lib-name {
+  font-family: var(--font) !important;
+}
+
+button, input, select {
+  font-family: inherit;
+  border: none;
+  outline: none;
+  background: none;
+  cursor: pointer;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--green); border-radius: 4px; }
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes glow {
+  0%, 100% { box-shadow: 0 0 10px rgba(34,255,68,0.3); }
+  50% { box-shadow: 0 0 30px rgba(34,255,68,0.6); }
+}
+
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.animate-fadeUp {
+  animation: fadeUp 0.3s ease;
+}
+
+.animate-glow {
+  animation: glow 3s ease-in-out infinite;
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+/* ── AUTH PAGES ── */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  padding-bottom: 20px;
+}
+
+.auth-card {
+  background: var(--bg2);
+  border: 1px solid var(--bg4);
+  border-radius: var(--r-xl);
+  padding: 32px 24px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.auth-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  color: var(--green);
+  text-align: center;
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  font-size: 14px;
+  color: var(--gray2);
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.auth-input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1.5px solid var(--bg4);
+  border-radius: var(--r-lg);
+  padding: 14px 16px;
+  color: var(--white);
+  font-size: 14px;
+  margin-bottom: 12px;
+  transition: border-color .2s;
+}
+
+.auth-input:focus {
+  border-color: var(--green);
+  outline: none;
+}
+
+.auth-input::placeholder {
+  color: var(--gray3);
+}
+
+.auth-btn {
+  width: 100%;
+  background: var(--green);
+  color: var(--bg);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 14px 24px;
+  border-radius: var(--r-lg);
+  border: none;
+  cursor: pointer;
+  transition: all .2s;
+  margin-top: 8px;
+}
+
+.auth-btn:hover {
+  background: var(--green2);
+}
+
+.auth-btn:disabled {
+  background: var(--bg4);
+  color: var(--gray3);
+  cursor: not-allowed;
+}
+
+.auth-link {
+  display: block;
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--gray2);
+}
+
+.auth-link a {
+  color: var(--green);
+  text-decoration: none;
+}
+
+.auth-link a:hover {
+  text-decoration: underline;
+}
+
+.auth-error {
+  background: rgba(255, 68, 68, 0.1);
+  border: 1px solid rgba(255, 68, 68, 0.3);
+  border-radius: var(--r-md);
+  padding: 12px;
+  margin-bottom: 16px;
+  color: var(--red);
+  font-size: 13px;
+  text-align: center;
+}
+
+/* ── LOADING SPINNER ── */
+.spinner {
+  width: 36px;
+  height: 36px;
+  border: 3px solid var(--green);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}

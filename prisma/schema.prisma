@@ -1,0 +1,117 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// NextAuth models
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// User model with fitness profile
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  
+  // Fitness profile
+  gender        String    @default("male")
+  weight        Float?
+  height        Float?
+  age           Int?
+  goal          String?
+  calorieTarget Int       @default(2000)
+  
+  // Program settings
+  split         String?
+  level         String?
+  programGoal   String?
+  equipment     String?
+  
+  // Stats
+  streak        Int       @default(0)
+  weekWorkouts  Int       @default(0)
+  totalWorkouts Int       @default(0)
+  
+  language      String    @default("en")
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  accounts      Account[]
+  sessions      Session[]
+  foodLogs      FoodLog[]
+  challengeLogs ChallengeLog[]
+}
+
+// Food log for calorie tracking
+model FoodLog {
+  id        String   @id @default(cuid())
+  userId    String
+  foodId    Int
+  foodName  String
+  emoji     String
+  calories  Int
+  protein   Float
+  carbs     Float
+  fats      Float
+  isMeal    Boolean  @default(false)
+  loggedAt  DateTime @default(now())
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Weekly challenge progress
+model ChallengeLog {
+  id        String   @id @default(cuid())
+  userId    String
+  weekNum   Int
+  year      Int
+  progress  Int      @default(0)
+  completed Boolean  @default(false)
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@unique([userId, weekNum, year])
+}

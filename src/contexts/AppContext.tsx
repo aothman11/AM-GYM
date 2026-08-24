@@ -9,7 +9,6 @@ import React, {
   useState,
   ReactNode,
 } from 'react';
-import { SessionProvider, useSession } from 'next-auth/react';
 
 // ──────────────────────────────────────────────
 // Types
@@ -141,14 +140,7 @@ const initialWizard: WizardState = {
   equip: null,
 };
 
-// ──────────────────────────────────────────────
-// Inner provider — uses useSession so must live inside SessionProvider
-// ──────────────────────────────────────────────
-
-function AppProviderInner({ children }: { children: ReactNode }) {
-  const { data: session } = useSession();
-  const userId = session?.user?.id ?? null;
-
+export function AppProvider({ children }: { children: ReactNode }) {
   // ── State ──────────────────────────────────
   const [lang, setLangState] = useState<'en' | 'ar'>('en');
   const [gender, setGenderState] = useState<'male' | 'female'>('male');
@@ -193,9 +185,6 @@ function AppProviderInner({ children }: { children: ReactNode }) {
       processQueueRef.current();
     }
   }, []); // stable — setToast is a stable React setter
-
-  // ── Debounced profile-sync timer ───────────
-  const profileSyncTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ── Load from localStorage on mount (Fix #1 — filter to today) ────────────
   useEffect(() => {
@@ -266,115 +255,6 @@ function AppProviderInner({ children }: { children: ReactNode }) {
     document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
   }, [lang]);
 
-  // ── Server sync: fetch on sign-in (Fix #2) ──────────────────────────────────
-  // When the user authenticates, pull their data from the server.
-  // Server data is authoritative — it overwrites localStorage so the state
-  // is consistent across all devices.
-  useEffect(() => {
-    if (!userId) return;
-
-    fetch('/api/user/data')
-      .then(res => (res.ok ? res.json() : null))
-      .then(data => {
-        if (!data) return;
-
-        if (data.profile) {
-          const p = data.profile;
-          const mergedProfile: Profile = {
-            ...(p.displayName !== undefined && { name: p.displayName }),
-            ...(p.weight !== undefined && { weight: p.weight }),
-            ...(p.height !== undefined && { height: p.height }),
-            ...(p.age !== undefined && { age: p.age }),
-            ...(p.goal !== undefined && { goal: p.goal }),
-          };
-          if (Object.keys(mergedProfile).length) {
-            setProfileState(mergedProfile);
-            localStorage.setItem('amgym_profile_info', JSON.stringify(mergedProfile));
-          }
-          if (p.gender) { setGenderState(p.gender); localStorage.setItem('amgym_gender', p.gender); }
-          if (p.lang) { setLangState(p.lang); localStorage.setItem('amgym_lang', p.lang); }
-          if (p.calorieTarget) { setCalorieTargetState(p.calorieTarget); localStorage.setItem('amgym_cal_target', String(p.calorieTarget)); }
-          if (p.wizardSplit || p.wizardLevel || p.wizardGoal || p.wizardEquip) {
-            const w: WizardState = { split: p.wizardSplit ?? null, level: p.wizardLevel ?? null, goal: p.wizardGoal ?? null, equip: p.wizardEquip ?? null };
-            setWizardState(w);
-            localStorage.setItem('amgym_profile', JSON.stringify(w));
-          }
-          if (typeof p.streak === 'number') { setStreak(p.streak); localStorage.setItem('amgym_streak', String(p.streak)); }
-          if (typeof p.weekWorkouts === 'number') { setWeekWorkouts(p.weekWorkouts); localStorage.setItem('amgym_week', String(p.weekWorkouts)); }
-          if (typeof p.totalWorkouts === 'number') { setTotalWorkouts(p.totalWorkouts); localStorage.setItem('amgym_total', String(p.totalWorkouts)); }
-          if (p.lastWorkoutDate) { setLastWorkoutDate(p.lastWorkoutDate); localStorage.setItem('amgym_last_workout', p.lastWorkoutDate); }
-          if (p.weekStart) localStorage.setItem('amgym_week_start', p.weekStart);
-          if (Array.isArray(p.achievements)) { setAchievements(p.achievements); localStorage.setItem('amgym_achievements', JSON.stringify(p.achievements)); }
-        }
-
-        if (Array.isArray(data.foodEntries) && data.foodEntries.length > 0) {
-          // Server food entries for today are authoritative
-          const entries: FoodLogItem[] = data.foodEntries.map((e: {
-            id: string; date: string; foodId: number; name: string; emoji: string;
-            cal: number; p: number; c: number; f: number; per: string; isMeal: boolean;
-          }) => ({
-            id: e.foodId,
-            logId: e.id,
-            date: e.date,
-            name: e.name,
-            emoji: e.emoji,
-            cal: e.cal,
-            p: e.p,
-            c: e.c,
-            f: e.f,
-            per: e.per,
-            isMeal: e.isMeal,
-          }));
-          setFoodLog(entries);
-          localStorage.setItem('amgym_foodlog', JSON.stringify(entries));
-        }
-      })
-      .catch(err => console.error('Server sync failed:', err));
-  }, [userId]);
-
-  // ── Debounced profile sync to server (Fix #2) ──────────────────────────────
-  // Fires 1.5 s after any profile-related state settles.
-  // Using a useEffect (not inline calls) ensures we always capture the latest
-  // state values — no stale-closure risk.
-  useEffect(() => {
-    if (!userId) return;
-    if (profileSyncTimerRef.current) clearTimeout(profileSyncTimerRef.current);
-    profileSyncTimerRef.current = setTimeout(() => {
-      profileSyncTimerRef.current = null;
-      fetch('/api/user/data', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          displayName: profile.name,
-          weight: profile.weight ?? null,
-          height: profile.height ?? null,
-          age: profile.age ?? null,
-          goal: profile.goal ?? null,
-          gender,
-          lang,
-          calorieTarget,
-          wizardSplit: wizard.split,
-          wizardLevel: wizard.level,
-          wizardGoal: wizard.goal,
-          wizardEquip: wizard.equip,
-          streak,
-          weekWorkouts,
-          totalWorkouts,
-          lastWorkoutDate,
-          weekStart: getWeekStart(),
-          achievements,
-        }),
-      }).catch(err => console.error('Profile sync failed:', err));
-    }, 1500);
-  }, [
-    userId,
-    profile.name, profile.weight, profile.height, profile.age, profile.goal,
-    gender, lang, calorieTarget,
-    wizard.split, wizard.level, wizard.goal, wizard.equip,
-    streak, weekWorkouts, totalWorkouts, lastWorkoutDate,
-    achievements,
-  ]);
-
   // ── Language ────────────────────────────────
   const setLang = (newLang: 'en' | 'ar') => {
     setLangState(newLang);
@@ -438,16 +318,6 @@ function AppProviderInner({ children }: { children: ReactNode }) {
     const newLog = [...foodLog, entry];
     setFoodLog(newLog);
     localStorage.setItem('amgym_foodlog', JSON.stringify(newLog));
-
-    // Persist to server if authenticated
-    if (userId) {
-      fetch('/api/user/food', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(entry),
-      }).catch(err => console.error('Food sync failed:', err));
-    }
-
     showToast(t('Added to log ✓', 'تمت الإضافة ✓'));
   };
 
@@ -455,11 +325,6 @@ function AppProviderInner({ children }: { children: ReactNode }) {
     const newLog = foodLog.filter(f => f.logId !== logId);
     setFoodLog(newLog);
     localStorage.setItem('amgym_foodlog', JSON.stringify(newLog));
-
-    if (userId) {
-      fetch(`/api/user/food/${encodeURIComponent(logId)}`, { method: 'DELETE' })
-        .catch(err => console.error('Food delete sync failed:', err));
-    }
   };
 
   const setCalorieTarget = (target: number) => {
@@ -591,19 +456,6 @@ function AppProviderInner({ children }: { children: ReactNode }) {
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
-}
-
-// ──────────────────────────────────────────────
-// Public provider — wraps with SessionProvider so
-// AppProviderInner can call useSession.
-// ──────────────────────────────────────────────
-
-export function AppProvider({ children }: { children: ReactNode }) {
-  return (
-    <SessionProvider>
-      <AppProviderInner>{children}</AppProviderInner>
-    </SessionProvider>
-  );
 }
 
 export function useApp() {

@@ -481,8 +481,9 @@ body {
   margin-bottom: 6px;
 }
 
-.modal-muscle { font-size: 13px; color: var(--gray2); margin-bottom: 18px; }
-.modal-video { margin-bottom: 18px; }
+.modal-muscle { font-size: 13px; color: var(--gray2); margin-bottom: 14px; }
+.modal-video { margin-bottom: 12px; }
+.modal-title { margin-top: 10px; }
 .modal-sets-info { display: flex; gap: 10px; margin-bottom: 22px; }
 
 .set-badge {

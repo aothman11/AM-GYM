@@ -97,11 +97,7 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
         
         <div className="modal-handle" />
         <div className="modal-inner">
-          <div className="modal-title">{exercise.name}</div>
-          <div className="modal-muscle">
-            {exercise.muscle ? `${t('Primary:', 'العضلة الرئيسية:')} ${exercise.muscle}` : ''}
-          </div>
-          
+
           <div className="modal-video">
             <div 
               style={{
@@ -243,6 +239,11 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
                 </>
               )}
             </div>
+          </div>
+
+          <div className="modal-title">{exercise.name}</div>
+          <div className="modal-muscle">
+            {exercise.muscle ? `${t('Primary:', 'العضلة الرئيسية:')} ${exercise.muscle}` : ''}
           </div>
 
           <div className="modal-sets-info">

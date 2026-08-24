@@ -1,515 +1,241 @@
 'use client';
 
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
-import { getCurrentChallenge, getWeekNumber } from '@/data/challenges';
+import { getCurrentChallenge } from '@/data/challenges';
 
 export default function HomePage() {
-  const { t, streak, weekWorkouts, totalWorkouts, challengeProgress, setChallengeProgress, showToast, profile, achievements } = useApp();
+  const { t, streak, weekWorkouts, totalWorkouts, showToast, profile } = useApp();
   const router = useRouter();
-  
-  // Greeting computed client-side only to avoid SSR/client timezone mismatch (React #418)
+
+  // Greeting — client-only to avoid SSR timezone mismatch (React #418)
   const [greeting, setGreeting] = useState('');
   useEffect(() => {
-    const hour = new Date().getHours();
-    if (hour < 12) setGreeting(t('Good morning', 'صباح الخير'));
-    else if (hour < 17) setGreeting(t('Good afternoon', 'مساء الخير'));
-    else if (hour < 21) setGreeting(t('Good evening', 'مساء الخير'));
+    const h = new Date().getHours();
+    if (h < 12) setGreeting(t('Good morning', 'صباح الخير'));
+    else if (h < 17) setGreeting(t('Good afternoon', 'مساء الخير'));
+    else if (h < 21) setGreeting(t('Good evening', 'مساء الخير'));
     else setGreeting(t('Good night', 'مساء الخير'));
   }, [t]);
 
   const userName = profile?.name || '';
-  
-  // Timer state
+
+  // ── Timer ────────────────────────────────────────────────────────────────
   const [timerMode, setTimerMode] = useState<'rest' | 'tabata' | 'custom'>('rest');
   const [timerSeconds, setTimerSeconds] = useState(90);
   const [timerMax, setTimerMax] = useState(90);
   const [timerRunning, setTimerRunning] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  
-  // Challenge state
-  const [challenge, setChallenge] = useState(getCurrentChallenge());
-  const [localProgress, setLocalProgress] = useState(0);
-  
-  // Load challenge progress from localStorage
-  useEffect(() => {
-    const c = getCurrentChallenge();
-    setChallenge(c);
-    const key = `amgym_challenge_${c.year}_${c.weekNum}`;
-    const saved = parseInt(localStorage.getItem(key) || '0');
-    setLocalProgress(saved);
-  }, []);
-  
-  // Timer logic
+
   useEffect(() => {
     if (timerRunning && timerSeconds > 0) {
-      timerRef.current = setTimeout(() => {
-        setTimerSeconds(prev => prev - 1);
-      }, 1000);
+      timerRef.current = setTimeout(() => setTimerSeconds(p => p - 1), 1000);
     } else if (timerRunning && timerSeconds === 0) {
       setTimerRunning(false);
       if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-      showToast(t("⏰ Time's up!", "⏰ انتهى الوقت!"));
+      showToast(t("⏰ Time's up!", '⏰ انتهى الوقت!'));
     }
-    return () => {
-      if (timerRef.current) clearTimeout(timerRef.current);
-    };
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
   }, [timerRunning, timerSeconds, showToast, t]);
-  
-  const formatTime = (seconds: number) => {
-    const m = Math.floor(seconds / 60);
-    const s = seconds % 60;
-    return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+
+  const fmt = (s: number) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(s % 60).padStart(2, '0')}`;
+  const timerToggle = () => { if (timerRunning) { setTimerRunning(false); } else { if (timerSeconds <= 0) setTimerSeconds(timerMax); setTimerRunning(true); } };
+  const timerReset = () => { setTimerRunning(false); setTimerSeconds(timerMax); };
+  const timerAdjust = (d: number) => { const v = Math.max(0, timerSeconds + d); setTimerSeconds(v); if (v > timerMax) setTimerMax(v); };
+  const setPreset = (s: number) => { if (timerRunning) { setTimerRunning(false); } setTimerSeconds(s); setTimerMax(s); };
+  const changeMode = (m: 'rest' | 'tabata' | 'custom') => {
+    setTimerMode(m); setTimerRunning(false);
+    setTimerSeconds(m === 'tabata' ? 20 : 90); setTimerMax(m === 'tabata' ? 20 : 90);
   };
-  
-  const timerToggle = () => {
-    if (timerRunning) {
-      setTimerRunning(false);
-    } else {
-      if (timerSeconds <= 0) setTimerSeconds(timerMax);
-      setTimerRunning(true);
-    }
-  };
-  
-  const timerReset = () => {
-    setTimerRunning(false);
-    setTimerSeconds(timerMax);
-  };
-  
-  const timerAdjust = (delta: number) => {
-    const newVal = Math.max(0, timerSeconds + delta);
-    setTimerSeconds(newVal);
-    if (newVal > timerMax) setTimerMax(newVal);
-  };
-  
-  const setTimerPreset = (seconds: number) => {
-    if (timerRunning) timerReset();
-    setTimerSeconds(seconds);
-    setTimerMax(seconds);
-  };
-  
-  const handleTimerModeChange = (mode: 'rest' | 'tabata' | 'custom') => {
-    setTimerMode(mode);
-    setTimerRunning(false);
-    if (mode === 'tabata') {
-      setTimerSeconds(20);
-      setTimerMax(20);
-    } else {
-      setTimerSeconds(90);
-      setTimerMax(90);
-    }
-  };
-  
-  // Challenge logic
+
+  // ── Weekly Challenge ──────────────────────────────────────────────────────
+  const [challenge] = useState(getCurrentChallenge());
+  const [localProgress, setLocalProgress] = useState(0);
+  useEffect(() => {
+    const c = getCurrentChallenge();
+    const key = `amgym_challenge_${c.year}_${c.weekNum}`;
+    setLocalProgress(parseInt(localStorage.getItem(key) || '0'));
+  }, []);
+
   const challengeLog = (dir: number) => {
     const c = getCurrentChallenge();
     const key = `amgym_challenge_${c.year}_${c.weekNum}`;
-    let cur = parseInt(localStorage.getItem(key) || '0');
-    cur = Math.max(0, Math.min(c.target, cur + dir * c.step));
+    let cur = Math.max(0, Math.min(c.target, parseInt(localStorage.getItem(key) || '0') + dir * c.step));
     localStorage.setItem(key, String(cur));
     setLocalProgress(cur);
-    
-    if (dir > 0 && cur >= c.target) {
-      showToast(t('🏆 Challenge complete!', '🏆 أكملت التحدي!'));
-    } else if (dir > 0) {
-      showToast(`+${c.step} ${c.unit} ✓`);
-    }
+    if (dir > 0 && cur >= c.target) showToast(t('🏆 Challenge complete!', '🏆 أكملت التحدي!'));
+    else if (dir > 0) showToast(`+${c.step} ${c.unit} ✓`);
   };
-  
-  // Days left until end of week (Saturday)
-  // Sunday=0, Monday=1, ..., Friday=5, Saturday=6
-  const daysLeft = (() => {
-    const now = new Date();
-    const dayOfWeek = now.getDay(); // 0=Sunday, 6=Saturday
-    return 6 - dayOfWeek; // Days until Saturday
-  })();
-  
+
+  const daysLeft = 6 - new Date().getDay();
   const challengePct = Math.min((localProgress / challenge.target) * 100, 100);
   const challengeDone = localProgress >= challenge.target;
-  
+  const timerPct = timerMax > 0 ? timerSeconds / timerMax : 0;
+
+  // ── Stats data ────────────────────────────────────────────────────────────
+  const stats = [
+    { value: streak,        label: t('Day Streak',    'أيام متتالية'),  icon: '🔥' },
+    { value: weekWorkouts,  label: t('This Week',     'هذا الأسبوع'),  icon: '📅' },
+    { value: totalWorkouts, label: t('Total Workouts','مجموع التمارين'), icon: '💪' },
+  ];
+
   return (
-    <div>
-      {/* Hero Card */}
-      <div style={{
-        background: 'linear-gradient(135deg, var(--bg2) 0%, #0d0e22 100%)',
-        border: '1px solid rgba(112,132,255,0.22)',
-        borderRadius: 'var(--r-xl)',
-        padding: '28px 24px',
-        marginBottom: '16px',
-        position: 'relative',
-        overflow: 'hidden'
-      }}>
-        <div style={{
-          content: '',
-          position: 'absolute',
-          top: '-40px',
-          right: '-40px',
-          width: '180px',
-          height: '180px',
-          background: 'radial-gradient(circle, rgba(112,132,255,0.18) 0%, transparent 70%)',
-          pointerEvents: 'none'
-        }} />
-        <p style={{ fontSize: '13px', color: 'var(--gray2)', marginBottom: '4px' }}>
-          {greeting}{userName ? `, ${userName}` : ''} 💪
-        </p>
-        <h1 style={{
-          fontFamily: 'var(--font-display)',
-          fontSize: '36px',
-          color: 'var(--white)',
-          lineHeight: 1.1,
-          marginBottom: '8px'
-        }}>
-          {t('Ready to ', 'جاهز ')}
-          <span style={{ color: 'var(--green)', textShadow: '0 0 18px rgba(112,132,255,0.55)' }}>
-            {t('Train?', 'للتمرين؟')}
-          </span>
-        </h1>
-        <div style={{
-          fontSize: '13px',
-          color: 'var(--gray2)',
-          marginBottom: '16px',
-          lineHeight: 1.5,
-          padding: '12px',
-          background: 'var(--green-dim)',
-          borderRadius: 'var(--r-md)',
-          borderLeft: '3px solid var(--green)'
-        }}>
-          <strong style={{ color: 'var(--green)', display: 'block', fontSize: '15px', marginBottom: '4px' }}>
-            {t("🍚 Don't know how to count Kabsa calories?", '🍚 ما تعرف كيف تحسب سعرات الكبسة؟')}
-          </strong>
-          <span>{t('Track your favorite local meals easily in the Calories tab →', 'تتبع وجباتك المحلية المفضلة بسهولة في تبويب السعرات ←')}</span>
-        </div>
-        <button 
-          onClick={() => router.push('/programs')}
-          className="animate-glow"
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '8px',
-            background: 'var(--green)',
-            color: 'var(--bg)',
-            fontWeight: 700,
-            fontSize: '14px',
-            padding: '13px 24px',
-            borderRadius: 'var(--r-lg)',
-            border: 'none',
-            cursor: 'pointer'
-          }}
-        >
-          <span>⚡</span>
-          <span>{t('Start Training', 'ابدأ التمرين')}</span>
-        </button>
-      </div>
-      
-      {/* Quick Stats */}
-      <div style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(3, 1fr)',
-        gap: '10px',
-        marginBottom: '16px'
-      }}>
-        <div style={{
-          background: 'var(--bg2)',
-          border: '1px solid var(--bg4)',
-          borderRadius: 'var(--r-lg)',
-          padding: '14px 12px',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', lineHeight: 1 }}>
-            {streak}
-          </div>
-          <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '4px' }}>
-            {t('Day Streak', 'أيام متتالية')}
-          </div>
-        </div>
-        <div style={{
-          background: 'var(--bg2)',
-          border: '1px solid var(--bg4)',
-          borderRadius: 'var(--r-lg)',
-          padding: '14px 12px',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', lineHeight: 1 }}>
-            {weekWorkouts}
-          </div>
-          <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '4px' }}>
-            {t('This Week', 'هذا الأسبوع')}
-          </div>
-        </div>
-        <div style={{
-          background: 'var(--bg2)',
-          border: '1px solid var(--bg4)',
-          borderRadius: 'var(--r-lg)',
-          padding: '14px 12px',
-          textAlign: 'center'
-        }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', lineHeight: 1 }}>
-            {totalWorkouts}
-          </div>
-          <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '4px' }}>
-            {t('Total Done', 'إجمالي')}
-          </div>
-        </div>
-      </div>
-      
-      {/* Weekly Challenge */}
-      <div style={{
-        background: 'var(--bg2)',
-        border: challengeDone ? '1px solid var(--green)' : '1px solid rgba(112,132,255,0.25)',
-        borderRadius: 'var(--r-xl)',
-        padding: '20px',
-        marginBottom: '16px',
-        boxShadow: challengeDone ? '0 0 24px rgba(112,132,255,0.25)' : 'none'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '6px',
-            background: 'var(--green-dim)',
-            border: '1px solid rgba(112,132,255,0.30)',
-            borderRadius: '20px',
-            padding: '4px 12px',
-            fontSize: '11px',
-            color: 'var(--green)',
-            fontWeight: 600
-          }}>
-            🏆 <span>{t('Weekly Challenge', 'تحدي الأسبوع')}</span>
-          </div>
-          <div style={{ fontSize: '11px', color: 'var(--gray2)' }}>
-            {t(`Week ${challenge.weekNum}`, `الأسبوع ${challenge.weekNum}`)}
-          </div>
-        </div>
-        
-        <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: '10px', marginBottom: '12px' }}>
-          <div style={{ flex: 1 }}>
-            <div style={{ fontSize: '17px', fontWeight: 700, marginBottom: '4px' }}>
-              {challenge.emoji} {challenge.exercise}
+    <div className="home-grid">
+
+      {/* ══ LEFT COLUMN ═══════════════════════════════════════════════════ */}
+      <div className="home-col-left">
+
+        {/* Hero */}
+        <div className="home-hero">
+          {/* Ambient glow orbs */}
+          <div className="hero-orb hero-orb-1" />
+          <div className="hero-orb hero-orb-2" />
+
+          <div className="hero-body">
+            <p className="hero-greeting">{greeting}{userName ? `, ${userName}` : ''} 💪</p>
+
+            <h1 className="hero-headline">
+              <span className="hero-line-white">{t('Ready to', 'جاهز')}</span>
+              <span className="hero-line-violet">{t('Train?', 'للتمرين؟')}</span>
+            </h1>
+
+            {/* Kabsa promo */}
+            <div className="hero-promo">
+              <strong className="hero-promo-title">
+                {t("🍚 Don't know how to count Kabsa calories?", '🍚 ما تعرف كيف تحسب سعرات الكبسة؟')}
+              </strong>
+              <span className="hero-promo-body">
+                {t('Track your favorite local meals in the Calories tab →', 'تتبع وجباتك المحلية في تبويب السعرات ←')}
+              </span>
             </div>
-            <div style={{ fontSize: '13px', color: 'var(--gray2)' }}>
-              {t(challenge.en, challenge.ar)}
-            </div>
-          </div>
-          {challengeDone && (
-            <div style={{
-              background: 'var(--green)',
-              color: '#000',
-              fontSize: '11px',
-              fontWeight: 700,
-              padding: '4px 10px',
-              borderRadius: '12px',
-              whiteSpace: 'nowrap',
-              flexShrink: 0
-            }}>
-              ✓ Done!
-            </div>
-          )}
-        </div>
-        
-        <div style={{
-          height: '6px',
-          background: 'var(--bg4)',
-          borderRadius: '3px',
-          overflow: 'hidden',
-          marginBottom: '8px'
-        }}>
-          <div style={{
-            height: '100%',
-            background: 'linear-gradient(90deg, var(--green2), var(--green))',
-            borderRadius: '3px',
-            transition: 'width 0.5s ease',
-            width: `${challengePct}%`
-          }} />
-        </div>
-        
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          <div style={{ fontSize: '13px', color: 'var(--gray2)' }}>
-            {localProgress} / {challenge.target} {challenge.unit}
-          </div>
-          <div style={{ display: 'flex', gap: '6px' }}>
-            <button
-              onClick={() => challengeLog(-1)}
-              style={{
-                width: '28px',
-                height: '28px',
-                borderRadius: '50%',
-                background: 'var(--bg3)',
-                border: '1px solid var(--bg4)',
-                color: 'var(--white)',
-                fontSize: '16px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer'
-              }}
-            >
-              −
-            </button>
-            <button
-              onClick={() => challengeLog(1)}
-              style={{
-                width: '28px',
-                height: '28px',
-                borderRadius: '50%',
-                background: 'var(--green)',
-                border: '1px solid var(--green)',
-                color: '#000',
-                fontSize: '16px',
-                fontWeight: 700,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer'
-              }}
-            >
-              +
+
+            {/* CTA */}
+            <button onClick={() => router.push('/programs')} className="hero-cta animate-glow">
+              <span>⚡</span>
+              <span>{t('Start Training', 'ابدأ التمرين')}</span>
             </button>
           </div>
         </div>
-        
-        <div style={{ marginTop: '10px', fontSize: '11px', color: 'var(--gray3)', textAlign: 'center' }}>
-          {challengeDone
-            ? t('🎉 Challenge completed this week!', '🎉 أكملت التحدي هذا الأسبوع!')
-            : daysLeft === 0
-              ? t('Last day today!', 'آخر يوم اليوم!')
-              : t(`${daysLeft} days left · Each + = ${challenge.step} ${challenge.unit}`, `${daysLeft} أيام متبقية · كل + = ${challenge.step} ${challenge.unit}`)}
+
+        {/* Weekly Challenge */}
+        <div className="challenge-card" style={{ boxShadow: challengeDone ? '0 0 24px rgba(112,132,255,0.25)' : 'none', borderColor: challengeDone ? 'var(--violet)' : 'rgba(112,132,255,0.25)' }}>
+          <div className="challenge-header">
+            <div className="challenge-badge">🏆 <span>{t('Weekly Challenge', 'تحدي الأسبوع')}</span></div>
+            <span className="challenge-week">{t(`Week ${challenge.weekNum}`, `الأسبوع ${challenge.weekNum}`)} · {daysLeft === 0 ? t('Last day!', 'آخر يوم!') : t(`${daysLeft}d left`, `${daysLeft} أيام`)}</span>
+          </div>
+
+          <div className="challenge-body">
+            <div className="challenge-info">
+              <div className="challenge-name">{challenge.emoji} {challenge.exercise}</div>
+              <div className="challenge-desc">{t(challenge.en, challenge.ar)}</div>
+            </div>
+            {challengeDone && <div className="challenge-done-badge">✓ {t('Done!', 'أنجز!')}</div>}
+          </div>
+
+          {/* Progress */}
+          <div className="challenge-progress-bar">
+            <div className="challenge-progress-fill" style={{ width: `${challengePct}%` }} />
+          </div>
+
+          <div className="challenge-footer">
+            <span className="challenge-count">{localProgress} / {challenge.target} {challenge.unit}</span>
+            <div className="challenge-btns">
+              <button className="challenge-btn-minus" onClick={() => challengeLog(-1)}>−</button>
+              <button className="challenge-btn-plus"  onClick={() => challengeLog(+1)}>+{challenge.step}</button>
+            </div>
+          </div>
         </div>
-      </div>
-      
-      {/* Timer */}
-      <div style={{
-        background: 'var(--bg2)',
-        border: '1px solid var(--bg4)',
-        borderRadius: 'var(--r-xl)',
-        padding: '20px',
-        marginBottom: '16px'
-      }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
-          <span style={{ fontSize: '14px', fontWeight: 600 }}>
-            {t('⏱ Rest Timer', '⏱ مؤقت الراحة')}
-          </span>
-          <div style={{ display: 'flex', gap: '6px' }}>
-            {(['rest', 'tabata', 'custom'] as const).map(mode => (
+
+      </div>{/* end home-col-left */}
+
+      {/* ══ RIGHT COLUMN ══════════════════════════════════════════════════ */}
+      <div className="home-col-right">
+
+        {/* Stats panel */}
+        <div className="stats-panel">
+          <div className="stats-panel-title">{t('Your Stats', 'إحصائياتك')}</div>
+          <div className="stats-list">
+            {stats.map(s => (
+              <div key={s.label} className="stats-row">
+                <span className="stats-icon">{s.icon}</span>
+                <span className="stats-label">{s.label}</span>
+                <span className="stats-value">{s.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Timer */}
+        <div className="timer-card">
+          {/* Mode tabs */}
+          <div className="timer-modes">
+            {(['rest', 'tabata', 'custom'] as const).map(m => (
               <button
-                key={mode}
-                onClick={() => handleTimerModeChange(mode)}
-                style={{
-                  fontSize: '11px',
-                  padding: '4px 10px',
-                  borderRadius: '12px',
-                  color: timerMode === mode ? 'var(--bg)' : 'var(--gray2)',
-                  background: timerMode === mode ? 'var(--green)' : 'var(--bg3)',
-                  border: timerMode === mode ? '1px solid var(--green)' : '1px solid var(--bg4)',
-                  fontWeight: 500,
-                  cursor: 'pointer'
-                }}
+                key={m}
+                onClick={() => changeMode(m)}
+                className={`timer-mode-btn ${timerMode === m ? 'active' : ''}`}
               >
-                {mode === 'rest' ? t('Rest', 'راحة') : mode === 'tabata' ? t('Tabata', 'تاباتا') : t('Custom', 'مخصص')}
+                {m === 'rest' ? t('Rest', 'راحة') : m === 'tabata' ? 'Tabata' : t('Custom', 'مخصص')}
+              </button>
+            ))}
+          </div>
+
+          {/* Ring + time display */}
+          <div className="timer-display">
+            <svg className="timer-ring" viewBox="0 0 120 120">
+              <defs>
+                <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#405bff"/>
+                  <stop offset="100%" stopColor="#7084ff"/>
+                </linearGradient>
+              </defs>
+              <circle cx="60" cy="60" r="52" fill="none" stroke="var(--bg4)" strokeWidth="6"/>
+              <circle
+                cx="60" cy="60" r="52"
+                fill="none"
+                stroke="url(#timerGrad)"
+                strokeWidth="6"
+                strokeDasharray={`${2 * Math.PI * 52}`}
+                strokeDashoffset={`${2 * Math.PI * 52 * (1 - timerPct)}`}
+                strokeLinecap="round"
+                transform="rotate(-90 60 60)"
+                style={{ transition: timerRunning ? 'stroke-dashoffset 1s linear' : 'stroke-dashoffset 0.3s ease' }}
+              />
+            </svg>
+            <div className="timer-time-overlay">
+              <span className="timer-time">{fmt(timerSeconds)}</span>
+              <span className="timer-sublabel">
+                {timerMode === 'tabata' ? t('Work Phase', 'مرحلة العمل') : t('Rest Period', 'فترة الراحة')}
+              </span>
+            </div>
+          </div>
+
+          {/* Controls */}
+          <div className="timer-controls">
+            <button className="timer-btn-sec" onClick={timerReset} title="Reset">↺</button>
+            <button className="timer-btn-main animate-glow" onClick={timerToggle}>
+              {timerRunning ? '⏸' : '▶'}
+            </button>
+            <button className="timer-btn-sec" onClick={() => timerAdjust(-15)}>-15s</button>
+          </div>
+
+          {/* Presets */}
+          <div className="timer-presets">
+            {[
+              { label: t('1 min', 'دقيقة'),     sec: 60  },
+              { label: t('1:30',  '1:30'),       sec: 90  },
+              { label: t('3 min', '3 دقائق'),    sec: 180 },
+            ].map(p => (
+              <button key={p.sec} className="timer-preset-btn" onClick={() => setPreset(p.sec)}>
+                <span className="timer-preset-time">{fmt(p.sec)}</span>
+                <span className="timer-preset-label">{p.label}</span>
               </button>
             ))}
           </div>
         </div>
-        
-        <div style={{ textAlign: 'center', marginBottom: '16px' }}>
-          <div style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '72px',
-            color: 'var(--green)',
-            letterSpacing: '4px',
-            lineHeight: 1,
-            textShadow: '0 0 24px rgba(112,132,255,0.50)'
-          }}>
-            {formatTime(timerSeconds)}
-          </div>
-          <div style={{ fontSize: '13px', color: 'var(--gray2)', marginTop: '4px' }}>
-            {timerMode === 'tabata' ? t('Work Phase', 'مرحلة العمل') : t('Rest Period', 'فترة الراحة')}
-          </div>
-        </div>
-        
-        <div style={{ display: 'flex', justifyContent: 'center', gap: '12px' }}>
-          <button
-            onClick={timerReset}
-            style={{
-              width: '52px',
-              height: '52px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '18px',
-              border: '2px solid var(--bg4)',
-              color: 'var(--white)',
-              background: 'var(--bg3)',
-              cursor: 'pointer'
-            }}
-          >
-            ↺
-          </button>
-          <button
-            onClick={timerToggle}
-            className="animate-glow"
-            style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '22px',
-              background: 'var(--green)',
-              border: '2px solid var(--green)',
-              color: 'var(--bg)',
-              cursor: 'pointer'
-            }}
-          >
-            {timerRunning ? '⏸' : '▶'}
-          </button>
-          <button
-            onClick={() => timerAdjust(-15)}
-            style={{
-              width: '52px',
-              height: '52px',
-              borderRadius: '50%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '12px',
-              border: '2px solid var(--bg4)',
-              color: 'var(--white)',
-              background: 'var(--bg3)',
-              cursor: 'pointer'
-            }}
-          >
-            -15s
-          </button>
-        </div>
-        
-        <div style={{ display: 'flex', gap: '8px', marginTop: '14px' }}>
-          {[
-            { label: t('Short', 'قصير'), val: '1:00', sec: 60 },
-            { label: t('Medium', 'متوسط'), val: '1:30', sec: 90 },
-            { label: t('Long', 'طويل'), val: '3:00', sec: 180 }
-          ].map(preset => (
-            <button
-              key={preset.sec}
-              onClick={() => setTimerPreset(preset.sec)}
-              style={{
-                flex: 1,
-                background: 'var(--bg3)',
-                border: '1px solid var(--bg4)',
-                borderRadius: 'var(--r-md)',
-                padding: '8px',
-                textAlign: 'center',
-                cursor: 'pointer'
-              }}
-            >
-              <span style={{ fontSize: '10px', color: 'var(--gray2)', display: 'block' }}>{preset.label}</span>
-              <span style={{ fontSize: '14px', fontWeight: 700, color: 'var(--white)' }}>{preset.val}</span>
-            </button>
-          ))}
-        </div>
-      </div>
+
+      </div>{/* end home-col-right */}
     </div>
   );
 }

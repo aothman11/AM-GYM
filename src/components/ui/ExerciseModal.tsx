@@ -123,7 +123,7 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
                     style={{
                       width: '36px',
                       height: '36px',
-                      border: '3px solid #22ff44',
+                      border: '3px solid var(--violet)',
                       borderTopColor: 'transparent',
                       borderRadius: '50%',
                       animation: 'spin 1s linear infinite'
@@ -204,8 +204,8 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
                       position: 'absolute',
                       top: '10px',
                       left: '10px',
-                      background: 'rgba(34,255,68,0.9)',
-                      color: '#000',
+                      background: 'rgba(112,132,255,0.90)',
+                      color: '#fff',
                       padding: '4px 10px',
                       borderRadius: '12px',
                       fontSize: '10px',
@@ -223,13 +223,13 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
                       width: '72px',
                       height: '72px',
                       borderRadius: '50%',
-                      background: 'rgba(34,255,68,.12)',
-                      border: '2px solid #22ff44',
+                      background: 'var(--violet-dim)',
+                      border: '2px solid var(--violet)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       fontSize: '32px',
-                      color: '#22ff44'
+                      color: 'var(--violet)'
                     }}
                   >
                     {exercise.name.charAt(0).toUpperCase()}

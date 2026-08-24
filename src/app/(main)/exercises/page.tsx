@@ -23,7 +23,7 @@ export default function ExercisesPage() {
 
   return (
     <div>
-      <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', letterSpacing: '1px', marginBottom: '4px', textShadow: '0 0 10px rgba(34,255,68,0.3)' }}>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', letterSpacing: '1px', marginBottom: '4px', textShadow: '0 0 16px rgba(112,132,255,0.45)' }}>
         {t('EXERCISES', 'التمارين')}
       </div>
       <div style={{ fontSize: '13px', color: 'var(--gray2)', marginBottom: '20px' }}>
@@ -90,7 +90,7 @@ export default function ExercisesPage() {
       </div>
 
       {/* Grid */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div className="exercise-list-grid">
         {filteredExercises.length === 0 ? (
           <div style={{ textAlign: 'center', padding: '40px 20px', color: 'var(--gray2)' }}>
             <div style={{ fontSize: '40px', marginBottom: '10px' }}>🔍</div>
@@ -133,9 +133,9 @@ export default function ExercisesPage() {
                     fontSize: '10px',
                     padding: '2px 7px',
                     borderRadius: '8px',
-                    background: 'var(--green-dim)',
-                    color: 'var(--green)',
-                    border: '1px solid rgba(34,255,68,0.2)'
+                    background: 'var(--violet-dim)',
+                    color: 'var(--violet)',
+                    border: '1px solid rgba(112,132,255,0.25)'
                   }}>
                     {ex.muscle}
                   </span>

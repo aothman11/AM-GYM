@@ -1,11 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // The Prisma API routes are dormant (auth removed) but still import
-  // @prisma/client types. Skip TS + ESLint checks at build time so
-  // Vercel doesn't need to run `prisma generate`.
+  // Skip TS type-checking at build time so the dormant Prisma API
+  // routes (which import @prisma/client) don't block the Vercel build.
   typescript: { ignoreBuildErrors: true },
-  eslint: { ignoreDuringBuilds: true },
 };
 
 export default nextConfig;

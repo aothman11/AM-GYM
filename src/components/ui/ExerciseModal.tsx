@@ -95,9 +95,9 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
           ✕
         </button>
         
-        <div className="modal-handle" />
-        <div className="modal-inner">
-
+        {/* Fixed top section — always visible */}
+        <div className="modal-top">
+          <div className="modal-handle" />
           <div className="modal-video">
             <div 
               style={{
@@ -240,7 +240,10 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
               )}
             </div>
           </div>
+        </div>{/* end modal-top */}
 
+        {/* Scrollable details */}
+        <div className="modal-scroll">
           <div className="modal-title">{exercise.name}</div>
           <div className="modal-muscle">
             {exercise.muscle ? `${t('Primary:', 'العضلة الرئيسية:')} ${exercise.muscle}` : ''}
@@ -258,7 +261,7 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
           <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--gray2)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '.5px' }}>
             {t('Form Cues', 'إرشادات الأداء')}
           </div>
-          
+
           <div className="form-cue-list">
             {exercise.cues.map((cue, i) => (
               <div key={i} className="form-cue">
@@ -267,7 +270,7 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
               </div>
             ))}
           </div>
-        </div>
+        </div>{/* end modal-scroll */}
       </div>
     </div>
   );

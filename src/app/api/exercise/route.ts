@@ -1,5 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+// ── Simple in-memory rate limiter (Fix #8) ──────────────────────────────────
+// 60 requests per minute per IP. Works for single-instance deployments;
+// replace with Redis/Vercel KV for multi-region scale.
+const RL_MAP = new Map<string, { count: number; reset: number }>();
+const RL_LIMIT = 60;
+const RL_WINDOW_MS = 60_000;
+
+function checkRateLimit(ip: string): boolean {
+  const now = Date.now();
+  const entry = RL_MAP.get(ip);
+  if (!entry || now > entry.reset) {
+    RL_MAP.set(ip, { count: 1, reset: now + RL_WINDOW_MS });
+    return true;
+  }
+  if (entry.count >= RL_LIMIT) return false;
+  entry.count++;
+  return true;
+}
+
+// Prevent the map from growing unbounded between deploys
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, val] of RL_MAP) {
+    if (now > val.reset) RL_MAP.delete(key);
+  }
+}, RL_WINDOW_MS);
+
 // Verified working GIF URLs from fitnessprogramer.com
 const EXERCISE_GIFS: Record<string, string> = {
   // CHEST
@@ -173,6 +200,18 @@ const EXERCISE_GIFS: Record<string, string> = {
 };
 
 export async function GET(request: NextRequest) {
+  // Rate-limit by IP
+  const ip =
+    request.headers.get('x-forwarded-for')?.split(',')[0].trim() ??
+    request.headers.get('x-real-ip') ??
+    'unknown';
+  if (!checkRateLimit(ip)) {
+    return NextResponse.json(
+      { error: 'Too many requests' },
+      { status: 429, headers: { 'Retry-After': '60' } },
+    );
+  }
+
   const searchParams = request.nextUrl.searchParams;
   const name = searchParams.get('name');
 

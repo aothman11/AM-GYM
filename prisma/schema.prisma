@@ -9,15 +9,65 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?      @unique
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  profile       UserProfile?
+  foodEntries   FoodEntry[]
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+}
+
+// Stores all per-user profile data and workout stats.
+// One row per user; synced from client on every meaningful state change.
+model UserProfile {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  displayName     String?
+  weight          Float?
+  height          Float?
+  age             Int?
+  goal            String?
+  gender          String   @default("male")
+  lang            String   @default("en")
+  calorieTarget   Int      @default(2000)
+  // Wizard / program selection
+  wizardSplit     String?
+  wizardLevel     String?
+  wizardGoal      String?
+  wizardEquip     String?
+  // Workout counters
+  streak          Int      @default(0)
+  weekWorkouts    Int      @default(0)
+  totalWorkouts   Int      @default(0)
+  lastWorkoutDate String?
+  weekStart       String?
+  achievements    String[]
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  updatedAt       DateTime @updatedAt
+}
+
+// One row per food item logged per day per user.
+// `id` is a client-generated unique string so it doubles as the local logId.
+model FoodEntry {
+  id        String   @id               // client-provided (genId())
+  userId    String
+  date      String                     // toDateString() e.g. "Mon Aug 24 2026"
+  foodId    Int
+  name      String
+  emoji     String
+  cal       Int
+  p         Float
+  c         Float
+  f         Float
+  per       String
+  isMeal    Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 }
 
 model Account {

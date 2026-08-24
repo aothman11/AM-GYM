@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { useApp } from '@/contexts/AppContext';
+import { useApp, AddFoodInput } from '@/contexts/AppContext';
 import { FOODS, MEALS, Food, Meal } from '@/data/foods';
+import { SearchInput } from '@/components/ui/SearchInput';
 
 export default function CaloriesPage() {
   const { t, foodLog, addFood, removeFood, calorieTarget } = useApp();
@@ -10,31 +11,41 @@ export default function CaloriesPage() {
   const [foodSearch, setFoodSearch] = useState('');
   const [mealSearch, setMealSearch] = useState('');
 
-  const filteredFoods = useMemo(() => {
-    return FOODS.filter(f => !foodSearch || f.name.toLowerCase().includes(foodSearch.toLowerCase()));
-  }, [foodSearch]);
+  // Fix #4: derive macro targets from calorieTarget using standard macro splits
+  // Protein 30 % of kcal / 4 kcal per gram
+  // Carbs   45 % of kcal / 4 kcal per gram
+  // Fat     25 % of kcal / 9 kcal per gram
+  const macroTargets = useMemo(() => ({
+    p: Math.max(1, Math.round(calorieTarget * 0.30 / 4)),
+    c: Math.max(1, Math.round(calorieTarget * 0.45 / 4)),
+    f: Math.max(1, Math.round(calorieTarget * 0.25 / 9)),
+  }), [calorieTarget]);
 
-  const filteredMeals = useMemo(() => {
-    return MEALS.filter(m => !mealSearch || m.name.toLowerCase().includes(mealSearch.toLowerCase()));
-  }, [mealSearch]);
+  const filteredFoods = useMemo(
+    () => FOODS.filter(f => !foodSearch || f.name.toLowerCase().includes(foodSearch.toLowerCase())),
+    [foodSearch],
+  );
 
-  const totals = useMemo(() => {
-    return foodLog.reduce((acc, f) => ({
-      cal: acc.cal + f.cal,
-      p: acc.p + f.p,
-      c: acc.c + f.c,
-      f: acc.f + f.f
-    }), { cal: 0, p: 0, c: 0, f: 0 });
-  }, [foodLog]);
+  const filteredMeals = useMemo(
+    () => MEALS.filter(m => !mealSearch || m.name.toLowerCase().includes(mealSearch.toLowerCase())),
+    [mealSearch],
+  );
 
-  const caloriePct = Math.min(totals.cal / calorieTarget, 1);
+  const totals = useMemo(
+    () => foodLog.reduce((acc, f) => ({ cal: acc.cal + f.cal, p: acc.p + f.p, c: acc.c + f.c, f: acc.f + f.f }), { cal: 0, p: 0, c: 0, f: 0 }),
+    [foodLog],
+  );
+
+  // Guard against calorieTarget = 0 to prevent Infinity
+  const caloriePct = calorieTarget > 0 ? Math.min(totals.cal / calorieTarget, 1) : 0;
   const circumference = 408;
-  const strokeDashoffset = circumference - (circumference * caloriePct);
+  const strokeDashoffset = circumference - circumference * caloriePct;
 
+  // Fix #5 + #6: logId and date are generated internally by addFood;
+  // callers pass only the food item data.
   const handleAddFood = (item: Food | Meal, isMeal: boolean) => {
-    addFood({
+    const input: AddFoodInput = {
       id: item.id,
-      logId: Date.now(),
       name: item.name,
       emoji: item.emoji,
       cal: item.cal,
@@ -42,8 +53,9 @@ export default function CaloriesPage() {
       c: item.c,
       f: item.f,
       per: item.per,
-      isMeal
-    });
+      isMeal,
+    };
+    addFood(input);
   };
 
   return (
@@ -59,14 +71,14 @@ export default function CaloriesPage() {
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
         <svg width="160" height="160" viewBox="0 0 160 160" style={{ filter: 'drop-shadow(0 0 10px rgba(34,255,68,0.2))' }}>
           <circle cx="80" cy="80" r="65" fill="none" stroke="#222" strokeWidth="12"/>
-          <circle 
-            cx="80" cy="80" r="65" 
-            fill="none" 
-            stroke="#22ff44" 
+          <circle
+            cx="80" cy="80" r="65"
+            fill="none"
+            stroke="#22ff44"
             strokeWidth="12"
-            strokeDasharray="408" 
+            strokeDasharray="408"
             strokeDashoffset={strokeDashoffset}
-            strokeLinecap="round" 
+            strokeLinecap="round"
             transform="rotate(-90 80 80)"
             style={{ transition: 'stroke-dashoffset 0.5s ease' }}
           />
@@ -79,15 +91,16 @@ export default function CaloriesPage() {
         </svg>
       </div>
 
-      {/* Macros */}
+      {/* Macros — Fix #4: bars scale with user's calorie goal */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '20px' }}>
         <div style={{ background: 'var(--bg2)', border: '1px solid var(--bg4)', borderRadius: 'var(--r-md)', padding: '12px', textAlign: 'center' }}>
           <div style={{ fontFamily: 'var(--font-display)', fontSize: '22px', lineHeight: 1, color: 'var(--green)' }}>
             {Math.round(totals.p)}g
           </div>
           <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '2px' }}>{t('Protein', 'بروتين')}</div>
+          <div style={{ fontSize: '10px', color: 'var(--gray3)', marginTop: '1px' }}>/ {macroTargets.p}g</div>
           <div style={{ height: '3px', borderRadius: '2px', marginTop: '6px', background: 'var(--bg4)' }}>
-            <div style={{ height: '100%', borderRadius: '2px', background: '#22ff44', width: `${Math.min(totals.p / 150 * 100, 100)}%`, transition: 'width 0.5s' }} />
+            <div style={{ height: '100%', borderRadius: '2px', background: '#22ff44', width: `${Math.min(totals.p / macroTargets.p * 100, 100)}%`, transition: 'width 0.5s' }} />
           </div>
         </div>
         <div style={{ background: 'var(--bg2)', border: '1px solid var(--bg4)', borderRadius: 'var(--r-md)', padding: '12px', textAlign: 'center' }}>
@@ -95,8 +108,9 @@ export default function CaloriesPage() {
             {Math.round(totals.c)}g
           </div>
           <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '2px' }}>{t('Carbs', 'كارب')}</div>
+          <div style={{ fontSize: '10px', color: 'var(--gray3)', marginTop: '1px' }}>/ {macroTargets.c}g</div>
           <div style={{ height: '3px', borderRadius: '2px', marginTop: '6px', background: 'var(--bg4)' }}>
-            <div style={{ height: '100%', borderRadius: '2px', background: '#ffaa22', width: `${Math.min(totals.c / 250 * 100, 100)}%`, transition: 'width 0.5s' }} />
+            <div style={{ height: '100%', borderRadius: '2px', background: '#ffaa22', width: `${Math.min(totals.c / macroTargets.c * 100, 100)}%`, transition: 'width 0.5s' }} />
           </div>
         </div>
         <div style={{ background: 'var(--bg2)', border: '1px solid var(--bg4)', borderRadius: 'var(--r-md)', padding: '12px', textAlign: 'center' }}>
@@ -104,8 +118,9 @@ export default function CaloriesPage() {
             {Math.round(totals.f)}g
           </div>
           <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '2px' }}>{t('Fats', 'دهون')}</div>
+          <div style={{ fontSize: '10px', color: 'var(--gray3)', marginTop: '1px' }}>/ {macroTargets.f}g</div>
           <div style={{ height: '3px', borderRadius: '2px', marginTop: '6px', background: 'var(--bg4)' }}>
-            <div style={{ height: '100%', borderRadius: '2px', background: '#ff6644', width: `${Math.min(totals.f / 70 * 100, 100)}%`, transition: 'width 0.5s' }} />
+            <div style={{ height: '100%', borderRadius: '2px', background: '#ff6644', width: `${Math.min(totals.f / macroTargets.f * 100, 100)}%`, transition: 'width 0.5s' }} />
           </div>
         </div>
       </div>
@@ -123,16 +138,10 @@ export default function CaloriesPage() {
         <button
           onClick={() => setActiveTab('items')}
           style={{
-            flex: 1,
-            padding: '10px',
-            textAlign: 'center',
-            fontSize: '13px',
-            fontWeight: 600,
+            flex: 1, padding: '10px', textAlign: 'center', fontSize: '13px', fontWeight: 600,
             color: activeTab === 'items' ? 'var(--bg)' : 'var(--gray2)',
             background: activeTab === 'items' ? 'var(--green)' : 'transparent',
-            cursor: 'pointer',
-            border: 'none',
-            borderRadius: 'var(--r-lg)'
+            cursor: 'pointer', border: 'none', borderRadius: 'var(--r-lg)',
           }}
         >
           {t('Individual Items', 'أطعمة فردية')}
@@ -140,95 +149,27 @@ export default function CaloriesPage() {
         <button
           onClick={() => setActiveTab('meals')}
           style={{
-            flex: 1,
-            padding: '10px',
-            textAlign: 'center',
-            fontSize: '13px',
-            fontWeight: 600,
+            flex: 1, padding: '10px', textAlign: 'center', fontSize: '13px', fontWeight: 600,
             color: activeTab === 'meals' ? 'var(--bg)' : 'var(--gray2)',
             background: activeTab === 'meals' ? 'var(--green)' : 'transparent',
-            cursor: 'pointer',
-            border: 'none',
-            borderRadius: 'var(--r-lg)'
+            cursor: 'pointer', border: 'none', borderRadius: 'var(--r-lg)',
           }}
         >
           {t('Local Meals', 'وجبات محلية')}
         </button>
       </div>
 
-      {/* Food Items View */}
+      {/* Food Items View — Fix #6: shared SearchInput component */}
       {activeTab === 'items' && (
         <div>
-          <div style={{ position: 'relative', marginBottom: '12px' }}>
-            <span style={{
-              position: 'absolute',
-              left: '14px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              fontSize: '17px',
-              color: 'var(--gray3)'
-            }}>
-              🔍
-            </span>
-            <input
-              type="text"
-              value={foodSearch}
-              onChange={e => setFoodSearch(e.target.value)}
-              placeholder={t('Search food...', 'ابحث عن طعام...')}
-              style={{
-                width: '100%',
-                background: 'var(--bg2)',
-                border: '1.5px solid var(--bg4)',
-                borderRadius: 'var(--r-lg)',
-                padding: '12px 16px 12px 44px',
-                color: 'var(--white)',
-                fontSize: '14px'
-              }}
-            />
-          </div>
+          <SearchInput
+            value={foodSearch}
+            onChange={setFoodSearch}
+            placeholder={t('Search food...', 'ابحث عن طعام...')}
+          />
           <div>
             {filteredFoods.map(f => (
-              <div
-                key={f.id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding: '12px 14px',
-                  background: 'var(--bg2)',
-                  border: '1px solid var(--bg4)',
-                  borderRadius: 'var(--r-md)',
-                  marginBottom: '8px',
-                  cursor: 'pointer'
-                }}
-              >
-                <span style={{ fontSize: '22px', width: '36px', textAlign: 'center', flexShrink: 0 }}>{f.emoji}</span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '1px' }}>{f.name}</div>
-                  <div style={{ fontSize: '12px', color: 'var(--gray2)' }}>
-                    {f.cal} kcal · P:{f.p}g C:{f.c}g F:{f.f}g <span style={{ color: 'var(--gray3)' }}>per {f.per}</span>
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleAddFood(f, false)}
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '50%',
-                    background: 'var(--green-dim)',
-                    border: '1px solid rgba(34,255,68,0.3)',
-                    color: 'var(--green)',
-                    fontSize: '18px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    flexShrink: 0
-                  }}
-                >
-                  +
-                </button>
-              </div>
+              <FoodRow key={f.id} item={f} onAdd={() => handleAddFood(f, false)} />
             ))}
           </div>
         </div>
@@ -237,76 +178,14 @@ export default function CaloriesPage() {
       {/* Meals View */}
       {activeTab === 'meals' && (
         <div>
-          <div style={{ position: 'relative', marginBottom: '12px' }}>
-            <span style={{
-              position: 'absolute',
-              left: '14px',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              fontSize: '17px',
-              color: 'var(--gray3)'
-            }}>
-              🔍
-            </span>
-            <input
-              type="text"
-              value={mealSearch}
-              onChange={e => setMealSearch(e.target.value)}
-              placeholder={t('Search meals...', 'ابحث عن وجبة...')}
-              style={{
-                width: '100%',
-                background: 'var(--bg2)',
-                border: '1.5px solid var(--bg4)',
-                borderRadius: 'var(--r-lg)',
-                padding: '12px 16px 12px 44px',
-                color: 'var(--white)',
-                fontSize: '14px'
-              }}
-            />
-          </div>
+          <SearchInput
+            value={mealSearch}
+            onChange={setMealSearch}
+            placeholder={t('Search meals...', 'ابحث عن وجبة...')}
+          />
           <div>
             {filteredMeals.map(m => (
-              <div
-                key={m.id}
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding: '12px 14px',
-                  background: 'var(--bg2)',
-                  border: '1px solid var(--bg4)',
-                  borderRadius: 'var(--r-md)',
-                  marginBottom: '8px',
-                  cursor: 'pointer'
-                }}
-              >
-                <span style={{ fontSize: '22px', width: '36px', textAlign: 'center', flexShrink: 0 }}>{m.emoji}</span>
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '1px' }}>{m.name}</div>
-                  <div style={{ fontSize: '12px', color: 'var(--gray2)' }}>
-                    {m.cal} kcal · P:{m.p}g C:{m.c}g F:{m.f}g <span style={{ color: 'var(--gray3)' }}>per {m.per}</span>
-                  </div>
-                </div>
-                <button
-                  onClick={() => handleAddFood(m, true)}
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '50%',
-                    background: 'var(--green-dim)',
-                    border: '1px solid rgba(34,255,68,0.3)',
-                    color: 'var(--green)',
-                    fontSize: '18px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    flexShrink: 0
-                  }}
-                >
-                  +
-                </button>
-              </div>
+              <FoodRow key={m.id} item={m} onAdd={() => handleAddFood(m, true)} />
             ))}
           </div>
         </div>
@@ -328,36 +207,19 @@ export default function CaloriesPage() {
               <div
                 key={f.logId}
                 style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '10px',
-                  padding: '10px 12px',
-                  background: 'var(--bg2)',
-                  border: '1px solid var(--bg4)',
-                  borderRadius: 'var(--r-md)',
-                  marginBottom: '6px'
+                  display: 'flex', alignItems: 'center', gap: '10px',
+                  padding: '10px 12px', background: 'var(--bg2)',
+                  border: '1px solid var(--bg4)', borderRadius: 'var(--r-md)', marginBottom: '6px',
                 }}
               >
-                <div style={{
-                  width: '8px',
-                  height: '8px',
-                  borderRadius: '50%',
-                  background: 'var(--green)',
-                  flexShrink: 0
-                }} />
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--green)', flexShrink: 0 }} />
                 <span style={{ fontSize: '16px' }}>{f.emoji}</span>
                 <div style={{ flex: 1, fontSize: '13px' }}>{f.name}</div>
                 <div style={{ fontSize: '13px', color: 'var(--green)', fontWeight: 600 }}>{f.cal} kcal</div>
                 <button
                   onClick={() => removeFood(f.logId)}
-                  style={{
-                    color: 'var(--gray3)',
-                    fontSize: '16px',
-                    cursor: 'pointer',
-                    background: 'none',
-                    border: 'none',
-                    padding: '4px'
-                  }}
+                  style={{ color: 'var(--gray3)', fontSize: '16px', cursor: 'pointer', background: 'none', border: 'none', padding: '4px' }}
+                  aria-label={`Remove ${f.name}`}
                 >
                   ✕
                 </button>
@@ -366,6 +228,45 @@ export default function CaloriesPage() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+// ── Shared food/meal row (Fix #6: eliminates duplicated row markup too) ──────
+
+interface FoodRowProps {
+  item: Food | Meal;
+  onAdd: () => void;
+}
+
+function FoodRow({ item, onAdd }: FoodRowProps) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: '10px',
+      padding: '12px 14px', background: 'var(--bg2)',
+      border: '1px solid var(--bg4)', borderRadius: 'var(--r-md)', marginBottom: '8px',
+    }}>
+      <span style={{ fontSize: '22px', width: '36px', textAlign: 'center', flexShrink: 0 }}>{item.emoji}</span>
+      <div style={{ flex: 1 }}>
+        <div style={{ fontSize: '14px', fontWeight: 600, marginBottom: '1px' }}>{item.name}</div>
+        <div style={{ fontSize: '12px', color: 'var(--gray2)' }}>
+          {item.cal} kcal · P:{item.p}g C:{item.c}g F:{item.f}g{' '}
+          <span style={{ color: 'var(--gray3)' }}>per {item.per}</span>
+        </div>
+      </div>
+      <button
+        onClick={onAdd}
+        style={{
+          width: '30px', height: '30px', borderRadius: '50%',
+          background: 'var(--green-dim)', border: '1px solid rgba(34,255,68,0.3)',
+          color: 'var(--green)', fontSize: '18px',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          cursor: 'pointer', flexShrink: 0,
+        }}
+        aria-label={`Add ${item.name}`}
+      >
+        +
+      </button>
     </div>
   );
 }

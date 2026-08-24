@@ -209,7 +209,7 @@ export default function ProgramsPage() {
             {t(currentStep.sub.en, currentStep.sub.ar)}
           </div>
 
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginBottom: '24px' }}>
+          <div className="wizard-options">
             {currentStep.options.map(opt => {
               const optId = opt.id;
               const isSelected = currentValue === optId;
@@ -281,7 +281,7 @@ export default function ProgramsPage() {
                 </div>
               );
             })}
-          </div>
+          </div>{/* end wizard-options */}
 
           <div style={{ display: 'flex', gap: '10px' }}>
             {wizStep > 0 && (
@@ -436,7 +436,7 @@ export default function ProgramsPage() {
         </div>
 
         {/* Day Cards */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div className="day-cards-grid">
           {prog.days.map((day, i) => {
             const isToday = i === dayOfWeek;
             const isExpanded = expandedDay === i;

@@ -75,200 +75,148 @@ export default function ProfilePage() {
         {t('Your settings & stats', 'إعداداتك وإحصائياتك')}
       </div>
 
-      {/* Avatar */}
-      <div style={{
-        width: '80px',
-        height: '80px',
-        borderRadius: '50%',
-        background: 'var(--green-dim)',
-        border: '2px solid var(--green)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        fontSize: '32px',
-        margin: '0 auto 16px',
-        boxShadow: '0 0 22px rgba(112,132,255,0.30)'
-      }}>
-        {gender === 'male' ? '♂️' : '♀️'}
-      </div>
+      <div className="profile-grid">
 
-      <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <div style={{ fontSize: '18px', fontWeight: 700 }}>{profile.name || 'AM-Gym User'}</div>
-        <div style={{ fontSize: '13px', color: 'var(--gray2)' }}>
-          {profileLevel} · {gender === 'male' ? t('Male', 'ذكر') : t('Female', 'أنثى')}
-        </div>
-      </div>
+        {/* ── LEFT COLUMN — avatar + settings + stats + reset ── */}
+        <div>
 
-      {/* Settings Section */}
-      <div style={{
-        background: 'var(--bg2)',
-        border: '1px solid var(--bg4)',
-        borderRadius: 'var(--r-xl)',
-        overflow: 'hidden',
-        marginBottom: '14px'
-      }}>
-        {[
-          { field: 'name' as const, icon: '👤', value: profile.name || t('Set name', 'اضف اسمك') },
-          { field: 'weight' as const, icon: '⚖️', value: profile.weight ? `${profile.weight} kg` : '— kg' },
-          { field: 'height' as const, icon: '📏', value: profile.height ? `${profile.height} cm` : '— cm' },
-          { field: 'age' as const, icon: '🎂', value: profile.age ? `${profile.age} yrs` : '— yrs' },
-          { field: 'goal' as const, icon: '🎯', value: profile.goal || t('Not set', 'غير محدد') },
-          { field: 'calories' as const, icon: '🔥', value: `${calorieTarget} kcal` },
-        ].map((item, i, arr) => (
-          <div
-            key={item.field}
-            onClick={() => openModal(item.field)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '14px 16px',
-              borderBottom: i < arr.length - 1 ? '1px solid var(--bg4)' : 'none',
-              cursor: 'pointer'
-            }}
-          >
-            <div style={{
-              width: '34px',
-              height: '34px',
-              borderRadius: 'var(--r-sm)',
-              background: 'var(--bg3)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '16px',
-              flexShrink: 0
-            }}>
-              {item.icon}
-            </div>
-            <div style={{ flex: 1, fontSize: '14px' }}>
-              {t(fieldLabels[item.field].en, fieldLabels[item.field].ar)}
-            </div>
-            <div style={{ fontSize: '13px', color: 'var(--green)', fontWeight: 600 }}>
-              {item.value}
-            </div>
-            <div style={{ color: 'var(--gray3)', fontSize: '12px' }}>›</div>
-          </div>
-        ))}
-      </div>
-
-      {/* Achievements Section */}
-      <div style={{ marginBottom: '14px' }}>
-        <div style={{ 
-          fontSize: '14px', 
-          fontWeight: 700, 
-          color: 'var(--gray1)', 
-          marginBottom: '12px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '8px'
-        }}>
-          🏆 {t('Achievements', 'الإنجازات')}
-          <span style={{ 
-            fontSize: '11px', 
-            color: 'var(--green)', 
-            background: 'var(--green-dim)',
-            padding: '2px 8px',
-            borderRadius: '10px'
-          }}>
-            {achievements.length}/{ACHIEVEMENTS.length}
-          </span>
-        </div>
-        <div className="achievements-grid">
-          {ACHIEVEMENTS.map(ach => {
-            const unlocked = achievements.includes(ach.id);
-            return (
-              <div 
-                key={ach.id} 
-                className={`achievement-card ${unlocked ? 'unlocked' : ''}`}
-              >
-                <div className="achievement-icon" style={{ opacity: unlocked ? 1 : 0.3 }}>
-                  {ach.icon}
-                </div>
-                <div className="achievement-title">
-                  {t(ach.title.en, ach.title.ar)}
-                </div>
-                <div className="achievement-desc">
-                  {t(ach.desc.en, ach.desc.ar)}
-                </div>
-                {unlocked && (
-                  <div style={{ 
-                    marginTop: '8px', 
-                    fontSize: '10px', 
-                    color: 'var(--green)',
-                    fontWeight: 700 
-                  }}>
-                    ✓ {t('UNLOCKED', 'مفتوح')}
-                  </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-
-      {/* Stats Summary */}
-      <div style={{
-        background: 'var(--bg2)',
-        border: '1px solid var(--bg4)',
-        borderRadius: 'var(--r-xl)',
-        padding: '16px',
-        marginBottom: '14px'
-      }}>
-        <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--gray1)', marginBottom: '12px' }}>
-          📊 {t('Your Stats', 'إحصائياتك')}
-        </div>
-        <div style={{ display: 'flex', gap: '12px' }}>
-          <div style={{ flex: 1, textAlign: 'center' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--green)' }}>{streak}</div>
-            <div style={{ fontSize: '11px', color: 'var(--gray2)' }}>{t('Day Streak', 'أيام متتالية')}</div>
-          </div>
-          <div style={{ width: '1px', background: 'var(--bg4)' }} />
-          <div style={{ flex: 1, textAlign: 'center' }}>
-            <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--green)' }}>{totalWorkouts}</div>
-            <div style={{ fontSize: '11px', color: 'var(--gray2)' }}>{t('Total Workouts', 'مجموع التمارين')}</div>
-          </div>
-        </div>
-      </div>
-
-      {/* Reset Section */}
-      <div style={{
-        background: 'var(--bg2)',
-        border: '1px solid var(--bg4)',
-        borderRadius: 'var(--r-xl)',
-        overflow: 'hidden'
-      }}>
-        <div
-          onClick={resetAll}
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '12px',
-            padding: '14px 16px',
-            cursor: 'pointer'
-          }}
-        >
+          {/* Avatar */}
           <div style={{
-            width: '34px',
-            height: '34px',
-            borderRadius: 'var(--r-sm)',
-            background: 'var(--bg3)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '16px',
-            flexShrink: 0
+            width: '80px', height: '80px', borderRadius: '50%',
+            background: 'var(--green-dim)', border: '2px solid var(--green)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '32px', margin: '0 auto 16px',
+            boxShadow: '0 0 22px rgba(112,132,255,0.30)'
           }}>
-            🔄
+            {gender === 'male' ? '♂️' : '♀️'}
           </div>
-          <div style={{ flex: 1, fontSize: '14px' }}>
-            {t('Reset All Data', 'إعادة تعيين الكل')}
+
+          <div style={{ textAlign: 'center', marginBottom: '20px' }}>
+            <div style={{ fontSize: '18px', fontWeight: 700 }}>{profile.name || 'AM-Gym User'}</div>
+            <div style={{ fontSize: '13px', color: 'var(--gray2)' }}>
+              {profileLevel} · {gender === 'male' ? t('Male', 'ذكر') : t('Female', 'أنثى')}
+            </div>
           </div>
-          <div style={{ fontSize: '13px', color: 'var(--red)', fontWeight: 600 }}>
-            Reset
+
+          {/* Settings Section */}
+          <div style={{
+            background: 'var(--bg2)', border: '1px solid var(--bg4)',
+            borderRadius: 'var(--r-xl)', overflow: 'hidden', marginBottom: '14px'
+          }}>
+            {[
+              { field: 'name' as const, icon: '👤', value: profile.name || t('Set name', 'اضف اسمك') },
+              { field: 'weight' as const, icon: '⚖️', value: profile.weight ? `${profile.weight} kg` : '— kg' },
+              { field: 'height' as const, icon: '📏', value: profile.height ? `${profile.height} cm` : '— cm' },
+              { field: 'age' as const, icon: '🎂', value: profile.age ? `${profile.age} yrs` : '— yrs' },
+              { field: 'goal' as const, icon: '🎯', value: profile.goal || t('Not set', 'غير محدد') },
+              { field: 'calories' as const, icon: '🔥', value: `${calorieTarget} kcal` },
+            ].map((item, i, arr) => (
+              <div
+                key={item.field}
+                onClick={() => openModal(item.field)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: '12px',
+                  padding: '14px 16px',
+                  borderBottom: i < arr.length - 1 ? '1px solid var(--bg4)' : 'none',
+                  cursor: 'pointer'
+                }}
+              >
+                <div style={{
+                  width: '34px', height: '34px', borderRadius: 'var(--r-sm)',
+                  background: 'var(--bg3)', display: 'flex', alignItems: 'center',
+                  justifyContent: 'center', fontSize: '16px', flexShrink: 0
+                }}>
+                  {item.icon}
+                </div>
+                <div style={{ flex: 1, fontSize: '14px' }}>
+                  {t(fieldLabels[item.field].en, fieldLabels[item.field].ar)}
+                </div>
+                <div style={{ fontSize: '13px', color: 'var(--green)', fontWeight: 600 }}>
+                  {item.value}
+                </div>
+                <div style={{ color: 'var(--gray3)', fontSize: '12px' }}>›</div>
+              </div>
+            ))}
           </div>
-          <div style={{ color: 'var(--gray3)', fontSize: '12px' }}>›</div>
+
+          {/* Stats Summary */}
+          <div style={{
+            background: 'var(--bg2)', border: '1px solid var(--bg4)',
+            borderRadius: 'var(--r-xl)', padding: '16px', marginBottom: '14px'
+          }}>
+            <div style={{ fontSize: '14px', fontWeight: 700, color: 'var(--gray1)', marginBottom: '12px' }}>
+              📊 {t('Your Stats', 'إحصائياتك')}
+            </div>
+            <div style={{ display: 'flex', gap: '12px' }}>
+              <div style={{ flex: 1, textAlign: 'center' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '28px', fontWeight: 700, color: 'var(--violet)' }}>{streak}</div>
+                <div style={{ fontSize: '11px', color: 'var(--gray2)' }}>{t('Day Streak', 'أيام متتالية')}</div>
+              </div>
+              <div style={{ width: '1px', background: 'var(--bg4)' }} />
+              <div style={{ flex: 1, textAlign: 'center' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '28px', fontWeight: 700, color: 'var(--violet)' }}>{totalWorkouts}</div>
+                <div style={{ fontSize: '11px', color: 'var(--gray2)' }}>{t('Total Workouts', 'مجموع التمارين')}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Reset Section */}
+          <div style={{ background: 'var(--bg2)', border: '1px solid var(--bg4)', borderRadius: 'var(--r-xl)', overflow: 'hidden' }}>
+            <div
+              onClick={resetAll}
+              style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '14px 16px', cursor: 'pointer' }}
+            >
+              <div style={{
+                width: '34px', height: '34px', borderRadius: 'var(--r-sm)',
+                background: 'var(--bg3)', display: 'flex', alignItems: 'center',
+                justifyContent: 'center', fontSize: '16px', flexShrink: 0
+              }}>
+                🔄
+              </div>
+              <div style={{ flex: 1, fontSize: '14px' }}>{t('Reset All Data', 'إعادة تعيين الكل')}</div>
+              <div style={{ fontSize: '13px', color: 'var(--red)', fontWeight: 600 }}>Reset</div>
+              <div style={{ color: 'var(--gray3)', fontSize: '12px' }}>›</div>
+            </div>
+          </div>
+
+        </div>{/* end left col */}
+
+        {/* ── RIGHT COLUMN — Achievements ── */}
+        <div>
+          <div style={{
+            fontSize: '14px', fontWeight: 700, color: 'var(--gray1)',
+            marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px'
+          }}>
+            🏆 {t('Achievements', 'الإنجازات')}
+            <span style={{
+              fontSize: '11px', color: 'var(--green)', background: 'var(--green-dim)',
+              padding: '2px 8px', borderRadius: '10px'
+            }}>
+              {achievements.length}/{ACHIEVEMENTS.length}
+            </span>
+          </div>
+          <div className="achievements-grid">
+            {ACHIEVEMENTS.map(ach => {
+              const unlocked = achievements.includes(ach.id);
+              return (
+                <div key={ach.id} className={`achievement-card ${unlocked ? 'unlocked' : ''}`}>
+                  <div className="achievement-icon" style={{ opacity: unlocked ? 1 : 0.3 }}>
+                    {ach.icon}
+                  </div>
+                  <div className="achievement-title">{t(ach.title.en, ach.title.ar)}</div>
+                  <div className="achievement-desc">{t(ach.desc.en, ach.desc.ar)}</div>
+                  {unlocked && (
+                    <div style={{ marginTop: '8px', fontSize: '10px', color: 'var(--green)', fontWeight: 700 }}>
+                      ✓ {t('UNLOCKED', 'مفتوح')}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
-      </div>
+
+      </div>{/* end profile-grid */}
 
       {/* Modal */}
       {modalOpen && editingField && (

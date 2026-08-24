@@ -1301,3 +1301,68 @@ body {
     gap: 12px;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   CALORIES PAGE — desktop 2-column layout
+   ═══════════════════════════════════════════════════════════════════════════ */
+.calories-grid { display: block; }
+/* Desktop right col hidden on mobile */
+.calories-col-log { display: none; }
+
+@media (min-width: 768px) {
+  .calories-grid {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 24px;
+    align-items: start;
+  }
+
+  /* Show sticky right col, hide inline mobile log */
+  .calories-col-log {
+    display: block;
+    position: sticky;
+    top: 36px;
+    background: var(--bg2);
+    border: 1px solid var(--bg4);
+    border-radius: var(--r-xl);
+    padding: 18px;
+  }
+
+  .calories-mobile-log { display: none; }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROFILE PAGE — desktop 2-column layout
+   ═══════════════════════════════════════════════════════════════════════════ */
+.profile-grid { display: block; }
+
+@media (min-width: 768px) {
+  .profile-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PROGRAMS PAGE — desktop enhancements
+   ═══════════════════════════════════════════════════════════════════════════ */
+.wizard-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
+.day-cards-grid { display: flex; flex-direction: column; gap: 10px; }
+
+@media (min-width: 768px) {
+  /* Wizard options — 2-col grid so each step is scannable side-by-side */
+  .wizard-options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  /* Day cards — 2-col grid */
+  .day-cards-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+}

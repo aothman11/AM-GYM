@@ -9,15 +9,16 @@ export default function HomePage() {
   const { t, streak, weekWorkouts, totalWorkouts, challengeProgress, setChallengeProgress, showToast, profile, achievements } = useApp();
   const router = useRouter();
   
-  // Get time-based greeting
-  const getGreeting = () => {
+  // Greeting computed client-side only to avoid SSR/client timezone mismatch (React #418)
+  const [greeting, setGreeting] = useState('');
+  useEffect(() => {
     const hour = new Date().getHours();
-    if (hour < 12) return t('Good morning', 'صباح الخير');
-    if (hour < 17) return t('Good afternoon', 'مساء الخير');
-    if (hour < 21) return t('Good evening', 'مساء الخير');
-    return t('Good night', 'مساء الخير');
-  };
-  
+    if (hour < 12) setGreeting(t('Good morning', 'صباح الخير'));
+    else if (hour < 17) setGreeting(t('Good afternoon', 'مساء الخير'));
+    else if (hour < 21) setGreeting(t('Good evening', 'مساء الخير'));
+    else setGreeting(t('Good night', 'مساء الخير'));
+  }, [t]);
+
   const userName = profile?.name || '';
   
   // Timer state
@@ -150,7 +151,7 @@ export default function HomePage() {
           pointerEvents: 'none'
         }} />
         <p style={{ fontSize: '13px', color: 'var(--gray2)', marginBottom: '4px' }}>
-          {getGreeting()}{userName ? `, ${userName}` : ''} 💪
+          {greeting}{userName ? `, ${userName}` : ''} 💪
         </p>
         <h1 style={{
           fontFamily: 'var(--font-display)',

@@ -230,11 +230,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const savedLastWorkout = localStorage.getItem('amgym_last_workout');
       if (savedLastWorkout) setLastWorkoutDate(savedLastWorkout);
 
-      const savedTheme = localStorage.getItem('amgym_theme') as 'dark' | 'light' | null;
-      if (savedTheme) {
-        setThemeState(savedTheme);
-        document.documentElement.setAttribute('data-theme', savedTheme);
-      }
+      const savedTheme = (localStorage.getItem('amgym_theme') as 'dark' | 'light' | null) ?? 'dark';
+      setThemeState(savedTheme);
+      document.documentElement.setAttribute('data-theme', savedTheme);
 
       const savedAchievements = localStorage.getItem('amgym_achievements');
       if (savedAchievements) setAchievements(JSON.parse(savedAchievements));

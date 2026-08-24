@@ -131,8 +131,8 @@ export default function HomePage() {
     <div>
       {/* Hero Card */}
       <div style={{
-        background: 'linear-gradient(135deg, var(--bg2) 0%, #0f1f12 100%)',
-        border: '1px solid rgba(34,255,68,0.2)',
+        background: 'linear-gradient(135deg, var(--bg2) 0%, #0d0e22 100%)',
+        border: '1px solid rgba(112,132,255,0.22)',
         borderRadius: 'var(--r-xl)',
         padding: '28px 24px',
         marginBottom: '16px',
@@ -146,7 +146,7 @@ export default function HomePage() {
           right: '-40px',
           width: '180px',
           height: '180px',
-          background: 'radial-gradient(circle, rgba(34,255,68,0.15) 0%, transparent 70%)',
+          background: 'radial-gradient(circle, rgba(112,132,255,0.18) 0%, transparent 70%)',
           pointerEvents: 'none'
         }} />
         <p style={{ fontSize: '13px', color: 'var(--gray2)', marginBottom: '4px' }}>
@@ -160,7 +160,7 @@ export default function HomePage() {
           marginBottom: '8px'
         }}>
           {t('Ready to ', 'جاهز ')}
-          <span style={{ color: 'var(--green)', textShadow: '0 0 15px rgba(34,255,68,0.5)' }}>
+          <span style={{ color: 'var(--green)', textShadow: '0 0 18px rgba(112,132,255,0.55)' }}>
             {t('Train?', 'للتمرين؟')}
           </span>
         </h1>
@@ -255,11 +255,11 @@ export default function HomePage() {
       {/* Weekly Challenge */}
       <div style={{
         background: 'var(--bg2)',
-        border: challengeDone ? '1px solid var(--green)' : '1px solid rgba(34,255,68,0.25)',
+        border: challengeDone ? '1px solid var(--green)' : '1px solid rgba(112,132,255,0.25)',
         borderRadius: 'var(--r-xl)',
         padding: '20px',
         marginBottom: '16px',
-        boxShadow: challengeDone ? '0 0 20px rgba(34,255,68,0.15)' : 'none'
+        boxShadow: challengeDone ? '0 0 24px rgba(112,132,255,0.25)' : 'none'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
           <div style={{
@@ -267,7 +267,7 @@ export default function HomePage() {
             alignItems: 'center',
             gap: '6px',
             background: 'var(--green-dim)',
-            border: '1px solid rgba(34,255,68,0.3)',
+            border: '1px solid rgba(112,132,255,0.30)',
             borderRadius: '20px',
             padding: '4px 12px',
             fontSize: '11px',
@@ -417,7 +417,7 @@ export default function HomePage() {
             color: 'var(--green)',
             letterSpacing: '4px',
             lineHeight: 1,
-            textShadow: '0 0 20px rgba(34,255,68,0.4)'
+            textShadow: '0 0 24px rgba(112,132,255,0.50)'
           }}>
             {formatTime(timerSeconds)}
           </div>

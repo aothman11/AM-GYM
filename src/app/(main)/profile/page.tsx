@@ -68,7 +68,7 @@ export default function ProfilePage() {
 
   return (
     <div>
-      <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', letterSpacing: '1px', marginBottom: '4px', textShadow: '0 0 10px rgba(34,255,68,0.3)' }}>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', letterSpacing: '1px', marginBottom: '4px', textShadow: '0 0 16px rgba(112,132,255,0.45)' }}>
         {t('PROFILE', 'الملف الشخصي')}
       </div>
       <div style={{ fontSize: '13px', color: 'var(--gray2)', marginBottom: '20px' }}>
@@ -87,7 +87,7 @@ export default function ProfilePage() {
         justifyContent: 'center',
         fontSize: '32px',
         margin: '0 auto 16px',
-        boxShadow: '0 0 20px rgba(34,255,68,0.2)'
+        boxShadow: '0 0 22px rgba(112,132,255,0.30)'
       }}>
         {gender === 'male' ? '♂️' : '♀️'}
       </div>

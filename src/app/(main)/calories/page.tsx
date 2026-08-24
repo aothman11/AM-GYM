@@ -60,7 +60,7 @@ export default function CaloriesPage() {
 
   return (
     <div>
-      <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', letterSpacing: '1px', marginBottom: '4px', textShadow: '0 0 10px rgba(34,255,68,0.3)' }}>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', letterSpacing: '1px', marginBottom: '4px', textShadow: '0 0 16px rgba(112,132,255,0.45)' }}>
         {t('CALORIES', 'السعرات')}
       </div>
       <div style={{ fontSize: '13px', color: 'var(--gray2)', marginBottom: '20px' }}>
@@ -69,12 +69,18 @@ export default function CaloriesPage() {
 
       {/* Calorie Ring */}
       <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-        <svg width="160" height="160" viewBox="0 0 160 160" style={{ filter: 'drop-shadow(0 0 10px rgba(34,255,68,0.2))' }}>
-          <circle cx="80" cy="80" r="65" fill="none" stroke="#222" strokeWidth="12"/>
+        <svg width="160" height="160" viewBox="0 0 160 160" style={{ filter: 'drop-shadow(0 0 12px rgba(64,91,255,0.35))' }}>
+          <defs>
+            <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#405bff"/>
+              <stop offset="100%" stopColor="#7084ff"/>
+            </linearGradient>
+          </defs>
+          <circle cx="80" cy="80" r="65" fill="none" stroke="#2a2a2a" strokeWidth="12"/>
           <circle
             cx="80" cy="80" r="65"
             fill="none"
-            stroke="#22ff44"
+            stroke="url(#ringGrad)"
             strokeWidth="12"
             strokeDasharray="408"
             strokeDashoffset={strokeDashoffset}
@@ -82,10 +88,10 @@ export default function CaloriesPage() {
             transform="rotate(-90 80 80)"
             style={{ transition: 'stroke-dashoffset 0.5s ease' }}
           />
-          <text x="80" y="72" textAnchor="middle" fill="#fff" fontSize="28" fontWeight="700" fontFamily="Bebas Neue, sans-serif">
+          <text x="80" y="74" textAnchor="middle" fill="#ffffff" fontSize="28" fontWeight="700" fontFamily="JetBrains Mono, monospace">
             {totals.cal}
           </text>
-          <text x="80" y="90" textAnchor="middle" fill="#aaa" fontSize="11">
+          <text x="80" y="92" textAnchor="middle" fill="#6d6e71" fontSize="11" fontFamily="Inter, sans-serif">
             / {calorieTarget} kcal
           </text>
         </svg>
@@ -93,34 +99,34 @@ export default function CaloriesPage() {
 
       {/* Macros — Fix #4: bars scale with user's calorie goal */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '20px' }}>
-        <div style={{ background: 'var(--bg2)', border: '1px solid var(--bg4)', borderRadius: 'var(--r-md)', padding: '12px', textAlign: 'center' }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '22px', lineHeight: 1, color: 'var(--green)' }}>
+        <div style={{ background: 'var(--bg2)', border: '1px solid var(--bg4)', borderRadius: 'var(--r-lg)', padding: '12px', textAlign: 'center' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '20px', lineHeight: 1, color: 'var(--violet)', fontWeight: 700 }}>
             {Math.round(totals.p)}g
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '2px' }}>{t('Protein', 'بروتين')}</div>
+          <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '3px' }}>{t('Protein', 'بروتين')}</div>
           <div style={{ fontSize: '10px', color: 'var(--gray3)', marginTop: '1px' }}>/ {macroTargets.p}g</div>
           <div style={{ height: '3px', borderRadius: '2px', marginTop: '6px', background: 'var(--bg4)' }}>
-            <div style={{ height: '100%', borderRadius: '2px', background: '#22ff44', width: `${Math.min(totals.p / macroTargets.p * 100, 100)}%`, transition: 'width 0.5s' }} />
+            <div style={{ height: '100%', borderRadius: '2px', background: 'var(--violet)', width: `${Math.min(totals.p / macroTargets.p * 100, 100)}%`, transition: 'width 0.5s', boxShadow: '0 0 6px rgba(112,132,255,0.6)' }} />
           </div>
         </div>
-        <div style={{ background: 'var(--bg2)', border: '1px solid var(--bg4)', borderRadius: 'var(--r-md)', padding: '12px', textAlign: 'center' }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '22px', lineHeight: 1, color: '#ffaa22' }}>
+        <div style={{ background: 'var(--bg2)', border: '1px solid var(--bg4)', borderRadius: 'var(--r-lg)', padding: '12px', textAlign: 'center' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '20px', lineHeight: 1, color: 'var(--cyan)', fontWeight: 700 }}>
             {Math.round(totals.c)}g
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '2px' }}>{t('Carbs', 'كارب')}</div>
+          <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '3px' }}>{t('Carbs', 'كارب')}</div>
           <div style={{ fontSize: '10px', color: 'var(--gray3)', marginTop: '1px' }}>/ {macroTargets.c}g</div>
           <div style={{ height: '3px', borderRadius: '2px', marginTop: '6px', background: 'var(--bg4)' }}>
-            <div style={{ height: '100%', borderRadius: '2px', background: '#ffaa22', width: `${Math.min(totals.c / macroTargets.c * 100, 100)}%`, transition: 'width 0.5s' }} />
+            <div style={{ height: '100%', borderRadius: '2px', background: 'var(--cyan)', width: `${Math.min(totals.c / macroTargets.c * 100, 100)}%`, transition: 'width 0.5s', boxShadow: '0 0 6px rgba(61,214,245,0.5)' }} />
           </div>
         </div>
-        <div style={{ background: 'var(--bg2)', border: '1px solid var(--bg4)', borderRadius: 'var(--r-md)', padding: '12px', textAlign: 'center' }}>
-          <div style={{ fontFamily: 'var(--font-display)', fontSize: '22px', lineHeight: 1, color: '#ff6644' }}>
+        <div style={{ background: 'var(--bg2)', border: '1px solid var(--bg4)', borderRadius: 'var(--r-lg)', padding: '12px', textAlign: 'center' }}>
+          <div style={{ fontFamily: 'var(--font-mono)', fontSize: '20px', lineHeight: 1, color: 'var(--purple-soft)', fontWeight: 700 }}>
             {Math.round(totals.f)}g
           </div>
-          <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '2px' }}>{t('Fats', 'دهون')}</div>
+          <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '3px' }}>{t('Fats', 'دهون')}</div>
           <div style={{ fontSize: '10px', color: 'var(--gray3)', marginTop: '1px' }}>/ {macroTargets.f}g</div>
           <div style={{ height: '3px', borderRadius: '2px', marginTop: '6px', background: 'var(--bg4)' }}>
-            <div style={{ height: '100%', borderRadius: '2px', background: '#ff6644', width: `${Math.min(totals.f / macroTargets.f * 100, 100)}%`, transition: 'width 0.5s' }} />
+            <div style={{ height: '100%', borderRadius: '2px', background: 'var(--purple-soft)', width: `${Math.min(totals.f / macroTargets.f * 100, 100)}%`, transition: 'width 0.5s', boxShadow: '0 0 6px rgba(167,139,250,0.5)' }} />
           </div>
         </div>
       </div>
@@ -128,20 +134,22 @@ export default function CaloriesPage() {
       {/* Tabs */}
       <div style={{
         display: 'flex',
-        gap: 0,
+        gap: '4px',
         background: 'var(--bg2)',
         border: '1px solid var(--bg4)',
-        borderRadius: 'var(--r-lg)',
-        overflow: 'hidden',
+        borderRadius: 'var(--r-xl)',
+        padding: '4px',
         marginBottom: '14px'
       }}>
         <button
           onClick={() => setActiveTab('items')}
           style={{
-            flex: 1, padding: '10px', textAlign: 'center', fontSize: '13px', fontWeight: 600,
-            color: activeTab === 'items' ? 'var(--bg)' : 'var(--gray2)',
-            background: activeTab === 'items' ? 'var(--green)' : 'transparent',
+            flex: 1, padding: '9px', textAlign: 'center', fontSize: '13px', fontWeight: 600,
+            color: activeTab === 'items' ? '#fff' : 'var(--gray2)',
+            background: activeTab === 'items' ? 'var(--violet)' : 'transparent',
             cursor: 'pointer', border: 'none', borderRadius: 'var(--r-lg)',
+            boxShadow: activeTab === 'items' ? '0 0 12px rgba(112,132,255,0.4)' : 'none',
+            transition: 'all 0.2s',
           }}
         >
           {t('Individual Items', 'أطعمة فردية')}
@@ -149,10 +157,12 @@ export default function CaloriesPage() {
         <button
           onClick={() => setActiveTab('meals')}
           style={{
-            flex: 1, padding: '10px', textAlign: 'center', fontSize: '13px', fontWeight: 600,
-            color: activeTab === 'meals' ? 'var(--bg)' : 'var(--gray2)',
-            background: activeTab === 'meals' ? 'var(--green)' : 'transparent',
+            flex: 1, padding: '9px', textAlign: 'center', fontSize: '13px', fontWeight: 600,
+            color: activeTab === 'meals' ? '#fff' : 'var(--gray2)',
+            background: activeTab === 'meals' ? 'var(--violet)' : 'transparent',
             cursor: 'pointer', border: 'none', borderRadius: 'var(--r-lg)',
+            boxShadow: activeTab === 'meals' ? '0 0 12px rgba(112,132,255,0.4)' : 'none',
+            transition: 'all 0.2s',
           }}
         >
           {t('Local Meals', 'وجبات محلية')}
@@ -212,10 +222,10 @@ export default function CaloriesPage() {
                   border: '1px solid var(--bg4)', borderRadius: 'var(--r-md)', marginBottom: '6px',
                 }}
               >
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--green)', flexShrink: 0 }} />
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--violet)', boxShadow: '0 0 6px rgba(112,132,255,0.6)', flexShrink: 0 }} />
                 <span style={{ fontSize: '16px' }}>{f.emoji}</span>
                 <div style={{ flex: 1, fontSize: '13px' }}>{f.name}</div>
-                <div style={{ fontSize: '13px', color: 'var(--green)', fontWeight: 600 }}>{f.cal} kcal</div>
+                <div style={{ fontSize: '13px', color: 'var(--violet)', fontWeight: 600 }}>{f.cal} kcal</div>
                 <button
                   onClick={() => removeFood(f.logId)}
                   style={{ color: 'var(--gray3)', fontSize: '16px', cursor: 'pointer', background: 'none', border: 'none', padding: '4px' }}
@@ -257,9 +267,9 @@ function FoodRow({ item, onAdd }: FoodRowProps) {
       <button
         onClick={onAdd}
         style={{
-          width: '30px', height: '30px', borderRadius: '50%',
-          background: 'var(--green-dim)', border: '1px solid rgba(34,255,68,0.3)',
-          color: 'var(--green)', fontSize: '18px',
+          width: '32px', height: '32px', borderRadius: '50%',
+          background: 'var(--violet-dim)', border: '1px solid rgba(112,132,255,0.35)',
+          color: 'var(--violet)', fontSize: '18px',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer', flexShrink: 0,
         }}

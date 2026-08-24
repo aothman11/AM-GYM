@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import Header from '@/components/layout/Header';
 import TabBar from '@/components/layout/TabBar';
 import Toast from '@/components/ui/Toast';
+import FitnessAgent from '@/components/ui/FitnessAgent';
 import { useApp } from '@/contexts/AppContext';
 
 /** AMGYM brand mark — uses the real app-icon.png */
@@ -171,6 +172,9 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
       {/* Mobile tab bar */}
       <TabBar />
       <Toast />
+
+      {/* Fitness agent — floating button */}
+      <FitnessAgent />
     </div>
   );
 }

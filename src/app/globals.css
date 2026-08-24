@@ -887,6 +887,50 @@ body {
 
 .hero-body { position: relative; z-index: 1; }
 
+/* ── Brand mark row ─────────────────────────────────────────────────────── */
+.hero-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.hero-brand-icon {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  box-shadow: 0 0 20px rgba(124,92,255,0.35);
+}
+
+.hero-brand-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.hero-brand-name {
+  font-family: var(--font-body);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  letter-spacing: 0.5px;
+  line-height: 1;
+}
+
+.hero-brand-tagline {
+  font-size: 11px;
+  color: var(--gray2);
+  letter-spacing: 0.4px;
+  font-weight: 500;
+}
+
+@media (min-width: 768px) {
+  .hero-brand-icon { width: 68px; height: 68px; border-radius: 16px; }
+  .hero-brand-name { font-size: 28px; }
+  .hero-brand-tagline { font-size: 12px; }
+}
+
 .hero-greeting {
   font-size: 13px;
   color: var(--gray2);

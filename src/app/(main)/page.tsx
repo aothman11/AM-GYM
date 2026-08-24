@@ -93,6 +93,17 @@ export default function HomePage() {
           <div className="hero-orb hero-orb-2" />
 
           <div className="hero-body">
+
+            {/* Brand mark */}
+            <div className="hero-brand">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/app-icon.png" alt="AMGYM" className="hero-brand-icon" />
+              <div className="hero-brand-text">
+                <span className="hero-brand-name">AM<span style={{ color: 'var(--violet)' }}>GYM</span></span>
+                <span className="hero-brand-tagline">{t('Train. Track. Transform.', 'تدرّب. تتبّع. تحوّل.')}</span>
+              </div>
+            </div>
+
             <p className="hero-greeting">{greeting}{userName ? `, ${userName}` : ''} 💪</p>
 
             <h1 className="hero-headline">

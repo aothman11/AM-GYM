@@ -109,8 +109,9 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 16px;
-  background: rgba(15,18,33,0.88);
+  /* Push content below iOS status bar when running as PWA */
+  padding: max(12px, env(safe-area-inset-top)) 16px 12px;
+  background: rgba(15,18,33,0.95);
   border-bottom: 1px solid rgba(255,255,255,0.06);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);

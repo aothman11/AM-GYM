@@ -1,0 +1,16 @@
+<svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" fill="none">
+  <rect width="512" height="512" rx="112" fill="#0F1221"/>
+  <defs>
+    <linearGradient id="logo-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7C5CFF"/>
+      <stop offset="100%" stop-color="#4D8BFF"/>
+    </linearGradient>
+  </defs>
+  <!-- AM logo mark: two strokes forming an arch/peak with a dot -->
+  <!-- Left diagonal stroke: bottom-left up to apex -->
+  <path d="M96 400 L256 112 L416 400" stroke="url(#logo-grad)" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Inner cutout to create hollow arch feel -->
+  <path d="M160 400 L256 220 L352 400" stroke="#0F1221" stroke-width="52" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Accent dot on the left leg -->
+  <circle cx="148" cy="310" r="32" fill="url(#logo-grad)"/>
+</svg>

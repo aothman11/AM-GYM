@@ -8,6 +8,28 @@ import TabBar from '@/components/layout/TabBar';
 import Toast from '@/components/ui/Toast';
 import { useApp } from '@/contexts/AppContext';
 
+/** AMGYM brand mark — gradient arch/peak logo */
+export function AmgymMark({ size = 36 }: { size?: number }) {
+  const r = size * 112 / 512; // proportional corner radius
+  return (
+    <svg width={size} height={size} viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+      <rect width="512" height="512" rx={r} fill="#0F1221"/>
+      <defs>
+        <linearGradient id="amgym-g" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#7C5CFF"/>
+          <stop offset="100%" stopColor="#4D8BFF"/>
+        </linearGradient>
+      </defs>
+      {/* Outer arch */}
+      <path d="M96 400 L256 112 L416 400" stroke="url(#amgym-g)" strokeWidth="52" strokeLinecap="round" strokeLinejoin="round"/>
+      {/* Inner cutout */}
+      <path d="M160 400 L256 220 L352 400" stroke="#0F1221" strokeWidth="52" strokeLinecap="round" strokeLinejoin="round"/>
+      {/* Accent dot */}
+      <circle cx="148" cy="310" r="32" fill="url(#amgym-g)"/>
+    </svg>
+  );
+}
+
 const NAV_ITEMS = [
   {
     path: '/',
@@ -79,7 +101,7 @@ function Sidebar() {
     <aside className="sidebar">
       {/* Logo */}
       <div className="sidebar-logo">
-        <div className="logo-badge"><span>AM</span></div>
+        <AmgymMark size={36} />
         <div className="logo-text">AM<span className="logo-green">GYM</span></div>
       </div>
 

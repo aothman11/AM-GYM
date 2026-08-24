@@ -1,4 +1,4 @@
-'use client';
+﻿﻿'use client';
 
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
@@ -119,7 +119,7 @@ export default function HomePage() {
         </div>
 
         {/* Weekly Challenge */}
-        <div className="challenge-card" style={{ boxShadow: challengeDone ? '0 0 24px rgba(112,132,255,0.25)' : 'none', borderColor: challengeDone ? 'var(--violet)' : 'rgba(112,132,255,0.25)' }}>
+        <div className="challenge-card" style={{ boxShadow: challengeDone ? '0 0 24px rgba(124,92,255,0.25)' : 'none', borderColor: challengeDone ? 'var(--violet)' : 'rgba(124,92,255,0.25)' }}>
           <div className="challenge-header">
             <div className="challenge-badge">🏆 <span>{t('Weekly Challenge', 'تحدي الأسبوع')}</span></div>
             <span className="challenge-week">{t(`Week ${challenge.weekNum}`, `الأسبوع ${challenge.weekNum}`)} · {daysLeft === 0 ? t('Last day!', 'آخر يوم!') : t(`${daysLeft}d left`, `${daysLeft} أيام`)}</span>
@@ -186,8 +186,8 @@ export default function HomePage() {
             <svg className="timer-ring" viewBox="0 0 120 120">
               <defs>
                 <linearGradient id="timerGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#405bff"/>
-                  <stop offset="100%" stopColor="#7084ff"/>
+                  <stop offset="0%" stopColor="#4D8BFF"/>
+                  <stop offset="100%" stopColor="#7C5CFF"/>
                 </linearGradient>
               </defs>
               <circle cx="60" cy="60" r="52" fill="none" stroke="var(--bg4)" strokeWidth="6"/>

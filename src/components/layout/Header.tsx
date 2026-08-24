@@ -1,6 +1,7 @@
 'use client';
 
 import { useApp } from '@/contexts/AppContext';
+import { AmgymMark } from '@/components/layout/ClientLayout';
 
 export default function Header() {
   const { lang, setLang, gender, setGender, theme, toggleTheme } = useApp();
@@ -8,9 +9,7 @@ export default function Header() {
   return (
     <header className="header">
       <div className="header-logo">
-        <div className="logo-badge">
-          <span>AM</span>
-        </div>
+        <AmgymMark size={34} />
         <div className="logo-text">
           AM<span className="logo-green">GYM</span>
         </div>

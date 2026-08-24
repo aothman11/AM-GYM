@@ -1,41 +1,41 @@
-/* ═══════════════════════════════════════════════════════════════════════════
-   AM-GYM — Neon Control Room  (LaunchDarkly-inspired)
-   Canvas: Midnight Ink · Accent: Signal Violet · Glow over shadows
-   ═══════════════════════════════════════════════════════════════════════════ */
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   AM-GYM â€” Train. Track. Transform.
+   Canvas: Deep Navy (#0F1221) Â· Accent: AMGYM Purple (#7C5CFF)
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap');
 
-/* ─── Design Tokens ─────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Design Tokens â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :root {
-  /* Brand */
-  --violet:       #7084ff;   /* Signal Violet – primary accent           */
-  --violet-blue:  #405bff;   /* Voltage Blue  – CTAs, ring, glow source  */
-  --violet-dim:   rgba(112,132,255,0.13);
-  --violet-glow:  rgba(64,91,255,0.28);
-  --cyan:         #3dd6f5;   /* Plasma Cyan   – secondary / carbs        */
-  --purple-soft:  #a78bfa;   /* Light purple  – fats macro               */
+  /* Brand â€” AMGYM palette */
+  --violet:       #7C5CFF;   /* AMGYM Purple  â€“ primary accent           */
+  --violet-blue:  #4D8BFF;   /* AMGYM Blue    â€“ CTAs, ring, glow source  */
+  --violet-dim:   rgba(124,92,255,0.14);
+  --violet-glow:  rgba(77,139,255,0.28);
+  --cyan:         #3dd6f5;   /* Plasma Cyan   â€“ secondary / carbs        */
+  --purple-soft:  #A7B8FF;   /* Lavender      â€“ fats macro / soft text   */
 
   /* Surfaces (dark-first; swapped by [data-theme="light"]) */
-  --bg:  #0e0e0e;   /* Midnight Ink – page canvas                  */
-  --bg2: #191919;   /* Carbon Panel – card / input surface          */
-  --bg3: #222222;   /* elevated surface                             */
-  --bg4: #414042;   /* Graphite border                              */
-  --bg5: #58595b;   /* Steel – inactive borders                     */
+  --bg:  #0F1221;   /* Deep Navy    â€“ page canvas                  */
+  --bg2: #1A1E2E;   /* Navy Panel   â€“ card / input surface          */
+  --bg3: #212540;   /* Elevated     â€“ hover / chip surface          */
+  --bg4: #2D3355;   /* Border       â€“ dividers, inactive borders    */
+  --bg5: #404880;   /* Steel Navy   â€“ muted borders                 */
 
   /* Text */
   --white: #ffffff;
   --gray1: #ffffff;
-  --gray2: #a7a9ac;   /* Fog   – secondary text          */
-  --gray3: #6d6e71;   /* Slate – muted / placeholder     */
-  --gray4: #58595b;
+  --gray2: #A7B8FF;   /* Lavender     â€“ secondary text (brand-tinted) */
+  --gray3: #6B7AB8;   /* Slate Navy   â€“ muted / placeholder           */
+  --gray4: #404880;
 
-  /* Legacy aliases – used throughout inline styles */
+  /* Legacy aliases â€“ used throughout inline styles */
   --green:      var(--violet);
   --green2:     var(--violet-blue);
   --green-dim:  var(--violet-dim);
   --accent:     var(--violet-blue);
   --accent-dim: var(--violet-dim);
-  --accent-hover: #5a73ff;
+  --accent-hover: #9070FF;
 
   /* Semantic */
   --success: var(--cyan);
@@ -47,40 +47,40 @@
   --font-body:    'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono:    'JetBrains Mono', ui-monospace, monospace;
 
-  /* Border-radius – pill-first */
+  /* Border-radius â€“ pill-first */
   --r-sm:   8px;
   --r-md:   14px;
   --r-lg:   20px;
   --r-xl:   30px;
   --r-full: 9999px;
 
-  /* Elevation via glow (never box-shadow) */
-  --shadow-sm: 0 0 18px rgba(64,91,255,0.18);
-  --shadow-md: 0 0 32px rgba(64,91,255,0.24);
-  --glow-sm:   0 0 14px rgba(112,132,255,0.28);
-  --glow-md:   0 0 28px rgba(112,132,255,0.38);
+  /* Elevation via glow */
+  --shadow-sm: 0 0 18px rgba(77,139,255,0.18);
+  --shadow-md: 0 0 32px rgba(77,139,255,0.24);
+  --glow-sm:   0 0 14px rgba(124,92,255,0.30);
+  --glow-md:   0 0 28px rgba(124,92,255,0.42);
 }
 
-/* ─── Light mode override ───────────────────────────────────────────────── */
+/* â”€â”€â”€ Light mode override â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 [data-theme="light"] {
-  --bg:  #f2f2f8;
+  --bg:  #f0f2ff;
   --bg2: #ffffff;
-  --bg3: #ebebf5;
-  --bg4: #d8d8e8;
-  --bg5: #c0c0d4;
-  --white: #0e0e0e;
-  --gray1: #0e0e0e;
-  --gray2: #6d6e71;
-  --gray3: #a7a9ac;
-  --gray4: #c0c0d4;
-  --violet-dim: rgba(64,91,255,0.10);
-  --shadow-sm: 0 2px 14px rgba(64,91,255,0.10);
-  --shadow-md: 0 4px 28px rgba(64,91,255,0.14);
-  --glow-sm: 0 0 14px rgba(112,132,255,0.14);
-  --glow-md: 0 0 28px rgba(112,132,255,0.20);
+  --bg3: #e8ecff;
+  --bg4: #cdd3f5;
+  --bg5: #b0bae8;
+  --white: #0F1221;
+  --gray1: #0F1221;
+  --gray2: #4a5299;
+  --gray3: #7B86C8;
+  --gray4: #b0bae8;
+  --violet-dim: rgba(124,92,255,0.10);
+  --shadow-sm: 0 2px 14px rgba(77,139,255,0.10);
+  --shadow-md: 0 4px 28px rgba(77,139,255,0.14);
+  --glow-sm: 0 0 14px rgba(124,92,255,0.14);
+  --glow-md: 0 0 28px rgba(124,92,255,0.22);
 }
 
-/* ─── Reset ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Reset â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 html { font-size: 16px; -webkit-font-smoothing: antialiased; }
@@ -94,7 +94,7 @@ body {
   transition: background 0.3s, color 0.3s;
 }
 
-/* ─── Header ────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .header {
   position: sticky;
   top: 0;
@@ -103,7 +103,7 @@ body {
   align-items: center;
   justify-content: space-between;
   padding: 10px 16px;
-  background: rgba(14,14,14,0.88);
+  background: rgba(15,18,33,0.88);
   border-bottom: 1px solid rgba(255,255,255,0.06);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -124,7 +124,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 0 16px rgba(112,132,255,0.45);
+  box-shadow: 0 0 16px rgba(124,92,255,0.45);
   flex-shrink: 0;
 }
 
@@ -195,13 +195,13 @@ body {
 .pill-btn.active {
   background: var(--violet);
   color: #fff;
-  box-shadow: 0 0 10px rgba(112,132,255,0.45);
+  box-shadow: 0 0 10px rgba(124,92,255,0.45);
 }
 
 .pill-btn.icon { padding: 6px 9px; }
 .pill-btn.icon svg { width: 14px; height: 14px; display: block; }
 
-/* ─── Bottom Tab Bar ────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Bottom Tab Bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .tab-bar {
   position: fixed;
   bottom: 0;
@@ -254,7 +254,7 @@ body {
 
 .tab-btn.active svg { stroke-width: 2; }
 
-/* ─── Page Content ──────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Page Content â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .page-content {
   padding: 20px 16px;
   padding-bottom: 108px;
@@ -262,7 +262,7 @@ body {
   margin: 0 auto;
 }
 
-/* ─── Cards ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Cards â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .card {
   background: var(--bg2);
   border: 1px solid var(--bg4);
@@ -274,7 +274,7 @@ body {
 
 .card:hover { border-color: var(--violet); box-shadow: var(--glow-sm); }
 
-/* ─── Buttons ───────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Buttons â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .btn {
   display: inline-flex;
   align-items: center;
@@ -292,10 +292,10 @@ body {
 .btn-primary {
   background: var(--violet-blue);
   color: #fff;
-  box-shadow: 0 0 18px rgba(64,91,255,0.35);
+  box-shadow: 0 0 18px rgba(77,139,255,0.35);
 }
 
-.btn-primary:hover { box-shadow: 0 0 28px rgba(64,91,255,0.55); }
+.btn-primary:hover { box-shadow: 0 0 28px rgba(77,139,255,0.55); }
 
 .btn-secondary {
   background: var(--bg2);
@@ -303,7 +303,7 @@ body {
   border: 1px solid var(--bg4);
 }
 
-/* ─── Exercise list ─────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Exercise list â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .exercise-grid { display: flex; flex-direction: column; gap: 10px; }
 
 .exercise-row {
@@ -339,7 +339,7 @@ body {
 .exercise-name { font-weight: 600; font-size: 14px; color: var(--white); margin-bottom: 2px; }
 .exercise-muscle { font-size: 12px; color: var(--gray2); }
 
-/* ─── Stats ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Stats â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .stat-row { display: flex; gap: 10px; margin-bottom: 14px; }
 
 .stat-card {
@@ -366,7 +366,7 @@ body {
   letter-spacing: 0.5px;
 }
 
-/* ─── Achievements ──────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Achievements â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .achievements-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 
 .achievement-card {
@@ -388,7 +388,7 @@ body {
 .achievement-title { font-size: 11px; font-weight: 600; color: var(--gray2); margin-bottom: 2px; }
 .achievement-desc { font-size: 10px; color: var(--gray3); line-height: 1.4; }
 
-/* ─── Food log ──────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Food log â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .food-item {
   display: flex;
   align-items: center;
@@ -422,7 +422,7 @@ body {
 
 .food-remove:hover { background: var(--error); border-color: var(--error); color: #fff; }
 
-/* ─── Modal / Sheet ─────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Modal / Sheet â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -520,10 +520,10 @@ body {
   font-weight: 700;
   font-size: 12px;
   flex-shrink: 0;
-  box-shadow: 0 0 8px rgba(112,132,255,0.4);
+  box-shadow: 0 0 8px rgba(124,92,255,0.4);
 }
 
-/* ─── Macro Ring ────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Macro Ring â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .ring-container { position: relative; width: 200px; height: 200px; margin: 0 auto 22px; }
 
 .ring-center {
@@ -558,7 +558,7 @@ body {
 .macro-value { font-size: 18px; font-weight: 700; color: var(--white); }
 .macro-label { font-size: 10px; color: var(--gray2); margin-top: 2px; text-transform: uppercase; letter-spacing: 0.5px; }
 
-/* ─── Toast ─────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Toast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .toast {
   position: fixed;
   bottom: 100px;
@@ -574,7 +574,7 @@ body {
   pointer-events: none;
   transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1), opacity 0.25s;
   z-index: 300;
-  box-shadow: 0 0 24px rgba(112,132,255,0.50);
+  box-shadow: 0 0 24px rgba(124,92,255,0.50);
   white-space: nowrap;
   max-width: calc(100vw - 40px);
 }
@@ -584,7 +584,7 @@ body {
   opacity: 1;
 }
 
-/* ─── Auth Pages ────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Auth Pages â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .auth-container {
   min-height: 100dvh;
   display: flex;
@@ -601,7 +601,7 @@ body {
   background: var(--bg2);
   border: 1px solid rgba(255,255,255,0.07);
   border-radius: var(--r-xl);
-  box-shadow: 0 0 40px rgba(64,91,255,0.15);
+  box-shadow: 0 0 40px rgba(77,139,255,0.15);
 }
 
 .auth-title {
@@ -647,15 +647,15 @@ body {
   box-shadow: var(--glow-sm);
 }
 
-/* ─── Animations ────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Animations â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 16px rgba(112,132,255,0.30); }
-  50%       { box-shadow: 0 0 30px rgba(112,132,255,0.60); }
+  0%, 100% { box-shadow: 0 0 16px rgba(124,92,255,0.30); }
+  50%       { box-shadow: 0 0 30px rgba(124,92,255,0.60); }
 }
 
 @keyframes spin { to { transform: rotate(360deg); } }
@@ -663,36 +663,36 @@ body {
 .animate-fadeUp { animation: fadeUp 0.4s ease forwards; }
 .animate-glow   { animation: glow-pulse 2.2s ease-in-out infinite; }
 
-/* ─── Scrollbar ─────────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Scrollbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 2px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--violet); }
 
-/* ─── Focus rings ───────────────────────────────────────────────────────── */
+/* â”€â”€â”€ Focus rings â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 :focus-visible { outline: 2px solid var(--violet); outline-offset: 2px; border-radius: 4px; }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   RESPONSIVE SHELL — Mobile: header + bottom tab bar
-                      Desktop (≥ 768px): left sidebar + wider content
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   RESPONSIVE SHELL â€” Mobile: header + bottom tab bar
+                      Desktop (â‰¥ 768px): left sidebar + wider content
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ─── App shell wrapper ─────────────────────────────────────────────────── */
+/* â”€â”€â”€ App shell wrapper â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .app-shell {
   display: block;
   min-height: 100dvh;
   position: relative;
 }
 
-/* ─── Sidebar (hidden on mobile) ────────────────────────────────────────── */
+/* â”€â”€â”€ Sidebar (hidden on mobile) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .sidebar { display: none; }
 
-/* ─── Main content wrapper (mobile — full width) ────────────────────────── */
+/* â”€â”€â”€ Main content wrapper (mobile â€” full width) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .main-area { display: block; }
 
-/* ──────────────────────────────────────────────────────────────────────────
-   DESKTOP breakpoint — ≥ 768px
-   ────────────────────────────────────────────────────────────────────────── */
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   DESKTOP breakpoint â€” â‰¥ 768px
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (min-width: 768px) {
 
   /* Shell becomes a horizontal flex container */
@@ -705,7 +705,7 @@ body {
   .header   { display: none; }
   .tab-bar  { display: none; }
 
-  /* ── Sidebar ── */
+  /* â”€â”€ Sidebar â”€â”€ */
   .sidebar {
     display: flex;
     flex-direction: column;
@@ -779,7 +779,7 @@ body {
     height: 20px;
     background: var(--violet);
     border-radius: 2px;
-    box-shadow: 0 0 8px rgba(112,132,255,0.5);
+    box-shadow: 0 0 8px rgba(124,92,255,0.5);
   }
 
   .sidebar-link { position: relative; }
@@ -796,7 +796,7 @@ body {
     border-top-color: rgba(0,0,0,0.07);
   }
 
-  /* Theme button in sidebar — full-width row */
+  /* Theme button in sidebar â€” full-width row */
   .sidebar-theme-btn {
     width: 100%;
     height: 38px;
@@ -828,7 +828,7 @@ body {
 
   .sidebar-pill .pill-btn { flex: 1; text-align: center; }
 
-  /* ── Main area ── */
+  /* â”€â”€ Main area â”€â”€ */
   .main-area {
     flex: 1;
     min-width: 0;
@@ -845,26 +845,26 @@ body {
   }
 }
 
-/* ─── Large desktop (≥ 1200px) — even wider ────────────────────────────── */
+/* â”€â”€â”€ Large desktop (â‰¥ 1200px) â€” even wider â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (min-width: 1200px) {
   .sidebar { width: 240px; min-width: 240px; }
   .page-content { max-width: 900px; }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   HOME PAGE — shared base + desktop layout
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   HOME PAGE â€” shared base + desktop layout
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Grid shell ─────────────────────────────────────────────────────────── */
+/* â”€â”€ Grid shell â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .home-grid { display: flex; flex-direction: column; gap: 14px; }
 .home-col-left, .home-col-right { display: contents; }
 
-/* ── Hero ───────────────────────────────────────────────────────────────── */
+/* â”€â”€ Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .home-hero {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(135deg, var(--bg2) 0%, #0d0e22 100%);
-  border: 1px solid rgba(112,132,255,0.22);
+  background: linear-gradient(135deg, var(--bg2) 0%, #141729 100%);
+  border: 1px solid rgba(124,92,255,0.22);
   border-radius: var(--r-xl);
   padding: 28px 24px;
 }
@@ -877,7 +877,7 @@ body {
 .hero-orb-1 {
   top: -50px; right: -50px;
   width: 200px; height: 200px;
-  background: radial-gradient(circle, rgba(112,132,255,0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(124,92,255,0.18) 0%, transparent 70%);
 }
 .hero-orb-2 {
   bottom: -60px; left: -30px;
@@ -910,7 +910,7 @@ body {
   font-size: 38px;
   font-weight: 700;
   color: var(--violet);
-  text-shadow: 0 0 24px rgba(112,132,255,0.50);
+  text-shadow: 0 0 24px rgba(124,92,255,0.50);
 }
 
 .hero-promo {
@@ -947,10 +947,10 @@ body {
   cursor: pointer;
 }
 
-/* ── Weekly Challenge ───────────────────────────────────────────────────── */
+/* â”€â”€ Weekly Challenge â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .challenge-card {
   background: var(--bg2);
-  border: 1px solid rgba(112,132,255,0.25);
+  border: 1px solid rgba(124,92,255,0.25);
   border-radius: var(--r-xl);
   padding: 20px;
 }
@@ -967,7 +967,7 @@ body {
   align-items: center;
   gap: 6px;
   background: var(--violet-dim);
-  border: 1px solid rgba(112,132,255,0.30);
+  border: 1px solid rgba(124,92,255,0.30);
   border-radius: var(--r-full);
   padding: 4px 12px;
   font-size: 11px;
@@ -1013,7 +1013,7 @@ body {
   background: linear-gradient(90deg, var(--violet-blue), var(--violet));
   border-radius: 3px;
   transition: width 0.5s ease;
-  box-shadow: 0 0 8px rgba(112,132,255,0.5);
+  box-shadow: 0 0 8px rgba(124,92,255,0.5);
 }
 
 .challenge-footer {
@@ -1049,12 +1049,12 @@ body {
 .challenge-btn-plus {
   background: var(--violet);
   color: #fff;
-  box-shadow: 0 0 10px rgba(112,132,255,0.4);
+  box-shadow: 0 0 10px rgba(124,92,255,0.4);
 }
 
-.challenge-btn-plus:hover { box-shadow: 0 0 18px rgba(112,132,255,0.6); }
+.challenge-btn-plus:hover { box-shadow: 0 0 18px rgba(124,92,255,0.6); }
 
-/* ── Stats panel ────────────────────────────────────────────────────────── */
+/* â”€â”€ Stats panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .stats-panel {
   background: var(--bg2);
   border: 1px solid var(--bg4);
@@ -1101,7 +1101,7 @@ body {
 
 .stats-label { font-size: 10px; color: var(--gray2); font-weight: 500; }
 
-/* ── Timer ──────────────────────────────────────────────────────────────── */
+/* â”€â”€ Timer â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .timer-card {
   background: var(--bg2);
   border: 1px solid var(--bg4);
@@ -1134,7 +1134,7 @@ body {
 .timer-mode-btn.active {
   background: var(--violet);
   color: #fff;
-  box-shadow: 0 0 10px rgba(112,132,255,0.4);
+  box-shadow: 0 0 10px rgba(124,92,255,0.4);
 }
 
 .timer-display {
@@ -1144,7 +1144,7 @@ body {
   margin: 0 auto 20px;
 }
 
-.timer-ring { width: 100%; height: 100%; filter: drop-shadow(0 0 8px rgba(64,91,255,0.3)); }
+.timer-ring { width: 100%; height: 100%; filter: drop-shadow(0 0 8px rgba(77,139,255,0.3)); }
 
 .timer-time-overlay {
   position: absolute;
@@ -1162,7 +1162,7 @@ body {
   font-weight: 700;
   color: var(--white);
   letter-spacing: 2px;
-  text-shadow: 0 0 16px rgba(112,132,255,0.40);
+  text-shadow: 0 0 16px rgba(124,92,255,0.40);
 }
 
 .timer-sublabel { font-size: 10px; color: var(--gray3); }
@@ -1221,14 +1221,14 @@ body {
 .timer-preset-time { display: block; font-size: 14px; font-weight: 700; color: var(--white); font-family: var(--font-mono); }
 .timer-preset-label { display: block; font-size: 10px; color: var(--gray2); margin-top: 2px; }
 
-/* ── Exercise list — 2-col grid on desktop ──────────────────────────────── */
+/* â”€â”€ Exercise list â€” 2-col grid on desktop â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .exercise-list-grid {
   display: flex;
   flex-direction: column;
   gap: 10px;
 }
 
-/* ── Desktop home layout ────────────────────────────────────────────────── */
+/* â”€â”€ Desktop home layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 @media (min-width: 768px) {
   .home-grid {
     display: grid;
@@ -1253,7 +1253,7 @@ body {
     grid-row: 1;
   }
 
-  /* Hero — bigger and more dramatic on desktop */
+  /* Hero â€” bigger and more dramatic on desktop */
   .home-hero { padding: 44px 40px; }
 
   .hero-greeting { font-size: 14px; margin-bottom: 10px; }
@@ -1269,7 +1269,7 @@ body {
 
   .hero-cta { font-size: 15px; padding: 15px 32px; }
 
-  /* Stats — stacked rows on desktop (not 3-col grid) */
+  /* Stats â€” stacked rows on desktop (not 3-col grid) */
   .stats-list {
     grid-template-columns: 1fr;
     gap: 6px;
@@ -1289,12 +1289,12 @@ body {
 
   .stats-value { font-size: 32px; margin-left: auto; }
 
-  /* Timer — bigger ring on desktop */
+  /* Timer â€” bigger ring on desktop */
   .timer-display { width: 180px; height: 180px; }
 
   .timer-time { font-size: 38px; letter-spacing: 3px; }
 
-  /* Exercise list — 2-col grid */
+  /* Exercise list â€” 2-col grid */
   .exercise-list-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
@@ -1302,9 +1302,9 @@ body {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   CALORIES PAGE — desktop 2-column layout
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   CALORIES PAGE â€” desktop 2-column layout
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .calories-grid { display: block; }
 /* Desktop right col hidden on mobile */
 .calories-col-log { display: none; }
@@ -1331,9 +1331,9 @@ body {
   .calories-mobile-log { display: none; }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   PROFILE PAGE — desktop 2-column layout
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PROFILE PAGE â€” desktop 2-column layout
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .profile-grid { display: block; }
 
 @media (min-width: 768px) {
@@ -1345,24 +1345,25 @@ body {
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   PROGRAMS PAGE — desktop enhancements
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   PROGRAMS PAGE â€” desktop enhancements
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 .wizard-options { display: flex; flex-direction: column; gap: 10px; margin-bottom: 24px; }
 .day-cards-grid { display: flex; flex-direction: column; gap: 10px; }
 
 @media (min-width: 768px) {
-  /* Wizard options — 2-col grid so each step is scannable side-by-side */
+  /* Wizard options â€” 2-col grid so each step is scannable side-by-side */
   .wizard-options {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
 
-  /* Day cards — 2-col grid */
+  /* Day cards â€” 2-col grid */
   .day-cards-grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 10px;
   }
 }
+

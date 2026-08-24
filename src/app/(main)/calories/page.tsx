@@ -1,4 +1,4 @@
-'use client';
+﻿﻿'use client';
 
 import { useState, useMemo } from 'react';
 import { useApp, AddFoodInput } from '@/contexts/AppContext';
@@ -84,7 +84,7 @@ export default function CaloriesPage() {
                 border: '1px solid var(--bg4)', borderRadius: 'var(--r-md)', marginBottom: '6px',
               }}
             >
-              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--violet)', boxShadow: '0 0 6px rgba(112,132,255,0.6)', flexShrink: 0 }} />
+              <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--violet)', boxShadow: '0 0 6px rgba(124,92,255,0.6)', flexShrink: 0 }} />
               <span style={{ fontSize: '16px' }}>{f.emoji}</span>
               <div style={{ flex: 1, fontSize: '13px' }}>{f.name}</div>
               <div style={{ fontSize: '13px', color: 'var(--violet)', fontWeight: 600 }}>{f.cal}</div>
@@ -104,7 +104,7 @@ export default function CaloriesPage() {
 
   return (
     <div>
-      <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', letterSpacing: '1px', marginBottom: '4px', textShadow: '0 0 16px rgba(112,132,255,0.45)' }}>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', letterSpacing: '1px', marginBottom: '4px', textShadow: '0 0 16px rgba(124,92,255,0.45)' }}>
         {t('CALORIES', 'السعرات')}
       </div>
       <div style={{ fontSize: '13px', color: 'var(--gray2)', marginBottom: '20px' }}>
@@ -117,14 +117,14 @@ export default function CaloriesPage() {
 
           {/* Calorie Ring */}
           <div style={{ textAlign: 'center', marginBottom: '20px' }}>
-            <svg width="160" height="160" viewBox="0 0 160 160" style={{ filter: 'drop-shadow(0 0 12px rgba(64,91,255,0.35))' }}>
+            <svg width="160" height="160" viewBox="0 0 160 160" style={{ filter: 'drop-shadow(0 0 12px rgba(77,139,255,0.35))' }}>
               <defs>
                 <linearGradient id="ringGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#405bff"/>
-                  <stop offset="100%" stopColor="#7084ff"/>
+                  <stop offset="0%" stopColor="#4D8BFF"/>
+                  <stop offset="100%" stopColor="#7C5CFF"/>
                 </linearGradient>
               </defs>
-              <circle cx="80" cy="80" r="65" fill="none" stroke="#2a2a2a" strokeWidth="12"/>
+              <circle cx="80" cy="80" r="65" fill="none" stroke="#2D3355" strokeWidth="12"/>
               <circle
                 cx="80" cy="80" r="65"
                 fill="none"
@@ -154,7 +154,7 @@ export default function CaloriesPage() {
               <div style={{ fontSize: '11px', color: 'var(--gray2)', marginTop: '3px' }}>{t('Protein', 'بروتين')}</div>
               <div style={{ fontSize: '10px', color: 'var(--gray3)', marginTop: '1px' }}>/ {macroTargets.p}g</div>
               <div style={{ height: '3px', borderRadius: '2px', marginTop: '6px', background: 'var(--bg4)' }}>
-                <div style={{ height: '100%', borderRadius: '2px', background: 'var(--violet)', width: `${Math.min(totals.p / macroTargets.p * 100, 100)}%`, transition: 'width 0.5s', boxShadow: '0 0 6px rgba(112,132,255,0.6)' }} />
+                <div style={{ height: '100%', borderRadius: '2px', background: 'var(--violet)', width: `${Math.min(totals.p / macroTargets.p * 100, 100)}%`, transition: 'width 0.5s', boxShadow: '0 0 6px rgba(124,92,255,0.6)' }} />
               </div>
             </div>
             <div style={{ background: 'var(--bg2)', border: '1px solid var(--bg4)', borderRadius: 'var(--r-lg)', padding: '12px', textAlign: 'center' }}>
@@ -192,7 +192,7 @@ export default function CaloriesPage() {
                 color: activeTab === 'items' ? '#fff' : 'var(--gray2)',
                 background: activeTab === 'items' ? 'var(--violet)' : 'transparent',
                 cursor: 'pointer', border: 'none', borderRadius: 'var(--r-lg)',
-                boxShadow: activeTab === 'items' ? '0 0 12px rgba(112,132,255,0.4)' : 'none',
+                boxShadow: activeTab === 'items' ? '0 0 12px rgba(124,92,255,0.4)' : 'none',
                 transition: 'all 0.2s',
               }}
             >
@@ -205,7 +205,7 @@ export default function CaloriesPage() {
                 color: activeTab === 'meals' ? '#fff' : 'var(--gray2)',
                 background: activeTab === 'meals' ? 'var(--violet)' : 'transparent',
                 cursor: 'pointer', border: 'none', borderRadius: 'var(--r-lg)',
-                boxShadow: activeTab === 'meals' ? '0 0 12px rgba(112,132,255,0.4)' : 'none',
+                boxShadow: activeTab === 'meals' ? '0 0 12px rgba(124,92,255,0.4)' : 'none',
                 transition: 'all 0.2s',
               }}
             >
@@ -287,7 +287,7 @@ function FoodRow({ item, onAdd }: FoodRowProps) {
         onClick={onAdd}
         style={{
           width: '32px', height: '32px', borderRadius: '50%',
-          background: 'var(--violet-dim)', border: '1px solid rgba(112,132,255,0.35)',
+          background: 'var(--violet-dim)', border: '1px solid rgba(124,92,255,0.35)',
           color: 'var(--violet)', fontSize: '18px',
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           cursor: 'pointer', flexShrink: 0,

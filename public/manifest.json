@@ -1,0 +1,32 @@
+{
+  "name": "AMGYM – Train. Track. Transform.",
+  "short_name": "AMGYM",
+  "description": "Your AI-powered training companion. Train smarter, track everything, transform your lifestyle.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0F1221",
+  "theme_color": "#7C5CFF",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ],
+  "categories": ["health", "fitness", "sports"],
+  "lang": "en"
+}

@@ -1,4 +1,4 @@
-﻿'use client';
+﻿﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
@@ -335,8 +335,8 @@ export default function ProgramsPage() {
       <div>
         {/* Plan Header */}
         <div style={{
-          background: 'linear-gradient(135deg, var(--bg2), #0d0e22)',
-          border: '1px solid rgba(112,132,255,0.20)',
+          background: 'linear-gradient(135deg, var(--bg2), #141729)',
+          border: '1px solid rgba(124,92,255,0.20)',
           borderRadius: 'var(--r-xl)',
           padding: '20px',
           marginBottom: '16px'
@@ -368,7 +368,7 @@ export default function ProgramsPage() {
                 borderRadius: '10px',
                 background: 'var(--green-dim)',
                 color: 'var(--green)',
-                border: '1px solid rgba(112,132,255,0.20)',
+                border: '1px solid rgba(124,92,255,0.20)',
                 fontWeight: 600
               }}>
                 {wizard.level.charAt(0).toUpperCase() + wizard.level.slice(1)}
@@ -381,7 +381,7 @@ export default function ProgramsPage() {
                 borderRadius: '10px',
                 background: 'var(--green-dim)',
                 color: 'var(--green)',
-                border: '1px solid rgba(112,132,255,0.20)',
+                border: '1px solid rgba(124,92,255,0.20)',
                 fontWeight: 600
               }}>
                 {wizard.goal}
@@ -394,7 +394,7 @@ export default function ProgramsPage() {
                 borderRadius: '10px',
                 background: 'var(--green-dim)',
                 color: 'var(--green)',
-                border: '1px solid rgba(112,132,255,0.20)',
+                border: '1px solid rgba(124,92,255,0.20)',
                 fontWeight: 600
               }}>
                 {wizard.equip}
@@ -424,7 +424,7 @@ export default function ProgramsPage() {
               gap: '8px',
               boxShadow: lastWorkoutDate === new Date().toDateString() 
                 ? 'none' 
-                : '0 4px 20px rgba(112,132,255,0.28)'
+                : '0 4px 20px rgba(124,92,255,0.28)'
             }}
           >
             {lastWorkoutDate === new Date().toDateString() ? (
@@ -447,7 +447,7 @@ export default function ProgramsPage() {
                   key={i}
                   style={{
                     background: 'var(--bg2)',
-                    border: isToday ? '1px solid rgba(112,132,255,0.35)' : '1px solid var(--bg4)',
+                    border: isToday ? '1px solid rgba(124,92,255,0.35)' : '1px solid var(--bg4)',
                     borderRadius: 'var(--r-lg)',
                     overflow: 'hidden'
                   }}
@@ -463,7 +463,7 @@ export default function ProgramsPage() {
                       height: '10px',
                       borderRadius: '50%',
                       background: isToday ? 'var(--green)' : 'var(--bg4)',
-                      boxShadow: isToday ? '0 0 8px rgba(112,132,255,0.45)' : 'none',
+                      boxShadow: isToday ? '0 0 8px rgba(124,92,255,0.45)' : 'none',
                       flexShrink: 0
                     }} />
                     <div style={{ flex: 1 }}>
@@ -486,7 +486,7 @@ export default function ProgramsPage() {
                 key={i}
                 style={{
                   background: 'var(--bg2)',
-                  border: isToday ? '1px solid rgba(112,132,255,0.35)' : '1px solid var(--bg4)',
+                  border: isToday ? '1px solid rgba(124,92,255,0.35)' : '1px solid var(--bg4)',
                   borderRadius: 'var(--r-lg)',
                   overflow: 'hidden'
                 }}
@@ -506,7 +506,7 @@ export default function ProgramsPage() {
                     height: '10px',
                     borderRadius: '50%',
                     background: isToday ? 'var(--green)' : 'var(--bg4)',
-                    boxShadow: isToday ? '0 0 8px rgba(112,132,255,0.45)' : 'none',
+                    boxShadow: isToday ? '0 0 8px rgba(124,92,255,0.45)' : 'none',
                     flexShrink: 0
                   }} />
                   <div style={{ flex: 1 }}>
@@ -541,9 +541,9 @@ export default function ProgramsPage() {
                               alignItems: 'center',
                               gap: '10px',
                               padding: '10px 12px',
-                              background: isCompleted ? 'rgba(112,132,255,0.12)' : 'var(--bg3)',
+                              background: isCompleted ? 'rgba(124,92,255,0.12)' : 'var(--bg3)',
                               borderRadius: 'var(--r-md)',
-                              border: isCompleted ? '1px solid rgba(112,132,255,0.28)' : '1px solid transparent',
+                              border: isCompleted ? '1px solid rgba(124,92,255,0.28)' : '1px solid transparent',
                               opacity: isCompleted ? 0.8 : 1,
                               transition: 'all 0.2s ease'
                             }}
@@ -606,7 +606,7 @@ export default function ProgramsPage() {
 
   return (
     <div>
-      <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', letterSpacing: '1px', marginBottom: '4px', textShadow: '0 0 10px rgba(112,132,255,0.28)' }}>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', letterSpacing: '1px', marginBottom: '4px', textShadow: '0 0 10px rgba(124,92,255,0.28)' }}>
         {t('PROGRAMS', 'البرامج')}
       </div>
       <div style={{ fontSize: '13px', color: 'var(--gray2)', marginBottom: '20px' }}>

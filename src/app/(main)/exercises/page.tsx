@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useMemo } from 'react';
 import { useApp } from '@/contexts/AppContext';
@@ -23,7 +23,7 @@ export default function ExercisesPage() {
 
   return (
     <div>
-      <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', letterSpacing: '1px', marginBottom: '4px', textShadow: '0 0 16px rgba(112,132,255,0.45)' }}>
+      <div style={{ fontFamily: 'var(--font-display)', fontSize: '28px', color: 'var(--green)', letterSpacing: '1px', marginBottom: '4px', textShadow: '0 0 16px rgba(124,92,255,0.45)' }}>
         {t('EXERCISES', 'التمارين')}
       </div>
       <div style={{ fontSize: '13px', color: 'var(--gray2)', marginBottom: '20px' }}>
@@ -135,7 +135,7 @@ export default function ExercisesPage() {
                     borderRadius: '8px',
                     background: 'var(--violet-dim)',
                     color: 'var(--violet)',
-                    border: '1px solid rgba(112,132,255,0.25)'
+                    border: '1px solid rgba(124,92,255,0.25)'
                   }}>
                     {ex.muscle}
                   </span>

@@ -49,8 +49,10 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
       .then(r => r.json())
       .then(d => {
         if (d && d.gifUrl) {
-          GIF_CACHE[key] = d.gifUrl;
-          setGifUrl(d.gifUrl);
+          // Proxy through our own server to avoid hotlink-protection blocks
+          const proxied = `/api/gif?url=${encodeURIComponent(d.gifUrl)}`;
+          GIF_CACHE[key] = proxied;
+          setGifUrl(proxied);
         } else {
           setGifUrl(null);
         }

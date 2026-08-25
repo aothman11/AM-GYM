@@ -9,7 +9,7 @@ import { EXERCISES, Exercise } from '@/data/exercises';
 
 const PROGRAM = {
   name: '6-Day Hypertrophy',
-  tagline: 'Chest · Back · Shoulders · Arms · Abs · Legs',
+  tagline: 'Sun · Mon · Tue · Wed · Thu · Sat',
   days: [
     {
       label: 'Day 1',
@@ -121,28 +121,6 @@ const PROGRAM = {
     },
     {
       label: 'Day 5',
-      focus: 'Abs & Core',
-      emoji: '🔥',
-      color: '#F59E0B',
-      exercises: [
-        { name: 'Plank',                   sets: '4×45s' },
-        { name: 'Cable Crunch',            sets: '4×15'  },
-        { name: 'Hanging Leg Raise',       sets: '4×15'  },
-        { name: 'Decline Crunch',          sets: '3×20'  },
-        { name: 'Bicycle Crunch',          sets: '3×20'  },
-        { name: 'Ab Wheel Rollout',        sets: '3×12'  },
-        { name: 'Russian Twist',           sets: '3×20'  },
-        { name: 'Leg Raise',               sets: '4×15'  },
-        { name: 'Mountain Climbers',       sets: '3×30'  },
-        { name: 'V-Up',                    sets: '3×15'  },
-        { name: 'Toe Touch Crunch',        sets: '3×20'  },
-        { name: 'Side Plank',              sets: '3×30s' },
-        { name: 'Dragon Flag',             sets: '3×8'   },
-        { name: 'Pallof Press',            sets: '3×12'  },
-      ],
-    },
-    {
-      label: 'Day 6',
       focus: 'Legs',
       emoji: '🦵',
       color: '#F472B6',
@@ -163,16 +141,38 @@ const PROGRAM = {
         { name: 'Cable Kickback',         sets: '3×15' },
       ],
     },
+    {
+      label: 'Day 6',
+      focus: 'Abs & Core',
+      emoji: '🔥',
+      color: '#F59E0B',
+      exercises: [
+        { name: 'Plank',                   sets: '4×45s' },
+        { name: 'Cable Crunch',            sets: '4×15'  },
+        { name: 'Hanging Leg Raise',       sets: '4×15'  },
+        { name: 'Decline Crunch',          sets: '3×20'  },
+        { name: 'Bicycle Crunch',          sets: '3×20'  },
+        { name: 'Ab Wheel Rollout',        sets: '3×12'  },
+        { name: 'Russian Twist',           sets: '3×20'  },
+        { name: 'Leg Raise',               sets: '4×15'  },
+        { name: 'Mountain Climbers',       sets: '3×30'  },
+        { name: 'V-Up',                    sets: '3×15'  },
+        { name: 'Toe Touch Crunch',        sets: '3×20'  },
+        { name: 'Side Plank',              sets: '3×30s' },
+        { name: 'Dragon Flag',             sets: '3×8'   },
+        { name: 'Pallof Press',            sets: '3×12'  },
+      ],
+    },
   ],
 };
 
 // ── Schedule ───────────────────────────────────────────────────────────────
 // Mon=Day1  Tue=Day2  Wed=Day3  Thu=Day4  Fri=REST  Sat=Day5(Abs)  Sun=Day6(Legs)
 
-// Mon=Day1, Tue=Day2, Wed=Day3, Thu=Day4, Fri=REST, Sat=Day5(Abs), Sun=Day6(Legs)
+// Sun=Day1, Mon=Day2, Tue=Day3, Wed=Day4, Thu=Day5(Legs), Fri=REST, Sat=Day6(Abs)
 function getTodayDayIndex(): number {
   const dow = new Date().getDay(); // 0=Sun,1=Mon..6=Sat
-  const map: Record<number, number> = { 1: 0, 2: 1, 3: 2, 4: 3, 6: 4, 0: 5 };
+  const map: Record<number, number> = { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 6: 5 };
   return map[dow] ?? -1; // -1 = rest (Friday)
 }
 
@@ -230,7 +230,7 @@ export default function ProgramsPage() {
             <div style={{ fontFamily: 'var(--font-display)', fontSize: 18, color: 'var(--white)', fontWeight: 700 }}>
               {PROGRAM.name}
             </div>
-            <div style={{ fontSize: 11, color: 'var(--gray3)', marginTop: 1 }}>{PROGRAM.tagline}</div>
+            <div style={{ fontSize: 11, color: 'var(--gray3)', marginTop: 1 }}>Sun · Mon · Tue · Wed · Thu · Sat &nbsp;|&nbsp; Fri REST</div>
           </div>
         </div>
 
@@ -413,7 +413,7 @@ export default function ProgramsPage() {
             <div>
               <div style={{ fontWeight: 700, fontSize: 15 }}>{t('Rest Day — Friday', 'يوم راحة — الجمعة')}</div>
               <div style={{ fontSize: 12, color: 'var(--gray2)', marginTop: 2 }}>
-                {t('Recover well — Abs tomorrow, Legs on Sunday.', 'استرح جيداً — البطن غداً، والأرجل الأحد.')}
+                {t('Recover well — Legs tomorrow, Abs on Saturday.', 'استرح جيداً — الأرجل غداً، والبطن السبت.')}
               </div>
             </div>
           </div>

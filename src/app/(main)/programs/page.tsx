@@ -120,28 +120,6 @@ const PROGRAM = {
       ],
     },
     {
-      label: 'Day 5',
-      focus: 'Legs',
-      emoji: '🦵',
-      color: '#F472B6',
-      exercises: [
-        { name: 'Barbell Back Squat',     sets: '4×8'  },
-        { name: 'Front Squat',            sets: '3×8'  },
-        { name: 'Hack Squat',             sets: '3×10' },
-        { name: 'Leg Press',              sets: '3×12' },
-        { name: 'Bulgarian Split Squat',  sets: '3×12' },
-        { name: 'Walking Lunge',          sets: '3×12' },
-        { name: 'Romanian Deadlift',      sets: '4×10' },
-        { name: 'Leg Curl',               sets: '4×15' },
-        { name: 'Leg Extension',          sets: '3×15' },
-        { name: 'Standing Calf Raise',    sets: '4×20' },
-        { name: 'Seated Calf Raise',      sets: '3×20' },
-        { name: 'Barbell Hip Thrust',     sets: '3×12' },
-        { name: 'Sumo Squat',             sets: '3×12' },
-        { name: 'Cable Kickback',         sets: '3×15' },
-      ],
-    },
-    {
       label: 'Day 6',
       focus: 'Abs & Core',
       emoji: '🔥',
@@ -237,7 +215,7 @@ export default function ProgramsPage() {
         {/* Stats row */}
         <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
           {[
-            { label: t('Days', 'أيام'), val: '5' },
+            { label: t('Days', 'أيام'), val: '6' },
             { label: t('Goal', 'الهدف'), val: t('Hypertrophy', 'ضخامة') },
             { label: t('Level', 'المستوى'), val: t('All levels', 'كل المستويات') },
           ].map(s => (

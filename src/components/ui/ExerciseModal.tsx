@@ -30,6 +30,7 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
   const [frameIndex, setFrameIndex] = useState(0);
   const animationRef = useRef<number | null>(null);
   const lastFrameTimeRef = useRef<number>(0);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!exercise) return;
@@ -41,6 +42,9 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
       setLoading(false);
       return;
     }
+
+    // Reset scroll to top every time a new exercise opens
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
 
     setLoading(true);
     const searchName = exercise.gifKey || exercise.name;
@@ -247,7 +251,7 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
         </div>{/* end modal-top */}
 
         {/* Scrollable details */}
-        <div className="modal-scroll">
+        <div className="modal-scroll" ref={scrollRef}>
           <div className="modal-title">{exercise.name}</div>
           <div className="modal-muscle">
             {exercise.muscle ? `${t('Primary:', 'العضلة الرئيسية:')} ${exercise.muscle}` : ''}

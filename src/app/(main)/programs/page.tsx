@@ -8,8 +8,8 @@ import { EXERCISES, Exercise } from '@/data/exercises';
 // ── 5-Day Hypertrophy Split ────────────────────────────────────────────────
 
 const PROGRAM = {
-  name: '5-Day Hypertrophy',
-  tagline: 'Chest · Back · Shoulders · Arms · Legs',
+  name: '6-Day Hypertrophy',
+  tagline: 'Chest · Back · Shoulders · Arms · Abs · Legs',
   days: [
     {
       label: 'Day 1',
@@ -17,11 +17,21 @@ const PROGRAM = {
       emoji: '🏋️',
       color: '#7C5CFF',
       exercises: [
-        { name: 'Barbell Bench Press',       sets: '4×8'  },
-        { name: 'Incline Dumbbell Press',    sets: '3×10' },
-        { name: 'Cable Fly',                 sets: '3×12' },
-        { name: 'Skull Crushers',            sets: '3×12' },
-        { name: 'Tricep Pushdown',           sets: '4×15' },
+        { name: 'Barbell Bench Press',        sets: '4×8'  },
+        { name: 'Incline Barbell Press',      sets: '3×8'  },
+        { name: 'Incline Dumbbell Press',     sets: '3×10' },
+        { name: 'Dumbbell Bench Press',       sets: '3×10' },
+        { name: 'Cable Fly',                  sets: '3×12' },
+        { name: 'Dumbbell Fly',               sets: '3×12' },
+        { name: 'Pec Deck Fly',               sets: '3×12' },
+        { name: 'Decline Bench Press',        sets: '3×10' },
+        { name: 'Push-Ups',                   sets: '3×15' },
+        { name: 'Skull Crushers',             sets: '4×12' },
+        { name: 'Close-Grip Bench Press',     sets: '3×10' },
+        { name: 'Tricep Pushdown',            sets: '4×15' },
+        { name: 'Rope Pushdown',              sets: '3×15' },
+        { name: 'Overhead Tricep Extension',  sets: '3×15' },
+        { name: 'Tricep Dips',                sets: '3×12' },
       ],
     },
     {
@@ -30,12 +40,21 @@ const PROGRAM = {
       emoji: '🔝',
       color: '#4D8BFF',
       exercises: [
-        { name: 'Pull-Ups',           sets: '4×8'  },
-        { name: 'Barbell Row',        sets: '4×8'  },
-        { name: 'Lat Pulldown',       sets: '3×12' },
-        { name: 'Seated Cable Row',   sets: '3×12' },
-        { name: 'Barbell Curl',       sets: '3×12' },
-        { name: 'Hammer Curl',        sets: '3×15' },
+        { name: 'Pull-Ups',                 sets: '4×8'  },
+        { name: 'Chin-Ups',                 sets: '3×8'  },
+        { name: 'Barbell Row',              sets: '4×8'  },
+        { name: 'T-Bar Row',                sets: '3×10' },
+        { name: 'Dumbbell Row',             sets: '3×10' },
+        { name: 'Chest-Supported Row',      sets: '3×12' },
+        { name: 'Lat Pulldown',             sets: '3×12' },
+        { name: 'Seated Cable Row',         sets: '3×12' },
+        { name: 'Straight-Arm Pulldown',    sets: '3×15' },
+        { name: 'Face Pull',                sets: '3×15' },
+        { name: 'Barbell Curl',             sets: '4×12' },
+        { name: 'EZ-Bar Curl',              sets: '3×12' },
+        { name: 'Dumbbell Curl',            sets: '3×12' },
+        { name: 'Hammer Curl',              sets: '3×15' },
+        { name: 'Cable Curl',               sets: '3×15' },
       ],
     },
     {
@@ -44,12 +63,16 @@ const PROGRAM = {
       emoji: '⬆️',
       color: '#3dd6f5',
       exercises: [
-        { name: 'Overhead Press',       sets: '4×8'  },
-        { name: 'Arnold Press',         sets: '3×12' },
-        { name: 'Lateral Raise',        sets: '4×15' },
-        { name: 'Front Raise',          sets: '3×15' },
-        { name: 'Reverse Pec Deck',     sets: '3×15' },
-        { name: 'Shrug',                sets: '3×15' },
+        { name: 'Overhead Press',           sets: '4×8'  },
+        { name: 'Dumbbell Shoulder Press',  sets: '3×10' },
+        { name: 'Arnold Press',             sets: '3×12' },
+        { name: 'Lateral Raise',            sets: '4×15' },
+        { name: 'Cable Lateral Raise',      sets: '3×15' },
+        { name: 'Front Raise',              sets: '3×15' },
+        { name: 'Upright Row',              sets: '3×12' },
+        { name: 'Reverse Pec Deck',         sets: '4×15' },
+        { name: 'Face Pull',                sets: '3×15' },
+        { name: 'Shrug',                    sets: '4×15' },
       ],
     },
     {
@@ -58,12 +81,20 @@ const PROGRAM = {
       emoji: '💪',
       color: '#A78BFA',
       exercises: [
-        { name: 'Barbell Curl',                  sets: '4×12' },
-        { name: 'Incline Dumbbell Curl',         sets: '3×12' },
-        { name: 'Preacher Curl',                 sets: '3×12' },
-        { name: 'Skull Crushers',                sets: '4×12' },
-        { name: 'Rope Pushdown',                 sets: '4×15' },
-        { name: 'Overhead Tricep Extension',     sets: '3×15' },
+        { name: 'Barbell Curl',              sets: '4×12' },
+        { name: 'EZ-Bar Curl',              sets: '3×12' },
+        { name: 'Dumbbell Curl',            sets: '3×12' },
+        { name: 'Incline Dumbbell Curl',    sets: '3×12' },
+        { name: 'Preacher Curl',            sets: '3×12' },
+        { name: 'Concentration Curl',       sets: '3×15' },
+        { name: 'Hammer Curl',              sets: '3×15' },
+        { name: 'Cable Curl',               sets: '3×15' },
+        { name: 'Skull Crushers',           sets: '4×12' },
+        { name: 'Close-Grip Bench Press',   sets: '3×10' },
+        { name: 'Rope Pushdown',            sets: '4×15' },
+        { name: 'Tricep Pushdown',          sets: '3×15' },
+        { name: 'Overhead Tricep Extension',sets: '3×15' },
+        { name: 'Tricep Dips',              sets: '3×12' },
       ],
     },
     {
@@ -72,22 +103,77 @@ const PROGRAM = {
       emoji: '🦵',
       color: '#F472B6',
       exercises: [
-        { name: 'Barbell Back Squat',       sets: '4×8'  },
-        { name: 'Romanian Deadlift',        sets: '4×10' },
-        { name: 'Leg Press',                sets: '3×12' },
-        { name: 'Bulgarian Split Squat',    sets: '3×12' },
-        { name: 'Leg Curl',                 sets: '4×15' },
-        { name: 'Standing Calf Raise',      sets: '4×20' },
+        { name: 'Barbell Back Squat',     sets: '4×8'  },
+        { name: 'Front Squat',            sets: '3×8'  },
+        { name: 'Hack Squat',             sets: '3×10' },
+        { name: 'Leg Press',              sets: '3×12' },
+        { name: 'Bulgarian Split Squat',  sets: '3×12' },
+        { name: 'Walking Lunge',          sets: '3×12' },
+        { name: 'Romanian Deadlift',      sets: '4×10' },
+        { name: 'Leg Curl',               sets: '4×15' },
+        { name: 'Leg Extension',          sets: '3×15' },
+        { name: 'Standing Calf Raise',    sets: '4×20' },
+        { name: 'Seated Calf Raise',      sets: '3×20' },
+        { name: 'Barbell Hip Thrust',     sets: '3×12' },
+        { name: 'Sumo Squat',             sets: '3×12' },
+        { name: 'Cable Kickback',         sets: '3×15' },
+      ],
+    },
+    {
+      label: 'Day 5',
+      focus: 'Abs & Core',
+      emoji: '🔥',
+      color: '#F59E0B',
+      exercises: [
+        { name: 'Plank',                   sets: '4×45s' },
+        { name: 'Cable Crunch',            sets: '4×15'  },
+        { name: 'Hanging Leg Raise',       sets: '4×15'  },
+        { name: 'Decline Crunch',          sets: '3×20'  },
+        { name: 'Bicycle Crunch',          sets: '3×20'  },
+        { name: 'Ab Wheel Rollout',        sets: '3×12'  },
+        { name: 'Russian Twist',           sets: '3×20'  },
+        { name: 'Leg Raise',               sets: '4×15'  },
+        { name: 'Mountain Climbers',       sets: '3×30'  },
+        { name: 'V-Up',                    sets: '3×15'  },
+        { name: 'Toe Touch Crunch',        sets: '3×20'  },
+        { name: 'Side Plank',              sets: '3×30s' },
+        { name: 'Dragon Flag',             sets: '3×8'   },
+        { name: 'Pallof Press',            sets: '3×12'  },
+      ],
+    },
+    {
+      label: 'Day 6',
+      focus: 'Legs',
+      emoji: '🦵',
+      color: '#F472B6',
+      exercises: [
+        { name: 'Barbell Back Squat',     sets: '4×8'  },
+        { name: 'Front Squat',            sets: '3×8'  },
+        { name: 'Hack Squat',             sets: '3×10' },
+        { name: 'Leg Press',              sets: '3×12' },
+        { name: 'Bulgarian Split Squat',  sets: '3×12' },
+        { name: 'Walking Lunge',          sets: '3×12' },
+        { name: 'Romanian Deadlift',      sets: '4×10' },
+        { name: 'Leg Curl',               sets: '4×15' },
+        { name: 'Leg Extension',          sets: '3×15' },
+        { name: 'Standing Calf Raise',    sets: '4×20' },
+        { name: 'Seated Calf Raise',      sets: '3×20' },
+        { name: 'Barbell Hip Thrust',     sets: '3×12' },
+        { name: 'Sumo Squat',             sets: '3×12' },
+        { name: 'Cable Kickback',         sets: '3×15' },
       ],
     },
   ],
 };
 
-// Day index: Mon=0 Day1, Tue=1 Day2, Wed=2 Day3, Thu=3 Day4, Fri=4 Day5, Sat/Sun = rest
+// ── Schedule ───────────────────────────────────────────────────────────────
+// Mon=Day1  Tue=Day2  Wed=Day3  Thu=Day4  Fri=REST  Sat=Day5(Abs)  Sun=Day6(Legs)
+
+// Mon=Day1, Tue=Day2, Wed=Day3, Thu=Day4, Fri=REST, Sat=Day5(Abs), Sun=Day6(Legs)
 function getTodayDayIndex(): number {
   const dow = new Date().getDay(); // 0=Sun,1=Mon..6=Sat
-  const map: Record<number, number> = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4 };
-  return map[dow] ?? -1; // -1 = rest day
+  const map: Record<number, number> = { 1: 0, 2: 1, 3: 2, 4: 3, 6: 4, 0: 5 };
+  return map[dow] ?? -1; // -1 = rest (Friday)
 }
 
 export default function ProgramsPage() {
@@ -316,7 +402,7 @@ export default function ProgramsPage() {
           );
         })}
 
-        {/* Weekend rest card */}
+        {/* Friday rest card */}
         {todayIndex === -1 && (
           <div style={{
             background: 'var(--bg2)', border: '1px solid var(--bg4)',
@@ -325,9 +411,9 @@ export default function ProgramsPage() {
           }}>
             <span style={{ fontSize: 32 }}>😴</span>
             <div>
-              <div style={{ fontWeight: 700, fontSize: 15 }}>{t('Rest Day', 'يوم راحة')}</div>
+              <div style={{ fontWeight: 700, fontSize: 15 }}>{t('Rest Day — Friday', 'يوم راحة — الجمعة')}</div>
               <div style={{ fontSize: 12, color: 'var(--gray2)', marginTop: 2 }}>
-                {t('Recover well — training resumes Monday.', 'استرح جيداً — التدريب يستأنف الإثنين.')}
+                {t('Recover well — Abs tomorrow, Legs on Sunday.', 'استرح جيداً — البطن غداً، والأرجل الأحد.')}
               </div>
             </div>
           </div>

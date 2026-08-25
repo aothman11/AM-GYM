@@ -99,12 +99,14 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
         <div className="modal-top">
           <div className="modal-handle" />
           <div className="modal-video">
-            <div 
+            <div
               style={{
                 borderRadius: '14px',
                 overflow: 'hidden',
                 background: '#0a0a0a',
-                minHeight: '200px',
+                height: '42vh',
+                maxHeight: '320px',
+                minHeight: '180px',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
@@ -131,13 +133,13 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
                 </>
               ) : gifUrl ? (
                 <>
-                  <img 
-                    src={gifUrl} 
+                  <img
+                    src={gifUrl}
                     alt={exercise.name}
                     style={{
                       width: '100%',
+                      height: '100%',
                       display: 'block',
-                      borderRadius: '14px',
                       objectFit: 'contain',
                       background: '#0a0a0a',
                       animationDuration: speed === 1 ? 'initial' : `${1 / speed}s`,

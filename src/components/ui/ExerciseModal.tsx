@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { useApp } from '@/contexts/AppContext';
 import { Exercise } from '@/data/exercises';
 
@@ -72,7 +73,7 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
 
   const setsArr = sets ? sets.split('×') : ['3', '10'];
 
-  return (
+  return createPortal(
     <div className="modal-overlay open" onClick={onClose}>
       <div className="modal-sheet" onClick={e => e.stopPropagation()}>
         {/* Close Button */}
@@ -280,6 +281,7 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
           </div>
         </div>{/* end modal-scroll */}
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

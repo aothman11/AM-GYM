@@ -687,7 +687,7 @@ body {
 
 @keyframes spin { to { transform: rotate(360deg); } }
 
-.animate-fadeUp { animation: fadeUp 0.4s ease forwards; }
+.animate-fadeUp { animation: fadeUp 0.4s ease; }
 .animate-glow   { animation: glow-pulse 2.2s ease-in-out infinite; }
 
 /* â”€â”€â”€ Scrollbar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */

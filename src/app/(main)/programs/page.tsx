@@ -5,7 +5,7 @@ import { useApp } from '@/contexts/AppContext';
 import ExerciseModal from '@/components/ui/ExerciseModal';
 import { EXERCISES, Exercise } from '@/data/exercises';
 
-// ── 5-Day Hypertrophy Split ────────────────────────────────────────────────
+// ── 6-Day Hypertrophy Split ────────────────────────────────────────────────
 
 const PROGRAM = {
   name: '6-Day Hypertrophy',

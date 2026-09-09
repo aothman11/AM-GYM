@@ -1,45 +1,21 @@
 import { NextRequest, NextResponse } from 'next/server';
-
-// POST /api/agent
-// Body: { question: string, history: Session[] }
-// Returns: { reply: string }
-
-interface Exercise {
-  name: string;
-  sets: string;
-  reps: string;
-  kg: string;
-}
-
-interface Session {
-  dayLabel: string;
-  date: string;
-  exercises: Exercise[];
-  rating?: number;
-  notes?: string;
-}
+import { AgentExercise, AgentSession, SPLIT } from '@/types/agent';
 
 interface AgentRequestBody {
   question: string;
-  history?: Session[];
+  history?: AgentSession[];
 }
 
-const SPLIT = [
-  'Day 1: Chest + Tris',
-  'Day 2: Back + Bis',
-  'Day 3: Shoulders',
-  'Day 4: Bis + Tris',
-  'Day 5: Legs',
-];
+function buildSystemPrompt(history: AgentSession[]): string {
+  const splitDesc = SPLIT.map(d => `${d.label}: ${d.muscles}`).join(', ');
 
-function buildSystemPrompt(history: Session[]): string {
   const recentText = history.length
     ? history
         .slice(-6)
         .map(
           (s) =>
             `${s.dayLabel} (${s.date}): ` +
-            s.exercises.map((e) => `${e.name} ${e.sets}×${e.reps} @${e.kg}kg`).join(', ') +
+            s.exercises.map((e: AgentExercise) => `${e.name} ${e.sets}×${e.reps} @${e.kg}kg`).join(', ') +
             ` | Feel: ${['', 'Brutal', 'OK', 'Great'][s.rating ?? 0] ?? '?'}` +
             ` | Notes: ${s.notes || 'none'}`,
         )
@@ -50,8 +26,8 @@ function buildSystemPrompt(history: Session[]): string {
 
 Athlete profile:
 - Goal: Build muscle (hypertrophy)
-- Training 5 days/week
-- Split: ${SPLIT.join(', ')}
+- Training 6 days/week (rest on Friday)
+- Split: ${splitDesc}
 
 Recent session history:
 ${recentText}
@@ -76,7 +52,7 @@ export async function POST(request: NextRequest) {
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
       return NextResponse.json(
-        { error: 'ANTHROPIC_API_KEY not set in environment variables.' },
+        { error: 'ANTHROPIC_API_KEY not configured on the server.' },
         { status: 500 },
       );
     }

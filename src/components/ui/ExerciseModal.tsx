@@ -13,48 +13,34 @@ interface ExerciseModalProps {
 
 const GIF_CACHE: Record<string, string> = {};
 
-// Speed options: 0.25x, 0.5x, 1x
-const SPEED_OPTIONS = [
-  { label: '0.25x', value: 0.25 },
-  { label: '0.5x', value: 0.5 },
-  { label: '1x', value: 1 },
-];
-
 export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModalProps) {
-  const { t, lang } = useApp();
+  const { t } = useApp();
   const [gifUrl, setGifUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
-  const [speed, setSpeed] = useState(1);
-  const [isPlaying, setIsPlaying] = useState(true);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [gifFrames, setGifFrames] = useState<ImageData[]>([]);
-  const [frameIndex, setFrameIndex] = useState(0);
-  const animationRef = useRef<number | null>(null);
-  const lastFrameTimeRef = useRef<number>(0);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!exercise) return;
-    
+
+    // Always reset scroll so the video is at the top when a new exercise opens
+    if (scrollRef.current) scrollRef.current.scrollTop = 0;
+
     const key = (exercise.gifKey || exercise.name).toLowerCase();
-    
+
     if (GIF_CACHE[key]) {
       setGifUrl(GIF_CACHE[key]);
       setLoading(false);
       return;
     }
 
-    // Reset scroll to top every time a new exercise opens
-    if (scrollRef.current) scrollRef.current.scrollTop = 0;
-
     setLoading(true);
     const searchName = exercise.gifKey || exercise.name;
-    
+
     fetch(`/api/exercise?name=${encodeURIComponent(searchName)}`)
       .then(r => r.json())
       .then(d => {
-        if (d && d.gifUrl) {
-          // Proxy through our own server to avoid hotlink-protection blocks
+        if (d?.gifUrl) {
+          // Proxy through our server to bypass hotlink protection on the GIF host
           const proxied = `/api/gif?url=${encodeURIComponent(d.gifUrl)}`;
           GIF_CACHE[key] = proxied;
           setGifUrl(proxied);
@@ -76,167 +62,61 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
   return createPortal(
     <div className="modal-overlay open" onClick={onClose}>
       <div className="modal-sheet" onClick={e => e.stopPropagation()}>
-        {/* Close Button */}
+
         <button
           onClick={onClose}
           style={{
-            position: 'absolute',
-            top: '16px',
-            right: '16px',
-            width: '36px',
-            height: '36px',
-            borderRadius: '50%',
-            background: 'var(--bg3)',
-            border: '1px solid var(--bg4)',
-            color: 'var(--gray1)',
-            fontSize: '20px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            zIndex: 10,
-            transition: 'all 0.2s'
+            position: 'absolute', top: '16px', right: '16px',
+            width: '36px', height: '36px', borderRadius: '50%',
+            background: 'var(--bg3)', border: '1px solid var(--bg4)',
+            color: 'var(--gray1)', fontSize: '20px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', zIndex: 10, transition: 'all 0.2s',
           }}
           aria-label="Close"
         >
           ✕
         </button>
-        
-        {/* Fixed top section — always visible */}
+
+        {/* Video — always visible at the top, never scrolls away */}
         <div className="modal-top">
           <div className="modal-handle" />
           <div className="modal-video">
-            <div
-              style={{
-                borderRadius: '14px',
-                overflow: 'hidden',
-                background: '#0a0a0a',
-                height: '42vh',
-                maxHeight: '320px',
-                minHeight: '180px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                flexDirection: 'column',
-                gap: '10px',
-                position: 'relative'
-              }}
-            >
+            <div style={{
+              borderRadius: '14px', overflow: 'hidden', background: '#0a0a0a',
+              height: '42vh', maxHeight: '320px', minHeight: '180px',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              flexDirection: 'column', gap: '10px',
+            }}>
               {loading ? (
                 <>
-                  <div 
-                    style={{
-                      width: '36px',
-                      height: '36px',
-                      border: '3px solid var(--violet)',
-                      borderTopColor: 'transparent',
-                      borderRadius: '50%',
-                      animation: 'spin 1s linear infinite'
-                    }}
-                  />
+                  <div style={{
+                    width: '36px', height: '36px',
+                    border: '3px solid var(--violet)', borderTopColor: 'transparent',
+                    borderRadius: '50%', animation: 'spin 1s linear infinite',
+                  }} />
                   <div style={{ fontSize: '11px', color: '#444' }}>
                     {t('Loading...', 'جاري التحميل...')}
                   </div>
                 </>
               ) : gifUrl ? (
-                <>
-                  <img
-                    src={gifUrl}
-                    alt={exercise.name}
-                    style={{
-                      width: '100%',
-                      height: '100%',
-                      display: 'block',
-                      objectFit: 'contain',
-                      background: '#0a0a0a',
-                      animationDuration: speed === 1 ? 'initial' : `${1 / speed}s`,
-                    }}
-                    onError={() => setGifUrl(null)}
-                  />
-                  
-                  {/* Speed Control */}
-                  <div style={{
-                    position: 'absolute',
-                    bottom: '10px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    display: 'flex',
-                    gap: '6px',
-                    background: 'rgba(0,0,0,0.8)',
-                    padding: '6px 10px',
-                    borderRadius: '20px',
-                    backdropFilter: 'blur(10px)'
-                  }}>
-                    <span style={{ 
-                      fontSize: '10px', 
-                      color: 'var(--gray2)', 
-                      display: 'flex', 
-                      alignItems: 'center',
-                      marginRight: '4px'
-                    }}>
-                      {t('Speed:', 'السرعة:')}
-                    </span>
-                    {SPEED_OPTIONS.map(opt => (
-                      <button
-                        key={opt.value}
-                        onClick={() => {
-                          setSpeed(opt.value);
-                          // Force reload the GIF to apply new speed
-                          const currentUrl = gifUrl;
-                          setGifUrl(null);
-                          setTimeout(() => setGifUrl(currentUrl + (currentUrl.includes('?') ? '&' : '?') + 't=' + Date.now()), 50);
-                        }}
-                        style={{
-                          padding: '4px 10px',
-                          fontSize: '11px',
-                          fontWeight: 600,
-                          borderRadius: '12px',
-                          border: 'none',
-                          background: speed === opt.value ? 'var(--green)' : 'var(--bg3)',
-                          color: speed === opt.value ? 'var(--bg)' : 'var(--gray1)',
-                          cursor: 'pointer',
-                          transition: 'all 0.2s'
-                        }}
-                      >
-                        {opt.label}
-                      </button>
-                    ))}
-                  </div>
-                  
-                  {/* Slow motion indicator */}
-                  {speed < 1 && (
-                    <div style={{
-                      position: 'absolute',
-                      top: '10px',
-                      left: '10px',
-                      background: 'rgba(112,132,255,0.90)',
-                      color: '#fff',
-                      padding: '4px 10px',
-                      borderRadius: '12px',
-                      fontSize: '10px',
-                      fontWeight: 700,
-                      textTransform: 'uppercase'
-                    }}>
-                      🔍 {t('Slow Motion', 'حركة بطيئة')} {speed}x
-                    </div>
-                  )}
-                </>
+                <img
+                  src={gifUrl}
+                  alt={exercise.name}
+                  style={{
+                    width: '100%', height: '100%',
+                    display: 'block', objectFit: 'contain', background: '#0a0a0a',
+                  }}
+                  onError={() => setGifUrl(null)}
+                />
               ) : (
                 <>
-                  <div 
-                    style={{
-                      width: '72px',
-                      height: '72px',
-                      borderRadius: '50%',
-                      background: 'var(--violet-dim)',
-                      border: '2px solid var(--violet)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '32px',
-                      color: 'var(--violet)'
-                    }}
-                  >
+                  <div style={{
+                    width: '72px', height: '72px', borderRadius: '50%',
+                    background: 'var(--violet-dim)', border: '2px solid var(--violet)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: '32px', color: 'var(--violet)',
+                  }}>
                     {exercise.name.charAt(0).toUpperCase()}
                   </div>
                   <div style={{ fontSize: '14px', fontWeight: 700, color: '#fff', textAlign: 'center', padding: '0 20px' }}>
@@ -249,9 +129,9 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
               )}
             </div>
           </div>
-        </div>{/* end modal-top */}
+        </div>
 
-        {/* Scrollable details */}
+        {/* Scrollable details below the video */}
         <div className="modal-scroll" ref={scrollRef}>
           <div className="modal-title">{exercise.name}</div>
           <div className="modal-muscle">
@@ -259,12 +139,8 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
           </div>
 
           <div className="modal-sets-info">
-            <div className="set-badge">
-              Sets: <span>{setsArr[0]?.trim() || '3'}</span>
-            </div>
-            <div className="set-badge">
-              Reps: <span>{setsArr[1]?.trim() || '10'}</span>
-            </div>
+            <div className="set-badge">Sets: <span>{setsArr[0]?.trim() || '3'}</span></div>
+            <div className="set-badge">Reps: <span>{setsArr[1]?.trim() || '10'}</span></div>
           </div>
 
           <div style={{ fontSize: '13px', fontWeight: 700, color: 'var(--gray2)', marginBottom: '10px', textTransform: 'uppercase', letterSpacing: '.5px' }}>
@@ -279,7 +155,8 @@ export default function ExerciseModal({ exercise, sets, onClose }: ExerciseModal
               </div>
             ))}
           </div>
-        </div>{/* end modal-scroll */}
+        </div>
+
       </div>
     </div>,
     document.body

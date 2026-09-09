@@ -2,36 +2,12 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useApp } from '@/contexts/AppContext';
+import { AgentExercise, AgentSession, SPLIT } from '@/types/agent';
 
-// ── Types ────────────────────────────────────────────────────
-
-interface Exercise {
-  name: string;
-  sets: string;
-  reps: string;
-  kg: string;
-}
-
-interface Session {
-  dayIndex: number;
-  dayLabel: string;
-  date: string;
-  exercises: Exercise[];
-  rating?: number;
-  notes?: string;
-}
+type Exercise = AgentExercise;
+type Session = AgentSession & { dayIndex: number };
 
 type Tab = 'log' | 'ask';
-
-// ── Constants ────────────────────────────────────────────────
-
-const SPLIT = [
-  { label: 'Day 1', muscles: 'Chest + Tris' },
-  { label: 'Day 2', muscles: 'Back + Bis' },
-  { label: 'Day 3', muscles: 'Shoulders' },
-  { label: 'Day 4', muscles: 'Bis + Tris' },
-  { label: 'Day 5', muscles: 'Legs' },
-];
 
 const STORAGE_KEY = 'amgym_agent_sessions';
 
@@ -47,7 +23,9 @@ function loadSessions(): Session[] {
 function saveSessions(sessions: Session[]) {
   try {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(sessions.slice(-20)));
-  } catch {}
+  } catch (e) {
+    console.error('[FitnessAgent] Failed to save sessions to localStorage:', e);
+  }
 }
 
 // ── Sub-components ───────────────────────────────────────────

@@ -4,6 +4,11 @@ import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
 import { getCurrentChallenge } from '@/data/challenges';
+import { SPLIT } from '@/types/agent';
+
+// Sun=0→Day1 Mon=1→Day2 Tue=2→Day3 Wed=3→Day4 Thu=4→Day5 Fri=5→REST Sat=6→Day6
+const DAY_MAP: Record<number, number> = { 0: 0, 1: 1, 2: 2, 3: 3, 4: 4, 6: 5 };
+const EXERCISE_COUNT = [15, 15, 10, 14, 14, 14];
 
 export default function HomePage() {
   const { t, streak, weekWorkouts, totalWorkouts, showToast, profile } = useApp();
@@ -73,6 +78,12 @@ export default function HomePage() {
   const challengeDone = localProgress >= challenge.target;
   const timerPct = timerMax > 0 ? timerSeconds / timerMax : 0;
 
+  // ── Today's workout ───────────────────────────────────────────────────────
+  const todayDow = new Date().getDay();
+  const todaySplitIdx = DAY_MAP[todayDow];
+  const todaySplit = todaySplitIdx !== undefined ? SPLIT[todaySplitIdx] : null;
+  const todayExCount = todaySplitIdx !== undefined ? EXERCISE_COUNT[todaySplitIdx] : 0;
+
   // ── Stats data ────────────────────────────────────────────────────────────
   const stats = [
     { value: streak,        label: t('Day Streak',    'أيام متتالية'),  icon: '🔥' },
@@ -127,6 +138,45 @@ export default function HomePage() {
               <span>{t('Start Training', 'ابدأ التمرين')}</span>
             </button>
           </div>
+        </div>
+
+        {/* Today's workout card */}
+        <div style={{
+          background: 'var(--bg2)', border: '1px solid rgba(124,92,255,0.25)',
+          borderRadius: 'var(--r-xl)', padding: '14px 16px', marginBottom: 12,
+        }}>
+          {todaySplit ? (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <div style={{
+                width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+                background: 'linear-gradient(135deg,#7C5CFF,#4D8BFF)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22,
+              }}>💪</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: 10, color: 'var(--gray3)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: 2 }}>
+                  {t("Today's Workout", 'تمرين اليوم')}
+                </div>
+                <div style={{ fontWeight: 700, fontSize: 15, color: 'var(--white)' }}>{todaySplit.muscles}</div>
+                <div style={{ fontSize: 11, color: 'var(--gray3)', marginTop: 1 }}>{todaySplit.label} · {todayExCount} {t('exercises', 'تمارين')}</div>
+              </div>
+              <button
+                onClick={() => router.push('/programs')}
+                style={{
+                  padding: '8px 14px', background: 'rgba(124,92,255,0.15)',
+                  border: '1px solid rgba(124,92,255,0.3)', borderRadius: 10,
+                  color: 'var(--violet)', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+                }}
+              >{t('Start', 'ابدأ')}</button>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+              <span style={{ fontSize: 32 }}>😴</span>
+              <div>
+                <div style={{ fontWeight: 700, fontSize: 14 }}>{t('Rest Day', 'يوم راحة')}</div>
+                <div style={{ fontSize: 12, color: 'var(--gray2)' }}>{t('Recover and come back strong.', 'استرح وعُد أقوى.')}</div>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Weekly Challenge */}

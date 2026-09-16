@@ -103,6 +103,11 @@ interface AppContextType {
   challengeProgress: number;
   setChallengeProgress: (progress: number) => void;
 
+  // Rest timer
+  restTimer: { active: boolean; seconds: number; max: number };
+  startRestTimer: (secs: number) => void;
+  dismissRestTimer: () => void;
+
   // Toast
   showToast: (message: string) => void;
   toast: { message: string; visible: boolean };
@@ -157,6 +162,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [achievements, setAchievements] = useState<string[]>([]);
   const [challengeProgress, setChallengeProgressState] = useState(0);
   const [toast, setToast] = useState({ message: '', visible: false });
+  const [restTimer, setRestTimer] = useState<{ active: boolean; seconds: number; max: number }>({ active: false, seconds: 90, max: 90 });
 
   // ── Toast queue (Fix #3) ───────────────────
   // Prevents multiple achievement toasts from clobbering each other:
@@ -177,6 +183,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setToast({ message: next, visible: true });
     setTimeout(() => processQueueRef.current(), 2800);
   };
+
+  const startRestTimer = useCallback((secs: number) => {
+    setRestTimer({ active: true, seconds: secs, max: secs });
+  }, []);
+  const dismissRestTimer = useCallback(() => {
+    setRestTimer(prev => ({ ...prev, active: false }));
+  }, []);
 
   const showToast = useCallback((message: string) => {
     toastQueueRef.current.push(message);
@@ -230,9 +243,16 @@ export function AppProvider({ children }: { children: ReactNode }) {
       const savedLastWorkout = localStorage.getItem('amgym_last_workout');
       if (savedLastWorkout) setLastWorkoutDate(savedLastWorkout);
 
-      const savedTheme = (localStorage.getItem('amgym_theme') as 'dark' | 'light' | null) ?? 'dark';
-      setThemeState(savedTheme);
-      document.documentElement.setAttribute('data-theme', savedTheme);
+      const savedTheme = localStorage.getItem('amgym_theme') as 'dark' | 'light' | null;
+      if (savedTheme) {
+        setThemeState(savedTheme);
+        document.documentElement.setAttribute('data-theme', savedTheme);
+      } else {
+        const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? true;
+        const osTheme: 'dark' | 'light' = prefersDark ? 'dark' : 'light';
+        setThemeState(osTheme);
+        document.documentElement.setAttribute('data-theme', osTheme);
+      }
 
       const savedAchievements = localStorage.getItem('amgym_achievements');
       if (savedAchievements) setAchievements(JSON.parse(savedAchievements));
@@ -450,6 +470,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     completedExercises, toggleExercise, clearCompletedExercises,
     achievements,
     challengeProgress, setChallengeProgress,
+    restTimer, startRestTimer, dismissRestTimer,
     showToast, toast,
   };
 

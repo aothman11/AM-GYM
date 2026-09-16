@@ -37,7 +37,7 @@ function DayPill({
   done,
   onClick,
 }: {
-  day: (typeof SPLIT)[0];
+  day: (typeof SPLIT)[number];
   index: number;
   selected: boolean;
   done: boolean;
@@ -196,7 +196,7 @@ export default function FitnessAgent() {
   // ── Exercise rows ──────────────────────────────────────────
 
   function addRow() {
-    const ref = { current: null } as React.RefObject<HTMLDivElement>;
+    const ref = { current: null } as unknown as React.RefObject<HTMLDivElement>;
     setExRows((prev) => [...prev, ref]);
   }
 

@@ -1,7 +1,18 @@
 ﻿'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { useApp } from '@/contexts/AppContext';
+
+interface Measurement {
+  date: string;
+  weight?: number;
+  waist?: number;
+  chest?: number;
+  arms?: number;
+}
+
+const MEAS_KEY = 'amgym_measurements';
 
 type ProfileField = 'name' | 'weight' | 'height' | 'age' | 'goal' | 'calories';
 
@@ -17,9 +28,38 @@ const ACHIEVEMENTS = [
 
 export default function ProfilePage() {
   const { t, profile, updateProfile, gender, wizard, calorieTarget, setCalorieTarget, showToast, achievements, streak, totalWorkouts } = useApp();
+  const router = useRouter();
   const [modalOpen, setModalOpen] = useState(false);
   const [editingField, setEditingField] = useState<ProfileField | null>(null);
   const [inputValue, setInputValue] = useState('');
+  const [measurements, setMeasurements] = useState<Measurement[]>([]);
+  const [measOpen, setMeasOpen] = useState(false);
+  const [measForm, setMeasForm] = useState({ weight: '', waist: '', chest: '', arms: '' });
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(MEAS_KEY);
+      if (raw) setMeasurements(JSON.parse(raw));
+    } catch { setMeasurements([]); }
+  }, []);
+
+  const saveMeasurement = () => {
+    const entry: Measurement = {
+      date: new Date().toDateString(),
+      weight: measForm.weight ? parseFloat(measForm.weight) : undefined,
+      waist: measForm.waist ? parseFloat(measForm.waist) : undefined,
+      chest: measForm.chest ? parseFloat(measForm.chest) : undefined,
+      arms: measForm.arms ? parseFloat(measForm.arms) : undefined,
+    };
+    const updated = [entry, ...measurements].slice(0, 30);
+    setMeasurements(updated);
+    try { localStorage.setItem(MEAS_KEY, JSON.stringify(updated)); } catch { /* ignore */ }
+    setMeasOpen(false);
+    setMeasForm({ weight: '', waist: '', chest: '', arms: '' });
+    showToast(t('Measurements saved ✓', 'تم حفظ القياسات ✓'));
+  };
+
+  const latest = measurements[0];
 
   const openModal = (field: ProfileField) => {
     setEditingField(field);
@@ -217,6 +257,156 @@ export default function ProfilePage() {
         </div>
 
       </div>{/* end profile-grid */}
+
+      {/* ── Body Measurements ── */}
+      <div style={{ marginTop: 20 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 12 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--gray1)', display: 'flex', alignItems: 'center', gap: 8 }}>
+            📐 {t('Body Measurements', 'قياسات الجسم')}
+          </div>
+          <button
+            onClick={() => setMeasOpen(true)}
+            style={{
+              background: 'var(--violet)', border: 'none', borderRadius: 8,
+              padding: '5px 12px', color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+            }}
+          >+ {t('Log', 'سجّل')}</button>
+        </div>
+
+        {/* Latest measurements */}
+        {latest ? (
+          <div style={{
+            background: 'var(--bg2)', border: '1px solid var(--bg4)',
+            borderRadius: 'var(--r-xl)', padding: '14px 16px', marginBottom: 10,
+          }}>
+            <div style={{ fontSize: 11, color: 'var(--gray3)', marginBottom: 10 }}>{t('Latest', 'الأحدث')}: {latest.date}</div>
+            <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap' }}>
+              {[
+                { label: t('Weight', 'الوزن'), val: latest.weight, unit: 'kg' },
+                { label: t('Waist', 'الخصر'), val: latest.waist, unit: 'cm' },
+                { label: t('Chest', 'الصدر'), val: latest.chest, unit: 'cm' },
+                { label: t('Arms', 'الذراعين'), val: latest.arms, unit: 'cm' },
+              ].filter(m => m.val !== undefined).map((m, i) => (
+                <div key={i} style={{
+                  flex: '1 1 80px', background: 'var(--bg3)', border: '1px solid var(--bg4)',
+                  borderRadius: 10, padding: '10px 8px', textAlign: 'center',
+                }}>
+                  <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--violet)', fontFamily: 'var(--font-mono)' }}>{m.val}</div>
+                  <div style={{ fontSize: 10, color: 'var(--gray3)', marginTop: 2 }}>{m.unit}</div>
+                  <div style={{ fontSize: 10, color: 'var(--gray2)' }}>{m.label}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ) : (
+          <div style={{
+            background: 'var(--bg2)', border: '1px solid var(--bg4)',
+            borderRadius: 'var(--r-xl)', padding: '20px', textAlign: 'center',
+            color: 'var(--gray3)', fontSize: 13, marginBottom: 10,
+          }}>
+            {t('No measurements yet. Tap + Log to start.', 'لا توجد قياسات بعد. اضغط + سجّل للبدء.')}
+          </div>
+        )}
+
+        {/* History of past entries */}
+        {measurements.length > 1 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {measurements.slice(1, 5).map((m, i) => (
+              <div key={i} style={{
+                background: 'var(--bg2)', border: '1px solid var(--bg4)',
+                borderRadius: 10, padding: '10px 14px',
+                display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+              }}>
+                <span style={{ fontSize: 12, color: 'var(--gray3)' }}>{m.date}</span>
+                <div style={{ display: 'flex', gap: 10 }}>
+                  {m.weight && <span style={{ fontSize: 12, color: 'var(--gray2)' }}>{m.weight}kg</span>}
+                  {m.waist && <span style={{ fontSize: 12, color: 'var(--gray2)' }}>W:{m.waist}</span>}
+                  {m.chest && <span style={{ fontSize: 12, color: 'var(--gray2)' }}>C:{m.chest}</span>}
+                  {m.arms && <span style={{ fontSize: 12, color: 'var(--gray2)' }}>A:{m.arms}</span>}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* ── Workout History link ── */}
+      <div
+        onClick={() => router.push('/history')}
+        style={{
+          marginTop: 16, background: 'var(--bg2)',
+          border: '1px solid var(--bg4)', borderRadius: 'var(--r-xl)',
+          padding: '14px 16px', display: 'flex', alignItems: 'center', gap: 12,
+          cursor: 'pointer',
+        }}
+      >
+        <div style={{
+          width: 34, height: 34, borderRadius: 'var(--r-sm)',
+          background: 'var(--bg3)', display: 'flex', alignItems: 'center',
+          justifyContent: 'center', fontSize: 16, flexShrink: 0,
+        }}>📋</div>
+        <div style={{ flex: 1, fontSize: 14 }}>{t('Workout History', 'سجل التمارين')}</div>
+        <div style={{ fontSize: 13, color: 'var(--violet)', fontWeight: 600 }}>
+          {t('View all', 'عرض الكل')}
+        </div>
+        <div style={{ color: 'var(--gray3)', fontSize: 12 }}>›</div>
+      </div>
+
+      {/* Measurements log modal */}
+      {measOpen && (
+        <div
+          onClick={() => setMeasOpen(false)}
+          style={{
+            position: 'fixed', inset: 0, background: 'rgba(0,0,0,0.85)',
+            zIndex: 200, display: 'flex', alignItems: 'flex-end',
+            backdropFilter: 'blur(4px)',
+          }}
+        >
+          <div
+            onClick={e => e.stopPropagation()}
+            style={{
+              background: 'var(--bg2)', borderRadius: 'var(--r-xl) var(--r-xl) 0 0',
+              width: '100%', borderTop: '1px solid var(--bg4)', padding: '20px 16px',
+            }}
+          >
+            <div style={{ width: 40, height: 4, background: 'var(--bg4)', borderRadius: 2, margin: '0 auto 16px' }} />
+            <div style={{ fontSize: 18, fontWeight: 700, color: 'var(--green)', marginBottom: 16 }}>
+              📐 {t('Log Measurements', 'سجّل القياسات')}
+            </div>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 16 }}>
+              {[
+                { key: 'weight', label: t('Weight (kg)', 'الوزن (كجم)') },
+                { key: 'waist', label: t('Waist (cm)', 'الخصر (سم)') },
+                { key: 'chest', label: t('Chest (cm)', 'الصدر (سم)') },
+                { key: 'arms', label: t('Arms (cm)', 'الذراعين (سم)') },
+              ].map(f => (
+                <div key={f.key}>
+                  <div style={{ fontSize: 11, color: 'var(--gray3)', marginBottom: 4 }}>{f.label}</div>
+                  <input
+                    type="number"
+                    value={measForm[f.key as keyof typeof measForm]}
+                    onChange={e => setMeasForm(prev => ({ ...prev, [f.key]: e.target.value }))}
+                    placeholder="0"
+                    style={{
+                      width: '100%', background: 'var(--bg3)', border: '1px solid var(--bg4)',
+                      borderRadius: 8, padding: '10px 12px', color: 'var(--white)',
+                      fontSize: 16,
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
+            <button
+              onClick={saveMeasurement}
+              style={{
+                width: '100%', background: 'var(--green)', border: 'none',
+                borderRadius: 'var(--r-lg)', padding: 14,
+                color: 'var(--bg)', fontWeight: 700, fontSize: 14, cursor: 'pointer',
+              }}
+            >{t('Save', 'حفظ')}</button>
+          </div>
+        </div>
+      )}
 
       {/* Modal */}
       {modalOpen && editingField && (

@@ -7,6 +7,7 @@ import Header from '@/components/layout/Header';
 import TabBar from '@/components/layout/TabBar';
 import Toast from '@/components/ui/Toast';
 import FitnessAgent from '@/components/ui/FitnessAgent';
+import RestTimer from '@/components/ui/RestTimer';
 import { useApp } from '@/contexts/AppContext';
 
 /** AMGYM brand mark — uses the real app-icon.png */
@@ -67,6 +68,17 @@ const NAV_ITEMS = [
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
         <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/>
         <path d="M12 6v6l4 2"/>
+      </svg>
+    ),
+  },
+  {
+    path: '/history',
+    labelEn: 'History',
+    labelAr: 'السجل',
+    icon: (
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2z"/>
+        <polyline points="12 6 12 12 16 14"/>
       </svg>
     ),
   },
@@ -175,6 +187,8 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
 
       {/* Fitness agent — floating button */}
       <FitnessAgent />
+      {/* Floating rest timer */}
+      <RestTimer />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { UserButton, SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 import Header from '@/components/layout/Header';
 import TabBar from '@/components/layout/TabBar';
 import Toast from '@/components/ui/Toast';
@@ -123,6 +124,32 @@ function Sidebar() {
           </Link>
         ))}
       </nav>
+
+      {/* User account */}
+      <div style={{ padding: '12px 16px', borderTop: '1px solid var(--bg4)' }}>
+        <SignedIn>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <UserButton
+              appearance={{
+                elements: {
+                  avatarBox: { width: 36, height: 36 },
+                },
+              }}
+            />
+            <div style={{ fontSize: 13, color: 'var(--gray2)' }}>Account</div>
+          </div>
+        </SignedIn>
+        <SignedOut>
+          <SignInButton mode="redirect">
+            <button style={{
+              width: '100%', padding: '9px 14px',
+              background: 'var(--violet)', border: 'none',
+              borderRadius: 10, color: '#fff',
+              fontSize: 13, fontWeight: 700, cursor: 'pointer',
+            }}>Sign In</button>
+          </SignInButton>
+        </SignedOut>
+      </div>
 
       {/* Controls */}
       <div className="sidebar-controls">

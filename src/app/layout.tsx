@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import './globals.css';
+import { ClerkProvider } from '@clerk/nextjs';
 import { AppProvider } from '@/contexts/AppContext';
 
 export const metadata: Metadata = {
@@ -52,9 +53,11 @@ export default function RootLayout({
         <meta name="theme-color" content="#0F1221" />
       </head>
       <body>
-        <AppProvider>
-          {children}
-        </AppProvider>
+        <ClerkProvider>
+          <AppProvider>
+            {children}
+          </AppProvider>
+        </ClerkProvider>
       </body>
     </html>
   );

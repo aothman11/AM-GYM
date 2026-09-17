@@ -1,5 +1,6 @@
 'use client';
 
+import { UserButton, SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
 import { useApp } from '@/contexts/AppContext';
 import { AmgymMark } from '@/components/layout/ClientLayout';
 
@@ -15,7 +16,19 @@ export default function Header() {
         </div>
       </div>
 
-      <div className="header-controls">
+      <div className="header-controls" style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+        <SignedIn>
+          <UserButton appearance={{ elements: { avatarBox: { width: 32, height: 32 } } }} />
+        </SignedIn>
+        <SignedOut>
+          <SignInButton mode="redirect">
+            <button style={{
+              padding: '6px 14px', background: 'var(--violet)',
+              border: 'none', borderRadius: 8,
+              color: '#fff', fontSize: 12, fontWeight: 700, cursor: 'pointer',
+            }}>Sign In</button>
+          </SignInButton>
+        </SignedOut>
         <button className="theme-toggle" onClick={toggleTheme} aria-label="Toggle theme">
           {theme === 'dark' ? (
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">

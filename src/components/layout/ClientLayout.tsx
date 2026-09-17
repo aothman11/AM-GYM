@@ -3,7 +3,7 @@
 import { ReactNode } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { UserButton, SignedIn, SignedOut, SignInButton } from '@clerk/nextjs';
+import { UserButton, SignInButton, useAuth } from '@clerk/nextjs';
 import Header from '@/components/layout/Header';
 import TabBar from '@/components/layout/TabBar';
 import Toast from '@/components/ui/Toast';
@@ -99,6 +99,7 @@ const NAV_ITEMS = [
 function Sidebar() {
   const pathname = usePathname();
   const { t, lang, setLang, gender, setGender, theme, toggleTheme } = useApp();
+  const { isSignedIn } = useAuth();
 
   const isActive = (path: string) =>
     path === '/' ? pathname === '/' : pathname.startsWith(path);
@@ -127,19 +128,12 @@ function Sidebar() {
 
       {/* User account */}
       <div style={{ padding: '12px 16px', borderTop: '1px solid var(--bg4)' }}>
-        <SignedIn>
+        {isSignedIn ? (
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-            <UserButton
-              appearance={{
-                elements: {
-                  avatarBox: { width: 36, height: 36 },
-                },
-              }}
-            />
+            <UserButton appearance={{ elements: { avatarBox: { width: 36, height: 36 } } }} />
             <div style={{ fontSize: 13, color: 'var(--gray2)' }}>Account</div>
           </div>
-        </SignedIn>
-        <SignedOut>
+        ) : (
           <SignInButton mode="redirect">
             <button style={{
               width: '100%', padding: '9px 14px',
@@ -148,7 +142,7 @@ function Sidebar() {
               fontSize: 13, fontWeight: 700, cursor: 'pointer',
             }}>Sign In</button>
           </SignInButton>
-        </SignedOut>
+        )}
       </div>
 
       {/* Controls */}
